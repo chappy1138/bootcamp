@@ -1,7 +1,6 @@
 define(['app/ApplicationView', 'jQuery'],
     function (ApplicationView, $) {
-        return new ApplicationView({
-                el: $('body'),
+        return ApplicationView.extend({
                 name: 'SingleColumnTemplate'
             }
         );
