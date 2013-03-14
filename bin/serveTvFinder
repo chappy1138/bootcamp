@@ -26,8 +26,8 @@ requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
 
 compileRenderers()
     .then(renderApp)
-    .then(function (content) {
-        console.log(content);
+    .then(function () {
+        console.log($("html")[0].outerHTML);
         process.exit(0);
     })
     .fail(function (err) {
@@ -39,8 +39,8 @@ compileRenderers()
 
 function renderApp() {
     var renderApp = Q.defer();
-    requirejs(['jQuery', 'app/Application'], function ($) {
-        renderApp.resolve($("html")[0].outerHTML);
+    requirejs(['app/Application'], function () {
+        renderApp.resolve();
     });
     return renderApp.promise;
 }

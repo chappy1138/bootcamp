@@ -7,7 +7,8 @@ define(['Backbone', 'handlebars', 'app/templates'], function (Backbone, Handleba
                 templateName = this.options.name + '.hbs'
                 template = Handlebars.templates[templateName],
                 content = template(model);
-            this.$el.html(content);
+            this.$el.append(content);
+            return this;
         }
     });
 });

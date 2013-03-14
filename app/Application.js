@@ -1,22 +1,11 @@
-define(['app/ApplicationView', 'Backbone', 'jQuery', 'handlebars', 'app/templates'],
-    function (ApplicationView, Backbone, $, Handlebars) {
+define([
+    'app/SingleColumnTemplate',
+    'app/GreetingView'],
+    function (SingleColumnTemplate, GreetingView) {
 
         var Application = {};
-
-        $('html').html("<div id='tvFinderSiteHeaderId'></div>");
-
-        var greetingModel = new Backbone.Model({
-                    greeting: 'Hello'
-                }
-            ),
-            greetingView = new ApplicationView({
-                    el: $("#tvFinderSiteHeaderId")[0],
-                    name: 'greetings',
-                    model: greetingModel
-                }
-            );
-
-        greetingView.render();
+        SingleColumnTemplate.render();
+        GreetingView.render();
         return Application;
     }
 );
