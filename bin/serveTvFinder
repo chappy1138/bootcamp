@@ -1,290 +1,67 @@
 #!/usr/bin/env node
 
-var fs = require('fs'),
-    http = require('http'),
-    $ = require('jQuery'),
-    Backbone = require('backbone'),
-    Handlebars = require('handlebars'),
+var path = require('path'),
+    exec = require('child_process').exec,
     Q = require('q'),
-    Application = {};
+    $ = require('jQuery'),
+    requirejs = require('requirejs');
 
-Backbone.$ = $; // necessary apparently
+// initialize
 
-Application.View = Backbone.View.extend({
-    render: function () {
-        var context = this.model ? this.model.attributes : {},
-            output = this.options.template(context);
-        this.$el.html(output);
+var rootDir = path.dirname(path.normalize(__dirname));
+
+requirejs.config({
+        baseUrl: rootDir,
+        'handlebars': {
+            exports: 'Handlebars'
+        }
     }
+);
+
+requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
+    Backbone.$ = $; // necessary, why?
 });
 
-var model = new Backbone.Model({
-    greeting: 'Hello'
-});
+// execution
 
+compileRenderers()
+    .then(renderApp)
+    .then(function (content) {
+        console.log(content);
+        process.exit(0);
+    })
+    .fail(function (err) {
+        console.error(err.message);
+        process.exit(1);
+    });
 
-var indexView = new Application.View({
-    template: Handlebars.compile("{{greeting}} world!"),
-    model: model
-});
+// render the page
 
-indexView.render();
-$('body').append(indexView.el);
-$("html")[0].outerHTML;
-process.exit(0);
-
-
-var port = 8080
-    , address = '127.0.0.1'
-    , searchHost = 'sdc-vsearcher-e3.walmart.com'
-    , searchPath = '/search?query=tvs&result_type=all&cat_id=0&facet_predict=off&cat=on&facet=on&facet.limit=-1&facet.sort=index&rows=100&start=0&&debug=error&response_group=medium'
-    , tvFinderTemplate = 'templates/tvFinder.hbs'
-    , televisions = {}
-    ;
-
-populateTelevisions(searchHost, searchPath).then(serveTvFinder);
-
-function serveTvFinder() {
-    var pathMap = [
-            { pattern: /^\/(css\/.*\.css)$/, action: serveCss }
-            ,
-            { pattern: /^\/(js\/.*\.js)$/, action: serveJavascript }
-            ,
-            { pattern: /^\/(i\/.*\.png)$/, action: servePng }
-            ,
-            { pattern: /^\/(font\/.*\.otf)$/, action: serveFont }
-            ,
-            { pattern: /^\/$/, action: serveTvFinderHtml }
-        ]
-        , index
-        , values
-        , result
-        ;
-    http.createServer(function (req, res) {
-            for (index = 0; index < pathMap.length; index++) {
-                values = req.url.match(pathMap[index].pattern);
-                if (values) {
-                    pathMap[index].action(values, req, res).fail(
-                        function (err) {
-                            if (err.code === 'ENOENT') {
-                                notFound(req, res);
-                            }
-                            else {
-                                console.error(req.url, err);
-                                res.writeHead(500, {'Content-Type': 'text/plain' });
-                                res.end('server error: ' + err.code + ': ' + err.errno);
-                            }
-                        }
-                    );
-                    return;
-                }
-            }
-            notFound(req, res);
-        }
-    ).listen(port, address);
-    console.log('started server ' + address + ' on port ' + port);
+function renderApp() {
+    var renderApp = Q.defer();
+    requirejs(['jQuery', 'app/Application'], function ($) {
+        renderApp.resolve($("html")[0].outerHTML);
+    });
+    return renderApp.promise;
 }
 
-function notFound(req, res) {
-    res.writeHead(404, {'Content-Type': 'text/plain' });
-    res.end('not found');
-}
+/// compile renderers
 
-function serveCss(values, req, res) {
-    var deferred = Q.defer();
-    fs.readFile(values[1], 'ascii', function (err, contents) {
-            if (!err) {
-                res.writeHead(200, { 'Content-Type': 'text/css' });
-                res.end(contents);
-                deferred.resolve();
+function compileRenderers() {
+    var compileRenderers = Q.defer(),
+        compileCommandLine = [
+            'handlebars',
+            '--amd',
+            rootDir + '/template/*.hbs',
+            '--output',
+            'app/templates.js'
+        ].join(' ');
+    exec(compileCommandLine, function (error, out, err) {
+            if (error) {
+                compileRenderers.reject(new Error(err)); // compile error
             }
-            else {
-                deferred.reject(err);
-            }
+            compileRenderers.resolve();
         }
     );
-    return deferred.promise;
-}
-
-function serveJavascript(values, req, res) {
-    var deferred = Q.defer();
-    fs.readFile(values[1], 'ascii', function (err, contents) {
-            if (!err) {
-                res.writeHead(200, { 'Content-Type': 'application/javascript' });
-                res.end(contents);
-                deferred.resolve();
-            }
-            else {
-                deferred.reject(err);
-            }
-        }
-    );
-    return deferred.promise;
-}
-
-function servePng(values, req, res) {
-    var deferred = Q.defer();
-    fs.readFile(values[1], function (err, contents) {
-            if (!err) {
-                res.writeHead(200, { 'Content-Type': 'image/png' });
-                res.end(contents);
-                deferred.resolve();
-            }
-            else {
-                deferred.reject(err);
-            }
-        }
-    );
-    return deferred.promise;
-}
-
-function serveFont(values, req, res) {
-    var deferred = Q.defer();
-    fs.readFile(values[1], function (err, contents) {
-            if (!err) {
-                res.writeHead(200, { 'Content-Type': 'font/opentype' });
-                res.end(contents);
-                deferred.resolve();
-            }
-            else {
-                deferred.reject(err);
-            }
-        }
-    );
-    return deferred.promise;
-}
-
-function serveTvFinderHtml(values, req, res) {
-    var deferred = Q.defer();
-    compileTemplate(tvFinderTemplate)
-        .then(generateTvFinderHtml)
-        .then(function (contents) {
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(contents);
-            deferred.resolve();
-        })
-        .fail(function (err) {
-            deferred.reject(err);
-        });
-    return deferred.promise;
-}
-
-function populateTelevisions(searchHost, searchPath) {
-    var deferred = Q.defer(), startTime = new Date();
-    http.request({
-            host: searchHost,
-            path: searchPath
-        }
-        ,function (response) {
-            var json = '';
-            response.on('data', function (chunk) {
-                json += chunk;
-            });
-            response.on('end', function () {
-                var elapsed = (new Date()) - startTime
-                    , result = JSON.parse(json)
-                    , items = result.response.items
-                    , brandMap = {
-                        'VIZIO': 'Vizio', 'SANYO': 'Sanyo', 'SCEPTRE': 'Sceptre', 'HANNspree': 'Hannspree'
-                    }
-                    , tvs = []
-                    , brands = {}
-                    , types = {}
-                    , index
-                    , medianIndex
-                    , medianItem
-                    ;
-                televisions.items = [];
-                for (index = 0; index < items.length; index++) {
-                    var item = items[index]
-                        , listPrice = item.prices ? parseFloat((item.prices.base_suggested || item.prices.base || item.prices.current).amount) : 0
-                        , price = item.prices ? parseFloat(item.prices.current.amount) : 0
-                        , amount = price.toFixed(2)
-                        , dollars = item.prices ? '$' + amount.match(/[^.]*/)[0] : ""
-                        , cents = item.prices ? amount.match(/\..*/)[0] : ""
-                        , sizeInches = item.title.match(/[0-9]*"/)
-                        , size = sizeInches ? parseInt(sizeInches[0].match(/^[^"]*/)[0]) : 40
-                        , brandValue = item.brand || item.title.match(/^[^ ]*/)[0]
-                        , brand = brandMap[brandValue] || brandValue
-                        , type = (item.title.match(/(LED-LCD)|(LED)|(LCD)|(Plasma)|(DLP)/) || ["LCD"])[0]
-                        , rating = item.customer_rating ? parseFloat(item.customer_rating) : 0
-                        , tv = {
-                            url: item.url,
-                            name: item.title,
-                            size: size,
-                            listPrice: listPrice,
-                            price: price,
-                            image: item.images[0].url,
-                            description: item.shelf_description.match(/^</) ? item.shelf_description : item.shelf_description.match(/<li>.*/)[0],
-                            type: type,
-                            brand: brand,
-                            rating: rating,
-                            ratingWidth: Math.round(rating * 12.0),
-                            ratingDisplay: Math.round(rating) == rating ? rating : rating.toFixed(1),
-                            dollars: dollars,
-                            cents: cents
-                        }
-                        ;
-                    brands[brand] = true;
-                    types[type] = true;
-                    televisions.items.push(tv);
-                    if ((televisions.minPrice || price) >= price) {
-                        televisions.minPrice = price;
-                        televisions.minPriceSize = size;
-                    }
-                    if ((televisions.maxPrice || price) <= price) {
-                        televisions.maxPrice = price;
-                        televisions.maxPriceSize = size;
-                    }
-                    televisions.minSize = Math.min(size, televisions.minSize || size);
-                    televisions.maxSize = Math.max(size, televisions.maxSize || size);
-                }
-                tvs = televisions.items.slice(0); // clone the array
-                tvs.sort(function (a, b) {
-                    return a.price - b.price
-                });
-                medianIndex = Math.floor(tvs.length / 2);
-                medianItem = tvs[medianIndex];
-                televisions.medianPrice = medianItem.price;
-                televisions.medianPriceSize = medianItem.size;
-                televisions.minPriceDollars = '$' + televisions.minPrice.toFixed(2).match(/[^.]*/)[0];
-                televisions.minPriceCents = televisions.minPrice.toFixed(2).match(/\..*/)[0]
-                televisions.medianPriceDollars = '$' + televisions.medianPrice.toFixed(2).match(/[^.]*/)[0]
-                televisions.medianPriceCents = televisions.medianPrice.toFixed(2).match(/\..*/)[0]
-                televisions.maxPriceDollars = '$' + televisions.maxPrice.toFixed(2).match(/[^.]*/)[0]
-                televisions.maxPriceCents = televisions.maxPrice.toFixed(2).match(/\..*/)[0]
-                televisions.brands = [];
-                for (var brand in brands) {
-                    televisions.brands.push(brand);
-                }
-                televisions.brands.sort();
-                televisions.types = [];
-                for (var type in types) {
-                    televisions.types.push(type);
-                }
-                televisions.types.sort();
-                deferred.resolve();
-            });
-        }).end();
-    return deferred.promise;
-}
-
-function compileTemplate(templatePath) {
-    var deferred = Q.defer();
-    fs.readFile(templatePath, 'ascii', function (err, contents) {
-            if (!err) {
-                deferred.resolve(Handlebars.compile(contents));
-            }
-            else {
-                deferred.reject(new Error(err));
-            }
-        }
-    );
-    return deferred.promise;
-}
-
-function generateTvFinderHtml(template) {
-    var deferred = Q.defer();
-    deferred.resolve(template(televisions));
-    return deferred.promise;
+    return compileRenderers.promise;
 }
