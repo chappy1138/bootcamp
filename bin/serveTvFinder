@@ -26,7 +26,7 @@ requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
 
 compileRenderers()
     .then(renderApp)
-    .then(function () {
+    .then(function (model) {
         console.log($("html")[0].outerHTML);
         process.exit(0);
     })
@@ -39,22 +39,28 @@ compileRenderers()
 
 function renderApp() {
     var renderApp = Q.defer();
-    requirejs(['app/Application'], function () {
-        renderApp.resolve();
+    requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
+        var model = new Backbone.Model({
+                greeting: 'Hello'
+            }
+        );
+
+        new TvFinder({ model: model }).render();
+        renderApp.resolve(model);
     });
     return renderApp.promise;
 }
 
-/// compile renderers
+// compile renderers
 
 function compileRenderers() {
     var compileRenderers = Q.defer(),
         compileCommandLine = [
             'handlebars',
             '--amd',
-            rootDir + '/template/*.hbs',
+            rootDir + '/template/*',
             '--output',
-            'app/templates.js'
+            'target/templates.js'
         ].join(' ');
     exec(compileCommandLine, function (error, out, err) {
             if (error) {

@@ -1,6 +1,6 @@
 define(['handlebars'], function(Handlebars) {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['GreetingView.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+templates['Greeting.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
 
