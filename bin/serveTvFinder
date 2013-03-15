@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var path = require('path'),
+    util = require('util'),
     exec = require('child_process').exec,
     fs = require('fs'),
     http = require('http'),
@@ -12,7 +13,31 @@ var path = require('path'),
 
 var rootDir = path.dirname(path.normalize(__dirname)),
     port = 8080,
-    address = '127.0.0.1';
+    address = '127.0.0.1',
+    templateDir = rootDir + '/template',
+    templatesPath = rootDir + '/target/templates.js',
+    javascriptRollupPath = rootDir + '/target/index.js',
+    indexHtmlPath = rootDir + '/target/index.html',
+    viewDir = rootDir + '/view',
+    tvFinderContent,
+    rollupJavascriptCommand = [
+        'node',
+        '/usr/local/lib/node_modules/requirejs/bin/r.js',
+        '-o',
+        rootDir + '/config/rs.json'
+    ].join(' '),
+    compileRenderersCommand = [
+        'handlebars',
+        '--amd',
+        templateDir + '/*.hbs',
+        '--output',
+        templatesPath
+    ].join(' ');
+
+var qCompilePage,
+    qRenderPage,
+    qCreateJavascriptRollup,
+    qCompileRenderers;
 
 requirejs.config({
         baseUrl: rootDir,
@@ -28,18 +53,17 @@ requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
 
 // execution
 
-compileRenderers()
-    .then(renderAndCompilePageWhileCreatingRollups)
-    .then(function (tvFinderContent) {
+Q.all([compilePage(), createJavascriptRollup()]).then(
+    function () {
         servePage();
-    })
-    .fail(function (error) {
+    },
+    function (error) {
         console.error(error.message);
         process.exit(1);
-    });
+    }
+);
 
-// serve page
-
+// serve the page
 
 function servePage() {
     var pathMap = [
@@ -83,214 +107,322 @@ function notFound(req, res) {
 }
 
 function serveCss(values, req, res) {
-    var serveCss = Q.defer();
+    var qServeCss = Q.defer();
     fs.readFile(values[1], 'ascii', function (error, contents) {
             if (error) {
-                serveCss.reject(error);
+                qServeCss.reject(error);
             }
             else {
                 res.writeHead(200, { 'Content-Type': 'text/css' });
                 res.end(contents);
-                serveCss.resolve();
+                qServeCss.resolve();
             }
         }
     );
-    return serveCss.promise;
+    return qServeCss.promise;
 }
 
 function serveJavascriptRollup(values, req, res) {
-    var serveJavascriptRollup = Q.defer();
+    var qServeJavascriptRollup = Q.defer();
     createJavascriptRollup().then(function () {
-        fs.readFile(rootDir + "/target/index.js", 'ascii', function (error, contents) {
-                if (error) {
-                    serveJavascriptRollup.reject(error);
+            fs.readFile(rootDir + "/target/index.js", 'ascii', function (error, contents) {
+                    if (error) {
+                        qServeJavascriptRollup.reject(error);
+                    }
+                    else {
+                        res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                        res.end(contents);
+                        qServeJavascriptRollup.resolve();
+                    }
                 }
-                else {
-                    res.writeHead(200, { 'Content-Type': 'application/javascript' });
-                    res.end(contents);
-                    serveJavascriptRollup.resolve();
-                }
-            }
-        );
-    });
-    return serveJavascriptRollup.promise;
+            );
+        },
+        function (error) {
+            qServeJavascriptRollup.reject(error);
+        }
+    );
+    return qServeJavascriptRollup.promise;
 }
 
 function serveJavascript(values, req, res) {
-    var serveJavascript = Q.defer();
+    var qServeJavascript = Q.defer();
     fs.readFile(values[1], 'ascii', function (error, contents) {
             if (error) {
-                serveJavascript.reject(error);
+                qServeJavascript.reject(error);
             }
             else {
                 res.writeHead(200, { 'Content-Type': 'application/javascript' });
                 res.end(contents);
-                serveJavascript.resolve();
+                qServeJavascript.resolve();
             }
         }
     );
-    return serveJavascript.promise;
+    return qServeJavascript.promise;
 }
 
 function servePng(values, req, res) {
-    var servePng = Q.defer();
+    var qServePng = Q.defer();
     fs.readFile(values[1], function (error, contents) {
             if (error) {
-                servePng.reject(error);
+                qServePng.reject(error);
             }
             else {
                 res.writeHead(200, { 'Content-Type': 'image/png' });
                 res.end(contents);
-                servePng.resolve();
+                qServePng.resolve();
             }
         }
     );
-    return servePng.promise;
+    return qServePng.promise;
 }
 
 function serveFont(values, req, res) {
-    var serveFont = Q.defer();
+    var qServeFont = Q.defer();
     fs.readFile(values[1], function (error, contents) {
             if (error) {
-                serveFont.reject(error);
+                qServeFont.reject(error);
             }
             else {
                 res.writeHead(200, { 'Content-Type': 'font/opentype' });
                 res.end(contents);
-                serveFont.resolve();
+                qServeFont.resolve();
             }
         }
     );
-    return serveFont.promise;
+    return qServeFont.promise;
 }
 
 function serveTvFinderHtml(values, req, res) {
-    var serveTvFinderHtml = Q.defer();
-    renderAndCompilePage()
+    var qServeTvFinderHtml = Q.defer();
+    compilePage()
         .then(function (tvFilterContent) {
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(tvFilterContent);
-            serveTvFinderHtml.resolve();
+            qServeTvFinderHtml.resolve();
         })
         .fail(function (error) {
-            serveTvFinderHtml.reject(error);
+            qServeTvFinderHtml.reject(error);
         });
-    return serveTvFinderHtml.promise;
-}
-
-
-// compile the page while creating the rollups, too
-
-function renderAndCompilePageWhileCreatingRollups() {
-    var renderAndCompilePageWhileCreatingRollups = Q.defer(),
-        renderThenCompilePage = Q.defer();
-    renderPage().then(compilePage).then(
-        function (tvFilterContent) {
-            renderThenCompilePage.resolve(tvFilterContent);
-        },
-        function (error) {
-            renderThenCompilePage.reject(error);
-        }
-    );
-    Q.all([renderThenCompilePage.promise, createJavascriptRollup()]).then(
-        function (outcomes) {
-            renderAndCompilePageWhileCreatingRollups.resolve(outcomes[0]);
-        },
-        function (error) {
-            renderAndCompilePageWhileCreatingRollups.reject(error);
-        }
-    );
-    return renderAndCompilePageWhileCreatingRollups.promise;
-}
-
-function renderAndCompilePage() {
-    var renderThenCompilePage = Q.defer();
-    renderPage().then(compilePage).then(
-        function (tvFilterContent) {
-            renderThenCompilePage.resolve(tvFilterContent);
-        },
-        function (error) {
-            renderThenCompilePage.reject(error);
-        }
-    );
-    return renderThenCompilePage.promise;
-}
-// render the page
-
-function renderPage() {
-    var renderApp = Q.defer();
-    requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
-        var model = new Backbone.Model({
-                greeting: 'Hello'
-            }
-        );
-
-        new TvFinder({ model: model }).render();
-        renderApp.resolve(model);
-    });
-    return renderApp.promise;
+    return qServeTvFinderHtml.promise;
 }
 
 // compile the page
 
 function compilePage() {
-    var compilePage = Q.defer();
-    var tvFinderContent = '<!doctype html>\n\n' + $("html")[0].outerHTML.replace(/<!--#/g, '<').replace(/#-->/g, '>');
-    fs.writeFile(rootDir + '/target/index.html', tvFinderContent, function (error) {
-        if (error) {
-            compilePage.reject(error); // compile error
-        }
-        else {
-            compilePage.resolve(tvFinderContent);
-        }
-        return;
-    });
-    return compilePage.promise;
+    if (!qCompilePage) {
+        qCompilePage = Q.defer();
+        Q.all([renderPage(), statGeneratedFile(indexHtmlPath)]).then(
+            function (updated, stat) {
+                if (updated || !tvFinderContent) {
+                    tvFinderContent = '<!doctype html>\n\n';
+                    tvFinderContent += $("html")[0].outerHTML;
+                    tvFinderContent = tvFinderContent.replace(/<!--#/g, '<');
+                    tvFinderContent = tvFinderContent.replace(/#-->/g, '>');
+                }
+                if (updated || !stat) {
+                    fs.writeFile(rootDir + '/target/index.html', tvFinderContent, function (error) {
+                    });
+                }
+                qCompilePage.resolve(tvFinderContent);
+                qCompilePage = undefined;
+            },
+            function (error) {
+                qCompilePage.reject(error);
+            }
+        );
+    }
+    return qCompilePage.promise;
 }
 
-// compile renderers
+// render the page
 
-function compileRenderers() {
-    var compileRenderers = Q.defer(),
-        compileCommandLine = [
-            'handlebars',
-            '--amd',
-            rootDir + '/template/*.hbs',
-            '--output',
-            rootDir + '/target/templates.js'
-        ].join(' ');
-    exec(compileCommandLine, function (error, out, err) {
-            if (error) {
-                compileRenderers.reject(new Error(err)); // compile error
+function renderPage() {
+    if (!qRenderPage) {
+        qRenderPage = Q.defer();
+        compileRenderers().then(
+            function (updated) {
+                if (updated) {
+                    console.log('rendering page');
+                    requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
+                        var model = new Backbone.Model({
+                                greeting: 'Hello'
+                            }
+                        );
+                        $("head").html('');
+                        $("body").html('');
+                        new TvFinder({ model: model }).render();
+                        qRenderPage.resolve(true);
+                        qRenderPage = undefined;
+                    });
+                }
+                else {
+                    qRenderPage.resolve(false);
+                    qRenderPage = undefined;
+                }
+            },
+            function (error) {
+                qRenderPage.reject(error);
             }
-            else {
-                compileRenderers.resolve();
-            }
-            return;
-        }
-    );
-    return compileRenderers.promise;
+        );
+    }
+    return qRenderPage.promise;
 }
 
 // compile rollups
 
 function createJavascriptRollup() {
-    var compileRollups = Q.defer(),
-        compileCommandLine = [
-            'node',
-            '/usr/local/lib/node_modules/requirejs/bin/r.js',
-            '-o',
-            rootDir + '/config/rs.json'
-        ].join(' ');
-    exec(compileCommandLine, function (error, out, err) {
-            if (error) {
-                compileRollups.reject(new Error(out)); // compile error
+    if (!qCreateJavascriptRollup) {
+        qCreateJavascriptRollup = Q.defer();
+        compileRenderers().then(
+            function () {
+                var rollupStatPromise = statGeneratedFile(javascriptRollupPath),
+                    viewStatsPromise = statFilesInDirectoryMatching(viewDir, /\.js$/),
+                    compilationStatPromise = Q.nfcall(fs.stat, templatesPath);
+                Q.all([rollupStatPromise, viewStatsPromise, compilationStatPromise]).then(
+                    function (stats) {
+                        var rollupStat = stats[0],
+                            viewStats = stats[1],
+                            compilationMtime = stats[2].mtime.getTime(),
+                            rollupMtime = rollupStat ? rollupStat.mtime.getTime() : 0,
+                            isOlder = rollupMtime < compilationMtime,
+                            index = 0;
+                        while (!isOlder && index < viewStats.length) {
+                            isOlder = rollupMtime < viewStats[index].mtime.getTime();
+                            index++;
+                        }
+                        if (isOlder) {
+                            console.log('creating javascript rollup');
+                            exec(rollupJavascriptCommand, function (error, out, err) {
+                                    if (error) {
+                                        qCreateJavascriptRollup.reject(new Error(out)); // compile error
+                                    }
+                                    else {
+                                        qCreateJavascriptRollup.resolve(true);
+                                        qCreateJavascriptRollup = undefined;
+                                    }
+                                }
+                            );
+                        }
+                        else {
+                            qCreateJavascriptRollup.resolve(false);
+                            qCreateJavascriptRollup = undefined;
+                        }
+                    },
+                    function (error) {
+                        qCreateJavascriptRollup.reject(error);
+                    }
+                );
+            },
+            function (error) {
+                qCreateJavascriptRollup.reject(error);
+            }
+        );
+    }
+    return qCreateJavascriptRollup.promise;
+}
+
+// compile renderers only when necessary
+
+function compileRenderers() {
+    if (!qCompileRenderers) {
+        qCompileRenderers = Q.defer();
+        var compilationStatPromise = statGeneratedFile(templatesPath),
+            templateStatsPromise = statFilesInDirectoryMatching(templateDir, /\.hbs$/);
+        Q.all([compilationStatPromise, templateStatsPromise]).then(
+            function (statsPromises) {
+                var targetMtime = statsPromises[0] ? statsPromises[0].mtime.getTime() : 0,
+                    templateFileStats = statsPromises[1], sourceMtime, isOlder = targetMtime === 0, index = 0;
+                while (!isOlder && index < templateFileStats.length) {
+                    isOlder = targetMtime < templateFileStats[index].mtime.getTime();
+                    index++
+                }
+                if (isOlder) {
+                    console.log('compiling renderers')
+                    exec(compileRenderersCommand, function (error, out, err) {
+                            if (error) {
+                                qCompileRenderers.reject(new Error(err));
+                            }
+                            else {
+                                requirejs.undef('target/templates');
+                                requirejs(['target/templates'], function () {
+                                    qCompileRenderers.resolve(true);
+                                    qCompileRenderers = undefined;
+                                });
+                            }
+                        }
+                    );
+                }
+                else {
+                    qCompileRenderers.resolve(false);
+                    qCompileRenderers = undefined;
+                }
+            },
+            function (error) {
+                qCompileRenderers.reject(error);
+            }
+        );
+    }
+    return qCompileRenderers.promise;
+}
+
+// utilities
+
+function statGeneratedFile(path) {
+    var qStatGeneratedFile = Q.defer();
+    fs.stat(path, function (error, stat) {
+        if (error) {
+            if (error.code === 'ENOENT') {
+                qStatGeneratedFile.resolve(undefined);
             }
             else {
-                compileRollups.resolve();
+                qStatGeneratedFile.reject(error);
             }
-            return;
         }
-    );
-    return compileRollups.promise;
+        else {
+            stat.path = path;
+            qStatGeneratedFile.resolve(stat);
+        }
+    });
+    return qStatGeneratedFile.promise;
+}
+
+function statFilesInDirectoryMatching(path, pattern) {
+    var qStatFilesInDirectoryMatching = Q.defer();
+
+    fs.readdir(path, function (error, files) {
+        if (error) {
+            qStatFilesInDirectoryMatching.reject(error);
+        }
+        else {
+            function fsStat(path) {
+                var qFsStat = Q.defer();
+                fs.stat(path, function (error, stat) {
+                    if (error) {
+                        qFsStat.reject(error);
+                    }
+                    else {
+                        stat.path = path;
+                        qFsStat.resolve(stat);
+                    }
+                });
+                return qFsStat.promise;
+            }
+
+            var statPromises = [];
+            for (var index = 0; index < files.length; index++) {
+                if (!pattern || files[index].match(pattern)) {
+                    statPromises.push(fsStat(path + '/' + files[index]));
+                }
+            }
+            Q.all(statPromises).then(
+                function (stats) {
+                    qStatFilesInDirectoryMatching.resolve(stats);
+                },
+                function (error) {
+                    qStatFilesInDirectoryMatching.reject(error);
+                }
+            );
+        }
+    });
+    return qStatFilesInDirectoryMatching.promise;
 }
