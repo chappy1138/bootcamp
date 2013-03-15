@@ -1,0 +1,25 @@
+{
+    "baseUrl": "..",
+    "include": "requirejs",
+    "exclude": [ "handlebars" ],
+    "name": "view/TvFinder",
+    "out": "../target/index.js",
+    "paths": {
+        "requirejs": "/usr/local/lib/node_modules/requirejs/require",
+        "handlebars": "/usr/local/lib/node_modules/handlebars//lib/handlebars/runtime",
+        "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
+        "jQuery": "lib/jquery-1.7.2",
+        "underscore": "/usr/local/lib/node_modules/underscore/underscore"
+    },
+    "shim": {
+        "Backbone": {
+            "deps": [
+                "underscore",
+                "jQuery"
+            ]
+        },
+        "underscore": {
+            "exports": "_"
+        }
+    }
+}

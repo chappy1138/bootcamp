@@ -2,13 +2,17 @@
 
 var path = require('path'),
     exec = require('child_process').exec,
+    fs = require('fs'),
+    http = require('http'),
     Q = require('q'),
     $ = require('jQuery'),
     requirejs = require('requirejs');
 
 // initialize
 
-var rootDir = path.dirname(path.normalize(__dirname));
+var rootDir = path.dirname(path.normalize(__dirname)),
+    port = 8080,
+    address = '127.0.0.1';
 
 requirejs.config({
         baseUrl: rootDir,
@@ -25,19 +29,195 @@ requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
 // execution
 
 compileRenderers()
-    .then(renderApp)
-    .then(function (model) {
-        console.log($("html")[0].outerHTML);
-        process.exit(0);
+    .then(renderAndCompilePageWhileCreatingRollups)
+    .then(function (tvFinderContent) {
+        servePage();
     })
-    .fail(function (err) {
-        console.error(err.message);
+    .fail(function (error) {
+        console.error(error.message);
         process.exit(1);
     });
 
+// serve page
+
+
+function servePage() {
+    var pathMap = [
+        { pattern: /^(\/target)?\/index\.css$/, action: serveCss },
+        { pattern: /^(\/target)?\/index\.js/, action: serveJavascriptRollup },
+        { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
+        { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
+        { pattern: /^\/(js\/.*\.js)$/, action: serveJavascript },
+        { pattern: /^\/(i\/.*\.png)$/, action: servePng },
+        { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
+        { pattern: /^\/$/, action: serveTvFinderHtml }
+    ];
+    http.createServer(function (req, res) {
+            for (index = 0; index < pathMap.length; index++) {
+                values = req.url.match(pathMap[index].pattern);
+                if (values) {
+                    pathMap[index].action(values, req, res).fail(
+                        function (error) {
+                            if (error.code === 'ENOENT') {
+                                notFound(req, res);
+                            }
+                            else {
+                                console.error(req.url, error);
+                                res.writeHead(500, {'Content-Type': 'text/plain' });
+                                res.end('server error: ' + error.code + ': ' + error.errno);
+                            }
+                        }
+                    );
+                    return;
+                }
+            }
+            notFound(req, res);
+        }
+    ).listen(port, address);
+    console.log('started server ' + address + ' on port ' + port);
+}
+
+function notFound(req, res) {
+    res.writeHead(404, {'Content-Type': 'text/plain' });
+    res.end('not found');
+}
+
+function serveCss(values, req, res) {
+    var serveCss = Q.defer();
+    fs.readFile(values[1], 'ascii', function (error, contents) {
+            if (error) {
+                serveCss.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'text/css' });
+                res.end(contents);
+                serveCss.resolve();
+            }
+        }
+    );
+    return serveCss.promise;
+}
+
+function serveJavascriptRollup(values, req, res) {
+    var serveJavascriptRollup = Q.defer();
+    createJavascriptRollup().then(function () {
+        fs.readFile(rootDir + "/target/index.js", 'ascii', function (error, contents) {
+                if (error) {
+                    serveJavascriptRollup.reject(error);
+                }
+                else {
+                    res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                    res.end(contents);
+                    serveJavascriptRollup.resolve();
+                }
+            }
+        );
+    });
+    return serveJavascriptRollup.promise;
+}
+
+function serveJavascript(values, req, res) {
+    var serveJavascript = Q.defer();
+    fs.readFile(values[1], 'ascii', function (error, contents) {
+            if (error) {
+                serveJavascript.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                res.end(contents);
+                serveJavascript.resolve();
+            }
+        }
+    );
+    return serveJavascript.promise;
+}
+
+function servePng(values, req, res) {
+    var servePng = Q.defer();
+    fs.readFile(values[1], function (error, contents) {
+            if (error) {
+                servePng.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.end(contents);
+                servePng.resolve();
+            }
+        }
+    );
+    return servePng.promise;
+}
+
+function serveFont(values, req, res) {
+    var serveFont = Q.defer();
+    fs.readFile(values[1], function (error, contents) {
+            if (error) {
+                serveFont.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'font/opentype' });
+                res.end(contents);
+                serveFont.resolve();
+            }
+        }
+    );
+    return serveFont.promise;
+}
+
+function serveTvFinderHtml(values, req, res) {
+    var serveTvFinderHtml = Q.defer();
+    renderAndCompilePage()
+        .then(function (tvFilterContent) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(tvFilterContent);
+            serveTvFinderHtml.resolve();
+        })
+        .fail(function (error) {
+            serveTvFinderHtml.reject(error);
+        });
+    return serveTvFinderHtml.promise;
+}
+
+
+// compile the page while creating the rollups, too
+
+function renderAndCompilePageWhileCreatingRollups() {
+    var renderAndCompilePageWhileCreatingRollups = Q.defer(),
+        renderThenCompilePage = Q.defer();
+    renderPage().then(compilePage).then(
+        function (tvFilterContent) {
+            renderThenCompilePage.resolve(tvFilterContent);
+        },
+        function (error) {
+            renderThenCompilePage.reject(error);
+        }
+    );
+    Q.all([renderThenCompilePage.promise, createJavascriptRollup()]).then(
+        function (outcomes) {
+            renderAndCompilePageWhileCreatingRollups.resolve(outcomes[0]);
+        },
+        function (error) {
+            renderAndCompilePageWhileCreatingRollups.reject(error);
+        }
+    );
+    return renderAndCompilePageWhileCreatingRollups.promise;
+}
+
+function renderAndCompilePage() {
+    var renderThenCompilePage = Q.defer();
+    renderPage().then(compilePage).then(
+        function (tvFilterContent) {
+            renderThenCompilePage.resolve(tvFilterContent);
+        },
+        function (error) {
+            renderThenCompilePage.reject(error);
+        }
+    );
+    return renderThenCompilePage.promise;
+}
 // render the page
 
-function renderApp() {
+function renderPage() {
     var renderApp = Q.defer();
     requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
         var model = new Backbone.Model({
@@ -51,6 +231,23 @@ function renderApp() {
     return renderApp.promise;
 }
 
+// compile the page
+
+function compilePage() {
+    var compilePage = Q.defer();
+    var tvFinderContent = '<!doctype html>\n\n' + $("html")[0].outerHTML.replace(/<!--#/g, '<').replace(/#-->/g, '>');
+    fs.writeFile(rootDir + '/target/index.html', tvFinderContent, function (error) {
+        if (error) {
+            compilePage.reject(error); // compile error
+        }
+        else {
+            compilePage.resolve(tvFinderContent);
+        }
+        return;
+    });
+    return compilePage.promise;
+}
+
 // compile renderers
 
 function compileRenderers() {
@@ -58,16 +255,42 @@ function compileRenderers() {
         compileCommandLine = [
             'handlebars',
             '--amd',
-            rootDir + '/template/*',
+            rootDir + '/template/*.hbs',
             '--output',
-            'target/templates.js'
+            rootDir + '/target/templates.js'
         ].join(' ');
     exec(compileCommandLine, function (error, out, err) {
             if (error) {
                 compileRenderers.reject(new Error(err)); // compile error
             }
-            compileRenderers.resolve();
+            else {
+                compileRenderers.resolve();
+            }
+            return;
         }
     );
     return compileRenderers.promise;
+}
+
+// compile rollups
+
+function createJavascriptRollup() {
+    var compileRollups = Q.defer(),
+        compileCommandLine = [
+            'node',
+            '/usr/local/lib/node_modules/requirejs/bin/r.js',
+            '-o',
+            rootDir + '/config/rs.json'
+        ].join(' ');
+    exec(compileCommandLine, function (error, out, err) {
+            if (error) {
+                compileRollups.reject(new Error(out)); // compile error
+            }
+            else {
+                compileRollups.resolve();
+            }
+            return;
+        }
+    );
+    return compileRollups.promise;
 }
