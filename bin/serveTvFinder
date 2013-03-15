@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var path = require('path'),
-    util = require('util'),
     exec = require('child_process').exec,
     fs = require('fs'),
     http = require('http'),
@@ -14,12 +13,21 @@ var path = require('path'),
 var rootDir = path.dirname(path.normalize(__dirname)),
     port = 8080,
     address = '127.0.0.1',
-    templateDir = rootDir + '/template',
-    templatesPath = rootDir + '/target/templates.js',
-    javascriptRollupPath = rootDir + '/target/index.js',
-    indexHtmlPath = rootDir + '/target/index.html',
-    viewDir = rootDir + '/view',
+    templatePathname = rootDir + '/template',
+    targetPathname = rootDir + '/target',
+    templatesRollupPathname = targetPathname + '/templates.js',
+    cssRollupPathname = targetPathname + '/index.css',
+    javascriptRollupPathname = targetPathname + '/index.js',
+    indexHtmlPathname = targetPathname + '/index.html',
+    viewPathname = rootDir + '/view',
     tvFinderContent,
+    rollupJCssCommand = [
+        'node',
+        '/usr/local/lib/node_modules/requirejs/bin/r.js',
+        '-o',
+        'cssIn="' + rootDir + '/css/tvFinder.css"',
+        'out="' + cssRollupPathname + '"'
+    ].join(' '),
     rollupJavascriptCommand = [
         'node',
         '/usr/local/lib/node_modules/requirejs/bin/r.js',
@@ -29,13 +37,14 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     compileRenderersCommand = [
         'handlebars',
         '--amd',
-        templateDir + '/*.hbs',
+        templatePathname + '/*.hbs',
         '--output',
-        templatesPath
+        templatesRollupPathname
     ].join(' ');
 
 var qCompilePage,
     qRenderPage,
+    qCreateCssRollup,
     qCreateJavascriptRollup,
     qCompileRenderers;
 
@@ -67,7 +76,7 @@ Q.all([compilePage(), createJavascriptRollup()]).then(
 
 function servePage() {
     var pathMap = [
-        { pattern: /^(\/target)?\/index\.css$/, action: serveCss },
+        { pattern: /^(\/target)?\/index\.css$/, action: serveCssRollup },
         { pattern: /^(\/target)?\/index\.js/, action: serveJavascriptRollup },
         { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
@@ -106,6 +115,28 @@ function notFound(req, res) {
     res.end('not found');
 }
 
+function serveCssRollup(values, req, res) {
+    var qServeCssRollup = Q.defer();
+    createCssRollup().then(function () {
+            fs.readFile(cssRollupPathname, 'ascii', function (error, contents) {
+                    if (error) {
+                        qServeCssRollup.reject(error);
+                    }
+                    else {
+                        res.writeHead(200, { 'Content-Type': 'text/css' });
+                        res.end(contents);
+                        qServeCssRollup.resolve();
+                    }
+                }
+            );
+        },
+        function (error) {
+            qServeCssRollup.reject(error);
+        }
+    );
+    return qServeCssRollup.promise;
+}
+
 function serveCss(values, req, res) {
     var qServeCss = Q.defer();
     fs.readFile(values[1], 'ascii', function (error, contents) {
@@ -125,7 +156,7 @@ function serveCss(values, req, res) {
 function serveJavascriptRollup(values, req, res) {
     var qServeJavascriptRollup = Q.defer();
     createJavascriptRollup().then(function () {
-            fs.readFile(rootDir + "/target/index.js", 'ascii', function (error, contents) {
+            fs.readFile(javascriptRollupPathname, 'ascii', function (error, contents) {
                     if (error) {
                         qServeJavascriptRollup.reject(error);
                     }
@@ -211,7 +242,7 @@ function serveTvFinderHtml(values, req, res) {
 function compilePage() {
     if (!qCompilePage) {
         qCompilePage = Q.defer();
-        Q.all([renderPage(), statGeneratedFile(indexHtmlPath)]).then(
+        Q.all([renderPage(), statGeneratedFile(indexHtmlPathname)]).then(
             function (updated, stat) {
                 if (updated || !tvFinderContent) {
                     tvFinderContent = '<!doctype html>\n\n';
@@ -220,7 +251,7 @@ function compilePage() {
                     tvFinderContent = tvFinderContent.replace(/#-->/g, '>');
                 }
                 if (updated || !stat) {
-                    fs.writeFile(rootDir + '/target/index.html', tvFinderContent, function (error) {
+                    fs.writeFile(indexHtmlPathname, tvFinderContent, function (error) {
                     });
                 }
                 qCompilePage.resolve(tvFinderContent);
@@ -241,7 +272,7 @@ function renderPage() {
         qRenderPage = Q.defer();
         compileRenderers().then(
             function (updated) {
-                if (updated) {
+                if (updated || !tvFinderContent) {
                     console.log('rendering page');
                     requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
                         var model = new Backbone.Model({
@@ -256,7 +287,7 @@ function renderPage() {
                     });
                 }
                 else {
-                    qRenderPage.resolve(false);
+                    qRenderPage.resolve(updated);
                     qRenderPage = undefined;
                 }
             },
@@ -268,16 +299,67 @@ function renderPage() {
     return qRenderPage.promise;
 }
 
-// compile rollups
+// compile css rollup
+
+function createCssRollup() {
+    if (!qCreateCssRollup) {
+        qCreateCssRollup = Q.defer();
+        compileRenderers().then(
+            function () {
+                var rollupStatPromise = statGeneratedFile(cssRollupPathname),
+                    cssStatsPromise = statFilesInDirectoryMatching(rootDir + '/css', /\.css$/);
+                Q.all([rollupStatPromise, cssStatsPromise]).then(
+                    function (stats) {
+                        var rollupStat = stats[0],
+                            cssStats = stats[1],
+                            rollupMtime = rollupStat ? rollupStat.mtime.getTime() : 0,
+                            isOlder = rollupMtime === 0,
+                            index = 0;
+                        while (!isOlder && index < cssStats.length) {
+                            isOlder = rollupMtime < cssStats[index].mtime.getTime();
+                            index++;
+                        }
+                        if (isOlder) {
+                            console.log('creating css rollup');
+                            exec(rollupJCssCommand, function (error, out, err) {
+                                    if (error) {
+                                        qCreateCssRollup.reject(new Error(out)); // compile error
+                                    }
+                                    else {
+                                        qCreateCssRollup.resolve(true);
+                                        qCreateCssRollup = undefined;
+                                    }
+                                }
+                            );
+                        }
+                        else {
+                            qCreateCssRollup.resolve(false);
+                            qCreateCssRollup = undefined;
+                        }
+                    },
+                    function (error) {
+                        qCreateCssRollup.reject(error);
+                    }
+                );
+            },
+            function (error) {
+                qCreateCssRollup.reject(error);
+            }
+        );
+    }
+    return qCreateCssRollup.promise;
+}
+
+// compile javascript rollup
 
 function createJavascriptRollup() {
     if (!qCreateJavascriptRollup) {
         qCreateJavascriptRollup = Q.defer();
         compileRenderers().then(
             function () {
-                var rollupStatPromise = statGeneratedFile(javascriptRollupPath),
-                    viewStatsPromise = statFilesInDirectoryMatching(viewDir, /\.js$/),
-                    compilationStatPromise = Q.nfcall(fs.stat, templatesPath);
+                var rollupStatPromise = statGeneratedFile(javascriptRollupPathname),
+                    viewStatsPromise = statFilesInDirectoryMatching(viewPathname, /\.js$/),
+                    compilationStatPromise = Q.nfcall(fs.stat, templatesRollupPathname);
                 Q.all([rollupStatPromise, viewStatsPromise, compilationStatPromise]).then(
                     function (stats) {
                         var rollupStat = stats[0],
@@ -326,8 +408,8 @@ function createJavascriptRollup() {
 function compileRenderers() {
     if (!qCompileRenderers) {
         qCompileRenderers = Q.defer();
-        var compilationStatPromise = statGeneratedFile(templatesPath),
-            templateStatsPromise = statFilesInDirectoryMatching(templateDir, /\.hbs$/);
+        var compilationStatPromise = statGeneratedFile(templatesRollupPathname),
+            templateStatsPromise = statFilesInDirectoryMatching(templatePathname, /\.hbs$/);
         Q.all([compilationStatPromise, templateStatsPromise]).then(
             function (statsPromises) {
                 var targetMtime = statsPromises[0] ? statsPromises[0].mtime.getTime() : 0,
@@ -379,7 +461,6 @@ function statGeneratedFile(path) {
             }
         }
         else {
-            stat.path = path;
             qStatGeneratedFile.resolve(stat);
         }
     });
@@ -394,24 +475,10 @@ function statFilesInDirectoryMatching(path, pattern) {
             qStatFilesInDirectoryMatching.reject(error);
         }
         else {
-            function fsStat(path) {
-                var qFsStat = Q.defer();
-                fs.stat(path, function (error, stat) {
-                    if (error) {
-                        qFsStat.reject(error);
-                    }
-                    else {
-                        stat.path = path;
-                        qFsStat.resolve(stat);
-                    }
-                });
-                return qFsStat.promise;
-            }
-
             var statPromises = [];
             for (var index = 0; index < files.length; index++) {
                 if (!pattern || files[index].match(pattern)) {
-                    statPromises.push(fsStat(path + '/' + files[index]));
+                    statPromises.push(Q.nfcall(fs.stat, path + '/' + files[index]));
                 }
             }
             Q.all(statPromises).then(

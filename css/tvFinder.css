@@ -1,0 +1,587 @@
+@import url("bootstrap.min.css");
+@import url("jquery-ui-1.10.1.custom.min.css");
+
+/*****************
+ * TVFinder Fonts
+ *
+ */
+@font-face {
+    font-family: "MyriadPro-Regular";
+    src: url('../font/MyriadPro-Regular.otf');
+}
+
+@font-face {
+    font-family: "MyriadPro-Light";
+    src: url('../font/MyriadPro-Light.otf');
+}
+
+/*****************
+ * TVFinder Styling
+ *
+ */
+body, article, section, header, footer, nav, ul {
+    padding: 0;
+    margin: 0;
+    font-family: "MyriadPro-Light", Helvetica, sans-serif;
+}
+
+nav {
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    float: left
+}
+
+form {
+    display: inline;
+}
+
+a {
+    text-decoration: none;
+    outline: 0;
+}
+
+a:hover {
+    text-decoration: none;
+    outline: 0;
+}
+
+a:focus {
+    text-decoration: none;
+    outline: 0;
+}
+
+.tvFinderContent {
+    width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*******************
+ * TVFinder Top of Page Navigation
+ *
+ */
+.tvFinderTopNav {
+    background: url(../i/walmartHeaderBackground.png) no-repeat;
+    width: 1024px;
+    background-size: 1024px 90px;
+}
+
+/*
+ * Walmart Logo
+ */
+.tvFinderWalmartNav {
+    width: 1024px;
+    height: 100px;
+}
+
+.walmartLogoCell
+, .walmartLogoLink {
+    width: 220px;
+    height: 85px;
+}
+
+.walmartLogoLink {
+    display: block;
+    text-indent: -9999px;
+}
+
+/*
+ * Search Bar
+ */
+.walmartSearchCell {
+    position: relative;
+    width: 360px;
+    height: 85px;
+}
+
+.walmartSearchForm {
+    position: absolute;
+    top: 30px;
+    left: 13px;
+}
+
+.walmartSearchSubmit {
+    background-color:transparent;
+    width: 32px;
+    height: 28px;
+    text-indent: -9999px;
+    border: none;
+    cursor: pointer;
+}
+
+.walmartSearchCell .walmartSearchInput {
+    background-color: transparent;
+    width: 185px;
+    border: none;
+    box-shadow: none;
+    font-size: 17px;
+    color: rgb(83,90,95);
+}
+
+.walmartSearchCell .walmartSearchInput:focus {
+    box-shadow: none;
+}
+
+.walmartSearchInput::-webkit-input-placeholder { /* WebKit browsers */
+    color: rgb(210,210,210);
+}
+.walmartSearchInput:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: rgb(210,210,210);
+}
+.walmartSearchInput::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: rgb(210,210,210);
+}
+.walmartSearchInput:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: rgb(210,210,210);
+}
+
+/*
+ * Three Amigos: Create [Wishlist], Sign In, Cart
+ */
+.walmartCreateCell
+, .walmartSignInCell
+, .walmartCartCell {
+    height: 85px;
+    display: block;
+}
+
+
+.walmartCreateCell {
+    width: 155px;
+}
+
+.walmartSignInCell {
+    width: 160px;
+}
+
+.walmartCartCell {
+    width: 128px;
+}
+
+.walmartCreateLink
+, .walmartSignInLink
+, .walmartCartLink {
+    position: absolute;
+    display: block;
+    color:rgb(83,90,95);
+    top: 26px;
+    text-indent: 28px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.walmartCartLink {
+    text-indent: 34px;
+}
+
+.walmartCreateText
+, .walmartSignInText
+, .walmartCartText {
+    position: absolute;
+    top: 46px;
+    text-indent: 10px;
+    color:rgb(173,180,189);
+}
+
+.walmartCartText {
+    text-indent: 16px;
+}
+
+/*
+ * Horizontal Breadcrumb
+ */
+.tvFinderBreadcrumbLine {
+    width: 1024px;
+    height: 30px;
+    line-height: 20px;
+    text-transform: uppercase;
+    font-size: small;
+}
+
+.tvFinderHomeBreadcrumb {
+    background: url(../i/walmartBreadcrumbSprite.png) no-repeat;
+    width: 28px;
+    height: 28px;
+    margin-left: 20px;
+}
+
+.tvFinderHomeLink {
+    width: 28px;
+    display: block;
+    text-indent: -9999px;
+}
+
+.tvFinderBreadcrumb {
+    background: url(../i/walmartBreadcrumbSprite.png) no-repeat -28px 0;
+}
+
+.tvFinderBreadcrumbLink {
+    display: block;
+    margin-left: 24px;
+    margin-right: 8px;
+    color:rgb(14,121,190);
+    font-weight: bold;
+}
+
+/*
+ * End of top of page navigation
+ */
+
+/************************
+ * TVFinder Header
+ *
+ * - Title
+ * - Description
+ * - Minimum, Median and Maximum TV Size offers
+ */
+.tvFinderHeader {
+    line-height: 90px;
+    font-size: 56px;
+    font-weight: normal;
+    color:rgb(58,58,58);
+    text-align: center;
+    margin: 0;
+}
+
+.tvFinderDescription {
+    color:rgb(172,172,172);
+    text-align: center;
+    margin-top: -15px;
+    font-weight: 100;
+    font-size: 24px;
+}
+
+.tvFinderLink {
+    color:rgb(14,121,190);
+}
+
+.tvFinderOffers {
+    background: url(../i/tvFinderOffers.png) no-repeat;
+    background-position:top;
+    width: 1024px;
+    height: 248px;
+    position: relative;
+    color: rgb(255,255,255);
+}
+
+.tvFinderMinPrice {
+    position: absolute;
+    top: 132px;
+    left: 180px;
+}
+
+.tvFinderMedianPrice {
+    position: absolute;
+    top: 110px;
+    left: 415px;
+}
+
+.tvFinderMaxPrice {
+    position: absolute;
+    top: 86px;
+    left: 707px;
+}
+
+.tvFinderMinSize
+, .tvFinderMedianSize
+, .tvFinderMaxSize {
+    position: absolute;
+    font-weight: bold;
+}
+
+.tvFinderMinSize {
+
+    /* Safari */
+    -webkit-transform: rotate(52deg);
+
+    /* Firefox */
+    -moz-transform: rotate(52deg);
+
+    /* IE */
+    -ms-transform: rotate(52deg);
+
+    /* Opera */
+    -o-transform: rotate(52deg);
+    top: 93px;
+    left: 278px;
+}
+
+.tvFinderMedianSize {
+
+    /* Safari */
+    -webkit-transform: rotate(45deg);
+
+    /* Firefox */
+    -moz-transform: rotate(45deg);
+
+    /* IE */
+    -ms-transform: rotate(45deg);
+
+    /* Opera */
+    -o-transform: rotate(45deg);
+    top: 59px;
+    left: 541px;
+}
+
+.tvFinderMaxSize {
+
+    /* Safari */
+    -webkit-transform: rotate(45deg);
+
+    /* Firefox */
+    -moz-transform: rotate(45deg);
+
+    /* IE */
+    -ms-transform: rotate(45deg);
+
+    /* Opera */
+    -o-transform: rotate(45deg);
+    top: 11px;
+    left: 874px;
+}
+
+/*
+ * TVFinder Controls:
+ * - size range slider
+ * - type filter dropdown
+ * - brand filter dropdown
+ * - sort dropdown
+ */
+.tvFinderControls {
+    background: url(../i/tvFinderControls.png) no-repeat;
+    background-position:center;
+    width: 980px;
+    height: 144px;
+    font-size: large;
+}
+
+.tvFinderLogoLink {
+    display: block;
+    width: 120px;
+    height: 120px;
+    text-indent: -9999px;
+    margin: 20px 20px;
+}
+
+.tvFinderSizePrompt {
+    margin: 30px 60px 0 0;
+    width: 312px;
+}
+
+#tvFinderSizeSlider {
+    margin: 20px -12px 0 10px;
+    height: 11px;
+}
+
+.tvFinderSizeSliderLabel {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    top: 10px;
+    width: 60px;
+    text-decoration: none;
+    color: rgb(58,58,58);
+    font-weight: bold;
+}
+
+#tvFinderSizeSlider .ui-state-focus {
+    text-decoration: none;
+}
+
+#tvFinderSizeSlider .ui-slider-range {
+    background: url(../i/rangeGradient.png) repeat-x;
+}
+
+#tvFinderSizeSlider .ui-slider-handle {
+    background: url(../i/transparentSliderHandleWithLabel.png) no-repeat;
+    height: 83px;
+    width: 61px;
+    top: -62px;
+    margin-left: -30px;
+}
+
+.tvFinderTypePrompt {
+    margin: 30px 0 0 10px;
+    width: 130px;
+}
+
+.tvFinderBrandPrompt {
+    margin: 30px 0 0 10px;
+    width: 170px;
+}
+
+.tvFinderSortPrompt {
+    margin: 30px 0 0 10px;
+    width: 100px;
+}
+
+.tvFinderMenuChoice {
+    display: block;
+    float: none;
+    margin: 0 0 0 10px;
+}
+
+.tvFinderControls .tvFinderControl {
+    display: block;
+    margin-top: 10px;
+}
+
+/******************
+ * TV Offer Header
+ */
+.tvFinderOfferHeader {
+    clear: both;
+    display: block;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: rgb(177,177,177);
+    font-weight: bold;
+    margin-left: 40px;
+    margin-bottom: 20px;
+}
+
+.tvFinderMatchOfferCount {
+    color: rgb(62,62,62);
+}
+
+.tvFinderClearFilters {
+    float: right;
+    margin-top: -10px;
+    margin-right: 40px;
+    text-transform: none;
+    color: rgb(126,126,126);
+}
+
+/******************
+ * TV Offers
+ * - Deferred Image
+ * - Truncated Product Name
+ * - Truncated Product Details
+ * - Stylized Price
+ * - Rating Summary
+ */
+.tvFinderOfferContainer {
+    clear: both;
+    display: block;
+}
+
+.tvFinderOffer {
+    width: 224px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.tvFinderProduct {
+    line-height: 18px;
+    margin-bottom: 6px;
+}
+
+.tvFinderProductLink {
+    width: 224px;
+}
+
+.tvFinderProductImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 180px;
+    height: 180px;
+}
+
+.tvFinderProductName {
+    display: block;
+    font-size: 18px;
+    white-space: nowrap;
+    width: 224px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tvFinderProductDetails li {
+    display: none;
+}
+
+.tvFinderProductDetails li:first-child {
+    display: block;
+    white-space: nowrap;
+    width: 224px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgb(183,183,183);
+    font-size: 14px;
+}
+
+.tvFinderProductPrice {
+    display: block;
+    margin-top: 38px;
+    color: rgb(40,42,43);
+    font-weight: bold;
+}
+
+.tvFinderUsDollars {
+    font-size: 28px;
+    margin-right: 2px;
+}
+
+.tvFinderUsCents {
+    font-size: 18px;
+    vertical-align: top;
+    line-height: 10px;
+}
+
+.tvFinderProductRating {
+    width: 60px;
+    height: 12px;
+    display: inline-block;
+    background-position: 0 0;
+    background: url(../i/star.png) repeat-x;
+}
+
+.tvFinderProductRatingSummary {
+    display: block;
+    height: 12px;
+    background: url(../i/star.png) repeat-x 0 -13px;
+}
+
+/**** Isotope Filtering ****/
+
+.isotope-item {
+    z-index: 2;
+}
+
+.isotope-hidden.isotope-item {
+    pointer-events: none;
+    z-index: 1;
+}
+
+/**** Isotope CSS3 transitions ****/
+
+.isotope,
+.isotope .isotope-item {
+    -webkit-transition-duration: 0.8s;
+    -moz-transition-duration: 0.8s;
+    -ms-transition-duration: 0.8s;
+    -o-transition-duration: 0.8s;
+    transition-duration: 0.8s;
+}
+
+.isotope {
+    -webkit-transition-property: height, width;
+    -moz-transition-property: height, width;
+    -ms-transition-property: height, width;
+    -o-transition-property: height, width;
+    transition-property: height, width;
+}
+
+.isotope .isotope-item {
+    -webkit-transition-property: -webkit-transform, opacity;
+    -moz-transition-property:    -moz-transform, opacity;
+    -ms-transition-property:     -ms-transform, opacity;
+    -o-transition-property:      -o-transform, opacity;
+    transition-property:         transform, opacity;
+}

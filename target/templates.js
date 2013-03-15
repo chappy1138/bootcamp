@@ -15,7 +15,7 @@ templates['SingleColumnTemplate.hbs'] = template(function (Handlebars,depth0,hel
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<!--#script src=\"index.js\"></script#-->\n";});
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\">\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\"/>\n    </header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<!--#script src=\"index.js\"></script#-->\n";});
 templates['SiteHeader.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   
