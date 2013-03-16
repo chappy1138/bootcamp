@@ -3,17 +3,24 @@ define(['jQuery', 'Backbone', 'handlebars', 'target/templates'], function ($, Ba
     return Backbone.View.extend({
 
         el: function () {
-            this.$el = $(this.elSelector);
+            if (this.id) {
+                this.$el = $('#' + this.id);
+            }
+            if ((!this.$el || this.$el.length === 0) && this.className) {
+                this.$el = $('.' + this.className);
+            }
             if (this.$el.length === 0) {
-                this.$el = $('<' + this.tagName + '/>');
+                var tagName = this.tagName || 'div';
+                this.$el = $('<' + tagName + '/>');
                 if (this.id) {
                     this.$el.attr('id', this.id);
                 }
                 if (this.className) {
                     this.$el.addClass(this.className);
                 }
-                if (this.elAppendToSelector) {
-                    this.$el.appendTo($(this.elAppendToSelector));
+                if (this.options.appendTo) {
+                    var $parent = $(this.options.appendTo);
+                    this.$el.appendTo($parent);
                 }
                 this.render();
             }
@@ -25,11 +32,6 @@ define(['jQuery', 'Backbone', 'handlebars', 'target/templates'], function ($, Ba
                 model = this.model ? this.model.attributes : {},
                 content = template(model);
             this.$el.html(content);
-            return this;
-        },
-
-        appendTo: function (selector) {
-            this.$el.appendTo(selector);
             return this;
         }
     });

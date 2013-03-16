@@ -3,7 +3,7 @@
 <html><head><title>Walmart.com: Save Money. Live Better.</title>
 <link rel="stylesheet" type="text/css" href="index.css" />
 </head><body><article class="appContent">
-    <header class="appHeader"><nav class="tvFinderTopNav"><nav class="tvFinderTopNav">
+    <header class="appHeader"><nav id="#tvFinderTopNavId" class="tvFinderTopNav"><nav class="tvFinderTopNav">
     <ul class="tvFinderWalmartNav">
         <li class="walmartLogoCell"><a class="walmartLogoLink" href="http://www.walmart.com/" title="Go To Walmart.com">Walmart</a></li>
         <li class="walmartSearchCell">
@@ -36,7 +36,7 @@
     </ul>
 </nav>
 </nav></header>
-    <section class="appBody"><div id="#greeting">Hello world!</div></section>
+    <section class="appBody"><p id="#greeting" class="tvFinderGreeting">Hello, world!</p></section>
     <footer class="appFooter"></footer>
 </article>
 <script src="/usr/local/lib/node_modules/requirejs/require.js"></script>
@@ -68,6 +68,6 @@
             }
         }
     });
-    var tvFinder = require(["index"]);
+    require(["index"]);
 </script>
 </body></html>

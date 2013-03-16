@@ -2,7 +2,7 @@
     "baseUrl": "..",
     "include": "requirejs",
     "exclude": [ "handlebars" ],
-    "name": "js/TvFinderApp",
+    "name": "app/TvFinderApp",
     "out": "../target/index.js",
     "paths": {
         "requirejs": "/usr/local/lib/node_modules/requirejs/require",

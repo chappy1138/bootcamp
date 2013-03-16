@@ -19,8 +19,14 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     cssRollupPathname = targetPathname + '/index.css',
     javascriptRollupPathname = targetPathname + '/index.js',
     indexHtmlPathname = targetPathname + '/index.html',
+    appPathname = rootDir + '/app',
+    pagePathname = rootDir + '/page',
     viewPathname = rootDir + '/view',
-    viewsLoadedAfter = new Date().getTime(),
+    modelPathname = rootDir + '/model',
+    appsLoadedAfter = new Date().getTime(),
+    pagesLoadedAfter = appsLoadedAfter,
+    viewsLoadedAfter = appsLoadedAfter,
+    modelsLoadedAfter = appsLoadedAfter,
     tvFinderContent,
     rollupJCssCommand = [
         'node',
@@ -45,7 +51,10 @@ var rootDir = path.dirname(path.normalize(__dirname)),
 
 var qCompilePage,
     qRenderPage,
+    qUpdateApps,
+    qUpdatePages,
     qUpdateViews,
+    qUpdateModels,
     qCreateCssRollup,
     qCreateJavascriptRollup,
     qCompileRenderers;
@@ -292,24 +301,21 @@ function compilePage() {
 function renderPage() {
     if (!qRenderPage) {
         qRenderPage = Q.defer();
-        Q.all([updateViews(), compileRenderers()]).then(
+        Q.all([updateApps(), updatePages(), updateViews(), updateModels(), compileRenderers()]).then(
             function (updates) {
-                var viewUpdated = updates[0], renderersCompiled = updates[1];
-                if (viewUpdated || renderersCompiled || !tvFinderContent) {
+                var anyUpdates = false;
+                updates.forEach(function (value) { anyUpdates |= value; });
+                if (anyUpdates || !tvFinderContent) {
                     console.log('rendering page');
-                    requirejs(['jQuery', 'view/Head', 'view/SingleColumnTemplate'], function ($, Head, SingleColumnTemplate) {
-                        new Head({ el: $('head') }).render();
-                        new SingleColumnTemplate({ el: $('body') }).render();
-                        requirejs.undef('js/tvFinderApp');
-                        requirejs(['js/tvFinderApp'], function (tvFinder) {
-                            tvFinder.render();
-                            qRenderPage.resolve(true);
-                            qRenderPage = undefined;
-                        });
+                    requirejs.undef('page/SingleColumn');
+                    requirejs.undef('app/TvFinderApp');
+                    requirejs(['page/SingleColumn', 'app/TvFinderApp'], function () {
+                        qRenderPage.resolve(true);
+                        qRenderPage = undefined;
                     });
                 }
                 else {
-                    qRenderPage.resolve(viewUpdated || renderersCompiled);
+                    qRenderPage.resolve(false);
                     qRenderPage = undefined;
                 }
             },
@@ -321,32 +327,70 @@ function renderPage() {
     return qRenderPage.promise;
 }
 
+// update apps
+
+function updateApps() {
+    if (!qUpdateApps) {
+        qUpdateApps = Q.defer();
+        Q.all([updatePages(), updateViews(), updateModels()]).then(
+            function (updates) {
+                var anyUpdates = false, index = 0;
+                while (!anyUpdates) {
+                   anyUpdates = updates[index++];
+                }
+                if (anyUpdates) {
+                    appsLoadedAfter = 0;
+                }
+                updateClasses(appPathname, appsLoadedAfter).then(
+                    function (after) {
+                        var originalAfter = appsLoadedAfter;
+                        appsLoadedAfter = after;
+                        qUpdateApps.resolve(originalAfter === after);
+                        qUpdateApps = undefined;
+                    },
+                    function (error) {
+                        qUpdateApps.reject(error);
+                    }
+                );
+            },
+            function (error) {
+                qUpdateApps.reject(error);
+            }
+        );
+    }
+    return qUpdateApps.promise;
+}
+
+// update pages
+
+function updatePages() {
+    if (!qUpdatePages) {
+        qUpdatePages = Q.defer();
+        updateClasses(pagePathname, pagesLoadedAfter).then(
+            function (after) {
+                var originalAfter = pagesLoadedAfter;
+                pagesLoadedAfter = after;
+                qUpdatePages.resolve(originalAfter === after);
+                qUpdatePages = undefined;
+            },
+            function (error) {
+                qUpdatePages.reject(error);
+            }
+        );
+    }
+    return qUpdatePages.promise;
+}
+
 // update views
 
 function updateViews() {
     if (!qUpdateViews) {
         qUpdateViews = Q.defer();
-        var moduleName;
-        statFilesInDirectoryMatching(viewPathname, /\.js$/).then(
-            function (viewStats) {
-                var index = 0,
-                    isOlder = false,
-                    moduleName;
-                while (!isOlder && index < viewStats.length) {
-                    if (viewsLoadedAfter < viewStats[index].mtime.getTime()) {
-                        console.log('invalidating all views');
-                        for (index = 0; index < viewStats.length; index++) {
-                            moduleName = 'view/' + path.basename(viewStats[index].pathname, '.js');
-                            requirejs.undef(moduleName);
-                        }
-                        viewsLoadedAfter = new Date().getTime();
-                        qUpdateViews.resolve(true);
-                        qUpdateViews = undefined;
-                        return;
-                    }
-                    index++;
-                }
-                qUpdateViews.resolve(false);
+        updateClasses(viewPathname, viewsLoadedAfter).then(
+            function (after) {
+                var originalAfter = viewsLoadedAfter;
+                viewsLoadedAfter = after;
+                qUpdateViews.resolve(originalAfter === after);
                 qUpdateViews = undefined;
             },
             function (error) {
@@ -355,6 +399,26 @@ function updateViews() {
         );
     }
     return qUpdateViews.promise;
+}
+
+// update models
+
+function updateModels() {
+    if (!qUpdateModels) {
+        qUpdateModels = Q.defer();
+        updateClasses(modelPathname, modelsLoadedAfter).then(
+            function (after) {
+                var originalAfter = modelsLoadedAfter;
+                modelsLoadedAfter = after;
+                qUpdateModels.resolve(originalAfter === after);
+                qUpdateModels = undefined;
+            },
+            function (error) {
+                qUpdateModels.reject(error);
+            }
+        );
+    }
+    return qUpdateModels.promise;
 }
 
 // compile css rollup
@@ -416,18 +480,30 @@ function createJavascriptRollup() {
         compileRenderers().then(
             function () {
                 var rollupStatPromise = statGeneratedFile(javascriptRollupPathname),
+                    appStatPromises = statFilesInDirectoryMatching(appPathname, /\.js$/),
+                    pageStatPromises = statFilesInDirectoryMatching(pagePathname, /\.js$/),
                     viewStatPromises = statFilesInDirectoryMatching(viewPathname, /\.js$/),
+                    modelStatPromises = statFilesInDirectoryMatching(modelPathname, /\.js$/),
                     compilationStatPromise = Q.nfcall(fs.stat, templatesRollupPathname), moduleName;
-                Q.all([rollupStatPromise, viewStatPromises, compilationStatPromise]).then(
+                Q.all([rollupStatPromise,
+                        appStatPromises,
+                        pageStatPromises,
+                        viewStatPromises,
+                        modelStatPromises,
+                        compilationStatPromise]).then(
                     function (stats) {
                         var rollupStat = stats[0],
-                            viewStats = stats[1],
-                            compilationMtime = stats[2].mtime.getTime(),
+                            appStats = stats[1],
+                            pageStats = stats[2],
+                            viewStats = stats[3],
+                            modelStats = stats[4],
+                            compilationMtime = stats[5].mtime.getTime(),
                             rollupMtime = rollupStat ? rollupStat.mtime.getTime() : 0,
                             isOlder = rollupMtime < compilationMtime,
+                            stats = appStats.concat(pageStats, viewStats, modelStats),
                             index = 0;
-                        while (!isOlder && index < viewStats.length) {
-                            isOlder = rollupMtime < viewStats[index].mtime.getTime();
+                        while (!isOlder && index < stats.length) {
+                            isOlder = rollupMtime < stats[index].mtime.getTime();
                             index++
                         }
                         if (isOlder) {
@@ -565,4 +641,33 @@ function statFilesInDirectoryMatching(pathname, pattern) {
         }
     });
     return qStatFilesInDirectoryMatching.promise;
+}
+
+function updateClasses(pathname, after) {
+    var qUpdateClasses = Q.defer();
+    statFilesInDirectoryMatching(pathname, /\.js$/).then(
+        function (stats) {
+            var index = 0,
+                isOlder = false,
+                className,
+                classType;
+            while (!isOlder && index < stats.length) {
+                if (after < stats[index++].mtime.getTime()) {
+                    classType = path.basename(pathname);
+                    for (index = 0; index < stats.length; index++) {
+                        className = classType + '/' + path.basename(stats[index].pathname, '.js');
+                        console.log('invalidating ' + className);
+                        requirejs.undef(className);
+                    }
+                    qUpdateClasses.resolve(new Date().getTime());
+                    return;
+                }
+            }
+            qUpdateClasses.resolve(after);
+        },
+        function (error) {
+            qUpdateClasses.reject(error);
+        }
+    );
+    return qUpdateClasses.promise;
 }

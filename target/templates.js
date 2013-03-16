@@ -9,7 +9,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   if (stack1 = helpers.greeting) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.greeting; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + " world!";
+    + ", world!";
   return buffer;
   });
 templates['Head'] = template(function (Handlebars,depth0,helpers,partials,data) {
@@ -26,7 +26,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<!--#script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script#-->\n<!--#script>\n    require.config({\n        \"paths\": {\n            //\"index\": \"js/TvFinderApp\", // uncomment to disable rollup\n            \"handlebars\": \"lib/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            }\n        }\n    });\n    var tvFinder = require([\"index\"]);\n</script#-->\n";
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<!--#script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script#-->\n<!--#script>\n    require.config({\n        \"paths\": {\n            //\"index\": \"js/TvFinderApp\", // uncomment to disable rollup\n            \"handlebars\": \"lib/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            }\n        }\n    });\n    require([\"index\"]);\n</script#-->\n";
   });
 templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
