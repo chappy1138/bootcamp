@@ -81,8 +81,9 @@ function servePage() {
         { pattern: /^(\/target)?\/index\.css$/, action: serveCssRollup },
         { pattern: /^(\/target)?\/index\.js/, action: serveJavascriptRollup },
         { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
+        { pattern: /^(\/usr\/local\/lib\/node_modules\/.*\.js)/, action: serveJavascriptLibrary },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
-        { pattern: /^\/(js\/.*\.js)$/, action: serveJavascript },
+        { pattern: /^\/(((js)|(lib)|(view)|(target))\/.*\.js)$/, action: serveJavascript },
         { pattern: /^\/(image\/.*\.png)$/, action: servePng },
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
         { pattern: /^\/$/, action: serveTvFinderHtml }
@@ -94,9 +95,11 @@ function servePage() {
                     viewResolverMap[index].action(values, req, res).fail(
                         function (error) {
                             if (error.code === 'ENOENT') {
+                                console.error(req.url + ': not found: matched: ' + viewResolverMap[index].pattern);
                                 notFound(req, res);
                             }
                             else {
+                                console.error(req.url + ': ' + error.code + ': ' + error.errno);
                                 console.error(req.url, error);
                                 res.writeHead(500, {'Content-Type': 'text/plain' });
                                 res.end('server error: ' + error.code + ': ' + error.errno);
@@ -106,6 +109,7 @@ function servePage() {
                     return;
                 }
             }
+            console.error(req.url + ': not resolved');
             notFound(req, res);
         }
     ).listen(port, address);
@@ -178,6 +182,22 @@ function serveJavascriptRollup(values, req, res) {
 }
 
 function serveJavascript(values, req, res) {
+    var qServeJavascript = Q.defer();
+    fs.readFile(rootDir + '/' + values[1], 'ascii', function (error, contents) {
+            if (error) {
+                qServeJavascript.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                res.end(contents);
+                qServeJavascript.resolve();
+            }
+        }
+    );
+    return qServeJavascript.promise;
+}
+
+function serveJavascriptLibrary(values, req, res) {
     var qServeJavascript = Q.defer();
     fs.readFile(values[1], 'ascii', function (error, contents) {
             if (error) {
@@ -277,17 +297,15 @@ function renderPage() {
                 var viewUpdated = updates[0], renderersCompiled = updates[1];
                 if (viewUpdated || renderersCompiled || !tvFinderContent) {
                     console.log('rendering page');
-                    requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
-                        var model = new Backbone.Model({
-                                title: 'Walmart.com: Save Money. Live Better.',
-                                greeting: 'Hello'
-                            }
-                        );
-                        $("head").html('');
-                        $("body").html('');
-                        new TvFinder({ model: model }).render();
-                        qRenderPage.resolve(true);
-                        qRenderPage = undefined;
+                    requirejs(['jQuery', 'view/Head', 'view/SingleColumnTemplate'], function ($, Head, SingleColumnTemplate) {
+                        new Head({ el: $('head') }).render();
+                        new SingleColumnTemplate({ el: $('body') }).render();
+                        requirejs.undef('js/tvFinderApp');
+                        requirejs(['js/tvFinderApp'], function (tvFinder) {
+                            tvFinder.render();
+                            qRenderPage.resolve(true);
+                            qRenderPage = undefined;
+                        });
                     });
                 }
                 else {
@@ -301,6 +319,42 @@ function renderPage() {
         );
     }
     return qRenderPage.promise;
+}
+
+// update views
+
+function updateViews() {
+    if (!qUpdateViews) {
+        qUpdateViews = Q.defer();
+        var moduleName;
+        statFilesInDirectoryMatching(viewPathname, /\.js$/).then(
+            function (viewStats) {
+                var index = 0,
+                    isOlder = false,
+                    moduleName;
+                while (!isOlder && index < viewStats.length) {
+                    if (viewsLoadedAfter < viewStats[index].mtime.getTime()) {
+                        console.log('invalidating all views');
+                        for (index = 0; index < viewStats.length; index++) {
+                            moduleName = 'view/' + path.basename(viewStats[index].pathname, '.js');
+                            requirejs.undef(moduleName);
+                        }
+                        viewsLoadedAfter = new Date().getTime();
+                        qUpdateViews.resolve(true);
+                        qUpdateViews = undefined;
+                        return;
+                    }
+                    index++;
+                }
+                qUpdateViews.resolve(false);
+                qUpdateViews = undefined;
+            },
+            function (error) {
+                qUpdateViews.reject(error);
+            }
+        );
+    }
+    return qUpdateViews.promise;
 }
 
 // compile css rollup
@@ -352,42 +406,6 @@ function createCssRollup() {
         );
     }
     return qCreateCssRollup.promise;
-}
-
-// update views
-
-function updateViews() {
-    if (!qUpdateViews) {
-        qUpdateViews = Q.defer();
-        var moduleName;
-        statFilesInDirectoryMatching(viewPathname, /\.js$/).then(
-            function (viewStats) {
-                var index = 0,
-                    isOlder = false,
-                    moduleName;
-                while (!isOlder && index < viewStats.length) {
-                    if (viewsLoadedAfter < viewStats[index].mtime.getTime()) {
-                        console.log('invalidating all views');
-                        for (index = 0; index < viewStats.length; index++) {
-                            moduleName = 'view/' + path.basename(viewStats[index].pathname, '.js');
-                            requirejs.undef(moduleName);
-                        }
-                        viewsLoadedAfter = new Date().getTime();
-                        qUpdateViews.resolve(true);
-                        qUpdateViews = undefined;
-                        return;
-                    }
-                    index++;
-                }
-                qUpdateViews.resolve(false);
-                qUpdateViews = undefined;
-            },
-            function (error) {
-                qUpdateViews.reject(error);
-            }
-        );
-    }
-    return qUpdateViews.promise;
 }
 
 // compile javascript rollup

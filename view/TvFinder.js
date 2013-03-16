@@ -1,21 +1,25 @@
 define([
-    'jQuery',
     'Backbone',
-    'view/Head',
-    'view/SingleColumnTemplate',
     'view/SiteHeader',
     'view/Greeting'],
-    function ($, Backbone, Head, SingleColumnTemplate, SiteHeader, Greeting) {
+    function (Backbone, SiteHeader, Greeting) {
         return Backbone.View.extend({
             initialize: function () {
-                // create slots
-                new Head({ el: $('head'), model: this.model }).render();
-                new SingleColumnTemplate({ el: $('body'), model: this.model }).render();
-
                 // populate slots
-                this.options.views = [];
-                this.options.views.push(new SiteHeader({ model: this.model }).appendTo('.appHeader'));
-                this.options.views.push(new Greeting({ model: this.model }).appendTo('.appBody'));
+                var views = [], view, model;
+                this.options.views = views;
+
+                // site header
+                view = new SiteHeader();
+                views.push(view);
+
+                // greeting
+                var model = new Backbone.Model({
+                        greeting: 'Hello'
+                    }
+                );
+                view = new Greeting({ model: model });
+                views.push(view);
             },
             render: function () {
                 this.options.views.forEach(function (view) { view.render(); });

@@ -3,7 +3,7 @@
 <html><head><title>Walmart.com: Save Money. Live Better.</title>
 <link rel="stylesheet" type="text/css" href="index.css" />
 </head><body><article class="appContent">
-    <header class="appHeader"><div><nav class="tvFinderTopNav">
+    <header class="appHeader"><nav class="tvFinderTopNav"><nav class="tvFinderTopNav">
     <ul class="tvFinderWalmartNav">
         <li class="walmartLogoCell"><a class="walmartLogoLink" href="http://www.walmart.com/" title="Go To Walmart.com">Walmart</a></li>
         <li class="walmartSearchCell">
@@ -35,9 +35,39 @@
         <li class="tvFinderBreadcrumb"><a class="tvFinderBreadcrumbLink" href="#" title="TV's">TV's</a></li>
     </ul>
 </nav>
-</div></header>
-    <section class="appBody"><div>Hello world!</div></section>
+</nav></header>
+    <section class="appBody"><div id="#greeting">Hello world!</div></section>
     <footer class="appFooter"></footer>
 </article>
-<script src="index.js"></script>
+<script src="/usr/local/lib/node_modules/requirejs/require.js"></script>
+<script>
+    require.config({
+        "paths": {
+            //"index": "js/TvFinderApp", // uncomment to disable rollup
+            "handlebars": "lib/handlebars.runtime",
+            "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
+            "jQuery": "lib/jquery-1.7.2",
+            "underscore": "/usr/local/lib/node_modules/underscore/underscore"
+        },
+        "shim": {
+            "Backbone": {
+                "deps": [
+                    "underscore",
+                    "jQuery"
+                ],
+                "exports": "Backbone"
+            },
+            "jQuery": {
+                "exports": "$"
+            },
+            "underscore": {
+                "exports": "_"
+            },
+            "handlebars": {
+                "exports": "Handlebars"
+            }
+        }
+    });
+    var tvFinder = require(["index"]);
+</script>
 </body></html>
