@@ -4,7 +4,7 @@ define(['Backbone', 'handlebars', 'target/templates'], function (Backbone, Handl
 
         render: function () {
             var model = this.model ? this.model.attributes : {},
-                templateName = this.name + '.hbs',
+                templateName = this.name,
                 template = Handlebars.templates[templateName],
                 content = template(model);
             this.$el.html(content);

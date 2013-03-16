@@ -1,6 +1,6 @@
 define(['handlebars'], function(Handlebars) {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['Greeting.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+templates['Greeting'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
 
@@ -10,13 +10,24 @@ templates['Greeting.hbs'] = template(function (Handlebars,depth0,helpers,partial
   else { stack1 = depth0.greeting; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + " world!";
   return buffer;});
-templates['SingleColumnTemplate.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+templates['Head'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += "<title>";
+  foundHelper = helpers.title;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.title; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\"/>\n";
+  return buffer;});
+templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\">\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\"/>\n    </header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<!--#script src=\"index.js\"></script#-->\n";});
-templates['SiteHeader.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<!--#script src=\"index.js\"></script#-->\n";});
+templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   
 

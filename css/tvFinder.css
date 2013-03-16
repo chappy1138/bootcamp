@@ -66,7 +66,7 @@ a:focus {
  *
  */
 .tvFinderTopNav {
-    background: url(../i/walmartHeaderBackground.png) no-repeat;
+    background: url(../image/walmartHeaderBackground.png) no-repeat;
     width: 1024px;
     background-size: 1024px 90px;
 }
@@ -204,7 +204,7 @@ a:focus {
 }
 
 .tvFinderHomeBreadcrumb {
-    background: url(../i/walmartBreadcrumbSprite.png) no-repeat;
+    background: url(../image/walmartBreadcrumbSprite.png) no-repeat;
     width: 28px;
     height: 28px;
     margin-left: 20px;
@@ -217,7 +217,7 @@ a:focus {
 }
 
 .tvFinderBreadcrumb {
-    background: url(../i/walmartBreadcrumbSprite.png) no-repeat -28px 0;
+    background: url(../image/walmartBreadcrumbSprite.png) no-repeat -28px 0;
 }
 
 .tvFinderBreadcrumbLink {

@@ -1,13 +1,15 @@
 define([
     'jQuery',
     'Backbone',
+    'view/Head',
     'view/SingleColumnTemplate',
     'view/SiteHeader',
     'view/Greeting'],
-    function ($, Backbone, SingleColumnTemplate, SiteHeader, Greeting) {
+    function ($, Backbone, Head, SingleColumnTemplate, SiteHeader, Greeting) {
         return Backbone.View.extend({
             initialize: function () {
                 // create slots
+                new Head({ el: $('head'), model: this.model }).render();
                 new SingleColumnTemplate({ el: $('body'), model: this.model }).render();
 
                 // populate slots

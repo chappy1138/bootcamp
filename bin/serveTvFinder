@@ -20,6 +20,7 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     javascriptRollupPathname = targetPathname + '/index.js',
     indexHtmlPathname = targetPathname + '/index.html',
     viewPathname = rootDir + '/view',
+    viewsLoadedAfter = new Date().getTime(),
     tvFinderContent,
     rollupJCssCommand = [
         'node',
@@ -37,13 +38,14 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     compileRenderersCommand = [
         'handlebars',
         '--amd',
-        templatePathname + '/*.hbs',
+        templatePathname + '/*.handlebars',
         '--output',
         templatesRollupPathname
     ].join(' ');
 
 var qCompilePage,
     qRenderPage,
+    qUpdateViews,
     qCreateCssRollup,
     qCreateJavascriptRollup,
     qCompileRenderers;
@@ -75,21 +77,21 @@ Q.all([compilePage(), createJavascriptRollup()]).then(
 // serve the page
 
 function servePage() {
-    var pathMap = [
+    var viewResolverMap = [
         { pattern: /^(\/target)?\/index\.css$/, action: serveCssRollup },
         { pattern: /^(\/target)?\/index\.js/, action: serveJavascriptRollup },
         { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
         { pattern: /^\/(js\/.*\.js)$/, action: serveJavascript },
-        { pattern: /^\/(i\/.*\.png)$/, action: servePng },
+        { pattern: /^\/(image\/.*\.png)$/, action: servePng },
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
         { pattern: /^\/$/, action: serveTvFinderHtml }
     ];
     http.createServer(function (req, res) {
-            for (index = 0; index < pathMap.length; index++) {
-                values = req.url.match(pathMap[index].pattern);
+            for (index = 0; index < viewResolverMap.length; index++) {
+                values = req.url.match(viewResolverMap[index].pattern);
                 if (values) {
-                    pathMap[index].action(values, req, res).fail(
+                    viewResolverMap[index].action(values, req, res).fail(
                         function (error) {
                             if (error.code === 'ENOENT') {
                                 notFound(req, res);
@@ -270,12 +272,14 @@ function compilePage() {
 function renderPage() {
     if (!qRenderPage) {
         qRenderPage = Q.defer();
-        compileRenderers().then(
-            function (updated) {
-                if (updated || !tvFinderContent) {
+        Q.all([updateViews(), compileRenderers()]).then(
+            function (updates) {
+                var viewUpdated = updates[0], renderersCompiled = updates[1];
+                if (viewUpdated || renderersCompiled || !tvFinderContent) {
                     console.log('rendering page');
                     requirejs(['Backbone', 'view/TvFinder'], function (Backbone, TvFinder) {
                         var model = new Backbone.Model({
+                                title: 'Walmart.com: Save Money. Live Better.',
                                 greeting: 'Hello'
                             }
                         );
@@ -287,7 +291,7 @@ function renderPage() {
                     });
                 }
                 else {
-                    qRenderPage.resolve(updated);
+                    qRenderPage.resolve(viewUpdated || renderersCompiled);
                     qRenderPage = undefined;
                 }
             },
@@ -350,6 +354,42 @@ function createCssRollup() {
     return qCreateCssRollup.promise;
 }
 
+// update views
+
+function updateViews() {
+    if (!qUpdateViews) {
+        qUpdateViews = Q.defer();
+        var moduleName;
+        statFilesInDirectoryMatching(viewPathname, /\.js$/).then(
+            function (viewStats) {
+                var index = 0,
+                    isOlder = false,
+                    moduleName;
+                while (!isOlder && index < viewStats.length) {
+                    if (viewsLoadedAfter < viewStats[index].mtime.getTime()) {
+                        console.log('invalidating all views');
+                        for (index = 0; index < viewStats.length; index++) {
+                            moduleName = 'view/' + path.basename(viewStats[index].pathname, '.js');
+                            requirejs.undef(moduleName);
+                        }
+                        viewsLoadedAfter = new Date().getTime();
+                        qUpdateViews.resolve(true);
+                        qUpdateViews = undefined;
+                        return;
+                    }
+                    index++;
+                }
+                qUpdateViews.resolve(false);
+                qUpdateViews = undefined;
+            },
+            function (error) {
+                qUpdateViews.reject(error);
+            }
+        );
+    }
+    return qUpdateViews.promise;
+}
+
 // compile javascript rollup
 
 function createJavascriptRollup() {
@@ -358,9 +398,9 @@ function createJavascriptRollup() {
         compileRenderers().then(
             function () {
                 var rollupStatPromise = statGeneratedFile(javascriptRollupPathname),
-                    viewStatsPromise = statFilesInDirectoryMatching(viewPathname, /\.js$/),
-                    compilationStatPromise = Q.nfcall(fs.stat, templatesRollupPathname);
-                Q.all([rollupStatPromise, viewStatsPromise, compilationStatPromise]).then(
+                    viewStatPromises = statFilesInDirectoryMatching(viewPathname, /\.js$/),
+                    compilationStatPromise = Q.nfcall(fs.stat, templatesRollupPathname), moduleName;
+                Q.all([rollupStatPromise, viewStatPromises, compilationStatPromise]).then(
                     function (stats) {
                         var rollupStat = stats[0],
                             viewStats = stats[1],
@@ -370,13 +410,13 @@ function createJavascriptRollup() {
                             index = 0;
                         while (!isOlder && index < viewStats.length) {
                             isOlder = rollupMtime < viewStats[index].mtime.getTime();
-                            index++;
+                            index++
                         }
                         if (isOlder) {
                             console.log('creating javascript rollup');
                             exec(rollupJavascriptCommand, function (error, out, err) {
                                     if (error) {
-                                        qCreateJavascriptRollup.reject(new Error(out)); // compile error
+                                        qCreateJavascriptRollup.reject(new Error(out + err)); // compile error
                                     }
                                     else {
                                         qCreateJavascriptRollup.resolve(true);
@@ -409,7 +449,7 @@ function compileRenderers() {
     if (!qCompileRenderers) {
         qCompileRenderers = Q.defer();
         var compilationStatPromise = statGeneratedFile(templatesRollupPathname),
-            templateStatsPromise = statFilesInDirectoryMatching(templatePathname, /\.hbs$/);
+            templateStatsPromise = statFilesInDirectoryMatching(templatePathname, /\.handlebars$/);
         Q.all([compilationStatPromise, templateStatsPromise]).then(
             function (statsPromises) {
                 var targetMtime = statsPromises[0] ? statsPromises[0].mtime.getTime() : 0,
@@ -449,9 +489,9 @@ function compileRenderers() {
 
 // utilities
 
-function statGeneratedFile(path) {
+function statGeneratedFile(pathname) {
     var qStatGeneratedFile = Q.defer();
-    fs.stat(path, function (error, stat) {
+    fs.stat(pathname, function (error, stat) {
         if (error) {
             if (error.code === 'ENOENT') {
                 qStatGeneratedFile.resolve(undefined);
@@ -461,24 +501,39 @@ function statGeneratedFile(path) {
             }
         }
         else {
+            stat.pathname = pathname;
             qStatGeneratedFile.resolve(stat);
         }
     });
     return qStatGeneratedFile.promise;
 }
 
-function statFilesInDirectoryMatching(path, pattern) {
+function statFilesInDirectoryMatching(pathname, pattern) {
     var qStatFilesInDirectoryMatching = Q.defer();
 
-    fs.readdir(path, function (error, files) {
+    fs.readdir(pathname, function (error, files) {
         if (error) {
             qStatFilesInDirectoryMatching.reject(error);
         }
         else {
+            function fsStat(pathname) {
+                var qFsStat = Q.defer();
+                fs.stat(pathname, function (error, stat) {
+                    if (error) {
+                        qFsStat.reject(error);
+                    }
+                    else {
+                        stat.pathname = pathname;
+                        qFsStat.resolve(stat);
+                    }
+                });
+                return qFsStat.promise;
+            }
+
             var statPromises = [];
             for (var index = 0; index < files.length; index++) {
                 if (!pattern || files[index].match(pattern)) {
-                    statPromises.push(Q.nfcall(fs.stat, path + '/' + files[index]));
+                    statPromises.push(fsStat(pathname + '/' + files[index]));
                 }
             }
             Q.all(statPromises).then(
