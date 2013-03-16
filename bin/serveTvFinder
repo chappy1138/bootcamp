@@ -94,6 +94,7 @@ function servePage() {
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
         { pattern: /^\/(((js)|(lib)|(view)|(target))\/.*\.js)$/, action: serveJavascript },
         { pattern: /^\/(image\/.*\.png)$/, action: servePng },
+        { pattern: /^\/favicon.ico$/, action: serveFaviconIco },
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
         { pattern: /^\/$/, action: serveTvFinderHtml }
     ];
@@ -220,6 +221,24 @@ function serveJavascriptLibrary(values, req, res) {
         }
     );
     return qServeJavascript.promise;
+}
+
+
+
+function serveFaviconIco(values, req, res) {
+    var qServePng = Q.defer();
+    fs.readFile(rootDir + '/image/favicon.ico', function (error, contents) {
+            if (error) {
+                qServePng.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'image/x-icon' });
+                res.end(contents);
+                qServePng.resolve();
+            }
+        }
+    );
+    return qServePng.promise;
 }
 
 function servePng(values, req, res) {

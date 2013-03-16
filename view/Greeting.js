@@ -1,5 +1,5 @@
-define(['view/Basic'], function (Basic) {
-        return Basic.extend({
+define(['view/Base'], function (BaseView) {
+        return BaseView.extend({
                 name: 'Greeting',
                 tagName: "p"
             }

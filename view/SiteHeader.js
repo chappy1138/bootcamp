@@ -1,5 +1,5 @@
-define(['jQuery', 'view/Basic'], function ($, Basic) {
-        return Basic.extend({
+define(['jQuery', 'view/Base'], function ($, BaseView) {
+        return BaseView.extend({
                 name: 'SiteHeader',
                 tagName: "nav"
             }
