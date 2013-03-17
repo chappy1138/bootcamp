@@ -11,6 +11,7 @@
         "jQuery": "lib/jquery-1.7.2",
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
         "content": "lib/content-client",
+        "televisions": "lib/televisions-client",
         "environment": "lib/environment"
     },
     "shim": {

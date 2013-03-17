@@ -91,9 +91,28 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 templates['TvFinderPov'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  return "<h1>Get More, For Less</h1>\n\n<h2>Find the perfect Television with our new <a class=\"tvFinderLink\" href=\"#\"\n                                                title=\"TVFinder\">TVFinder&trade;</a>\n</h2>\n\n<div class=\"tvFinderOffers\">\n    <div class=\"tvFinderMinPrice\"><span class=\"tvFinderUsDollars\">$89</span><span\n            class=\"tvFinderUsCents\">.98</span></div>\n    <div class=\"tvFinderMinSize\">19&rdquo;</div>\n    <div class=\"tvFinderMedianPrice\"><span class=\"tvFinderUsDollars\">$449</span><span\n            class=\"tvFinderUsCents\">.00</span></div>\n    <div class=\"tvFinderMedianSize\">40&rdquo;</div>\n    <div class=\"tvFinderMaxPrice\"><span class=\"tvFinderUsDollars\">$2999</span><span\n            class=\"tvFinderUsCents\">.99</span></div>\n    <div class=\"tvFinderMaxSize\">70&rdquo;</div>\n</div>\n";
+  buffer += "<h1>Get More, For Less</h1>\n\n<h2>Find the perfect Television with our new <a class=\"tvFinderLink\" href=\"#\"\n                                                title=\"TVFinder\">TVFinder&trade;</a>\n</h2>\n\n<div class=\"tvFinderOffers\">\n    <div class=\"tvFinderMinPrice\"><span class=\"tvFinderUsDollars\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.minPrice),stack1 == null || stack1 === false ? stack1 : stack1.dollars)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</span><span\n            class=\"tvFinderUsCents\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.minPrice),stack1 == null || stack1 === false ? stack1 : stack1.cents)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</span></div>\n    <div class=\"tvFinderMinSize\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.minPrice),stack1 == null || stack1 === false ? stack1 : stack1.size)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "&rdquo;</div>\n    <div class=\"tvFinderMedianPrice\"><span class=\"tvFinderUsDollars\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.medianPrice),stack1 == null || stack1 === false ? stack1 : stack1.dollars)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</span><span\n            class=\"tvFinderUsCents\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.medianPrice),stack1 == null || stack1 === false ? stack1 : stack1.cents)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</span></div>\n    <div class=\"tvFinderMedianSize\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.medianPrice),stack1 == null || stack1 === false ? stack1 : stack1.size)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "&rdquo;</div>\n    <div class=\"tvFinderMaxPrice\"><span class=\"tvFinderUsDollars\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.maxPrice),stack1 == null || stack1 === false ? stack1 : stack1.dollars)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</span><span\n            class=\"tvFinderUsCents\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.maxPrice),stack1 == null || stack1 === false ? stack1 : stack1.cents)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</span></div>\n    <div class=\"tvFinderMaxSize\">"
+    + escapeExpression(((stack1 = ((stack1 = depth0.maxPrice),stack1 == null || stack1 === false ? stack1 : stack1.size)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "&rdquo;</div>\n</div>\n";
+  return buffer;
   });
 });

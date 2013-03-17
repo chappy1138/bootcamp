@@ -57,12 +57,14 @@ var qCompilePage,
     qUpdateModels,
     qCreateCssRollup,
     qCreateJavascriptRollup,
-    qCompileRenderers;
+    qCompileRenderers,
+    qGetTelevisions;
 
 requirejs.config({
         baseUrl: rootDir,
         paths: {
             "content": "lib/content-server",
+            "televisions": "lib/televisions-server",
             "environment": "lib/environment"
         },
         "handlebars": {
@@ -291,6 +293,7 @@ function serveTvFinderHtml(values, req, res) {
     return qServeTvFinderHtml.promise;
 }
 
+
 // compile the page
 
 function compilePage() {
@@ -346,11 +349,23 @@ function renderPage() {
                 if (anyUpdates || !tvFinderHtml) {
                     console.log('rendering page');
                     requirejs.undef('page/SingleColumn');
-                    requirejs.undef('app/TvFinderApp');
-                    requirejs(['page/SingleColumn', 'app/TvFinderApp'], function () {
-                        qRenderPage.resolve(true);
-                        qRenderPage = undefined;
-                    });
+                    requirejs(['page/SingleColumn'], function () {
+                            requirejs.undef('app/TvFinderApp');
+                            requirejs(['app/TvFinderApp'], function (tvFinderPromise) {
+                                    tvFinderPromise.then(
+                                        function () {
+                                            qRenderPage.resolve(true);
+                                            qRenderPage = undefined;
+                                        },
+                                        function (error) {
+                                            qRenderPage.reject(error);
+                                            qRenderPage = undefined;
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    );
                 }
                 else {
                     qRenderPage.resolve(false);

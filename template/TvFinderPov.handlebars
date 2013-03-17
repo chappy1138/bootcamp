@@ -5,13 +5,13 @@
 </h2>
 
 <div class="tvFinderOffers">
-    <div class="tvFinderMinPrice"><span class="tvFinderUsDollars">$89</span><span
-            class="tvFinderUsCents">.98</span></div>
-    <div class="tvFinderMinSize">19&rdquo;</div>
-    <div class="tvFinderMedianPrice"><span class="tvFinderUsDollars">$449</span><span
-            class="tvFinderUsCents">.00</span></div>
-    <div class="tvFinderMedianSize">40&rdquo;</div>
-    <div class="tvFinderMaxPrice"><span class="tvFinderUsDollars">$2999</span><span
-            class="tvFinderUsCents">.99</span></div>
-    <div class="tvFinderMaxSize">70&rdquo;</div>
+    <div class="tvFinderMinPrice"><span class="tvFinderUsDollars">{{minPrice.dollars}}</span><span
+            class="tvFinderUsCents">{{minPrice.cents}}</span></div>
+    <div class="tvFinderMinSize">{{minPrice.size}}&rdquo;</div>
+    <div class="tvFinderMedianPrice"><span class="tvFinderUsDollars">{{medianPrice.dollars}}</span><span
+            class="tvFinderUsCents">{{medianPrice.cents}}</span></div>
+    <div class="tvFinderMedianSize">{{medianPrice.size}}&rdquo;</div>
+    <div class="tvFinderMaxPrice"><span class="tvFinderUsDollars">{{maxPrice.dollars}}</span><span
+            class="tvFinderUsCents">{{maxPrice.cents}}</span></div>
+    <div class="tvFinderMaxSize">{{maxPrice.size}}&rdquo;</div>
 </div>
