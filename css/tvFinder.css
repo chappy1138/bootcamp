@@ -240,7 +240,11 @@ a:focus {
  * - Description
  * - Minimum, Median and Maximum TV Size offers
  */
-.tvFinderHeader {
+.tvFinderPov {
+    clear: both;
+}
+
+.tvFinderPov h1 {
     line-height: 90px;
     font-size: 56px;
     font-weight: normal;
@@ -249,7 +253,7 @@ a:focus {
     margin: 0;
 }
 
-.tvFinderDescription {
+.tvFinderPov h2 {
     color:rgb(172,172,172);
     text-align: center;
     margin-top: -15px;

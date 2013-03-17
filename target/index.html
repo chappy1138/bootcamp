@@ -35,18 +35,18 @@
 
     <li class="breadcrumb"><a href="/cp/televisions-video/1060825" title="TV's">TV's</a></li>
 </ul></nav></header>
-    <section class="appBody"><header><h1 class="tvFinderHeader">Get More, For Less</h1>
+    <section class="appBody"><header class="tvFinderPov"><h1>Get More, For Less</h1>
 
-<h2 class="tvFinderDescription">Find the perfect Television with our new <a class="tvFinderLink" href="#" title="TVFinder">TVFinder™</a>
+<h2>Find the perfect Television with our new <a class="tvFinderLink" href="#" title="TVFinder">TVFinder&trade;</a>
 </h2>
 
 <div class="tvFinderOffers">
     <div class="tvFinderMinPrice"><span class="tvFinderUsDollars">$89</span><span class="tvFinderUsCents">.98</span></div>
-    <div class="tvFinderMinSize">19”</div>
+    <div class="tvFinderMinSize">19&rdquo;</div>
     <div class="tvFinderMedianPrice"><span class="tvFinderUsDollars">$449</span><span class="tvFinderUsCents">.00</span></div>
-    <div class="tvFinderMedianSize">40”</div>
+    <div class="tvFinderMedianSize">40&rdquo;</div>
     <div class="tvFinderMaxPrice"><span class="tvFinderUsDollars">$2999</span><span class="tvFinderUsCents">.99</span></div>
-    <div class="tvFinderMaxSize">70”</div>
+    <div class="tvFinderMaxSize">70&rdquo;</div>
 </div>
 </header></section>
     <footer class="appFooter"></footer>
@@ -55,7 +55,7 @@
 <script>
     require.config({
         "paths": {
-            //"index": "js/TvFinderApp", // uncomment to disable rollup
+            //"index": "js/TvFinderApp", // uncomment to get individuall
             "handlebars": "lib/handlebars.runtime",
             "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
             "jQuery": "lib/jquery-1.7.2",
@@ -80,6 +80,6 @@
             }
         }
     });
-    require(["index"]);
+    var tvFinder = require(["index"]);
 </script>
 </body></html>

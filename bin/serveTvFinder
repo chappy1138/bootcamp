@@ -61,6 +61,9 @@ var qCompilePage,
 
 requirejs.config({
         baseUrl: rootDir,
+        paths: {
+            'escapeEntities': 'lib/escapeEntities-server'
+        },
         'handlebars': {
             exports: 'Handlebars'
         }
@@ -299,6 +302,7 @@ function compilePage() {
                     tvFinderContent += $("html")[0].outerHTML;
                     tvFinderContent = tvFinderContent.replace(/<!--#/g, '<');
                     tvFinderContent = tvFinderContent.replace(/#-->/g, '>');
+                    tvFinderContent = tvFinderContent.replace(/&amp;(.*;)/g, '&$1');
                 }
                 if (updated || !stat) {
                     fs.writeFile(indexHtmlPathname, tvFinderContent, function (error) {

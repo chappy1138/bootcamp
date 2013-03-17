@@ -6,10 +6,11 @@
     "out": "../target/index.js",
     "paths": {
         "requirejs": "/usr/local/lib/node_modules/requirejs/require",
-        "handlebars": "lib/handlebars.runtime",
+        "handlebars": "/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime",
         "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
         "jQuery": "lib/jquery-1.7.2",
-        "underscore": "/usr/local/lib/node_modules/underscore/underscore"
+        "underscore": "/usr/local/lib/node_modules/underscore/underscore",
+        "escapeEntities": "lib/escapeEntities-client"
     },
     "shim": {
         "Backbone": {

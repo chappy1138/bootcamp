@@ -181,7 +181,10 @@ a:focus {
     font-weight: bold;
     margin-top: -6px;
 }
-.tvFinderHeader {
+.tvFinderPov {
+    clear: both;
+}
+.tvFinderPov h1 {
     line-height: 90px;
     font-size: 56px;
     font-weight: normal;
@@ -189,7 +192,7 @@ a:focus {
     text-align: center;
     margin: 0;
 }
-.tvFinderDescription {
+.tvFinderPov h2 {
     color:rgb(172,172,172);
     text-align: center;
     margin-top: -15px;
