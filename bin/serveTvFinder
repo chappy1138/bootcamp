@@ -309,6 +309,7 @@ function compilePage() {
             },
             function (error) {
                 qCompilePage.reject(error);
+                qCompilePage = undefined;
             }
         );
     }
@@ -340,6 +341,7 @@ function renderPage() {
             },
             function (error) {
                 qRenderPage.reject(error);
+                qRenderPage = undefined;
             }
         );
     }
@@ -369,11 +371,13 @@ function updateApps() {
                     },
                     function (error) {
                         qUpdateApps.reject(error);
+                        qUpdateApps = undefined;
                     }
                 );
             },
             function (error) {
                 qUpdateApps.reject(error);
+                qUpdateApps = undefined;
             }
         );
     }
@@ -394,6 +398,7 @@ function updatePages() {
             },
             function (error) {
                 qUpdatePages.reject(error);
+                qUpdatePages = undefined;
             }
         );
     }
@@ -414,6 +419,7 @@ function updateViews() {
             },
             function (error) {
                 qUpdateViews.reject(error);
+                qUpdateViews = undefined;
             }
         );
     }
@@ -434,6 +440,7 @@ function updateModels() {
             },
             function (error) {
                 qUpdateModels.reject(error);
+                qUpdateModels = undefined;
             }
         );
     }
@@ -465,6 +472,7 @@ function createCssRollup() {
                             exec(rollupJCssCommand, function (error, out, err) {
                                     if (error) {
                                         qCreateCssRollup.reject(new Error(out)); // compile error
+                                        qCreateCssRollup = undefined;
                                     }
                                     else {
                                         qCreateCssRollup.resolve(true);
@@ -480,11 +488,13 @@ function createCssRollup() {
                     },
                     function (error) {
                         qCreateCssRollup.reject(error);
+                        qCreateCssRollup = undefined;
                     }
                 );
             },
             function (error) {
                 qCreateCssRollup.reject(error);
+                qCreateCssRollup = undefined;
             }
         );
     }
@@ -530,6 +540,7 @@ function createJavascriptRollup() {
                             exec(rollupJavascriptCommand, function (error, out, err) {
                                     if (error) {
                                         qCreateJavascriptRollup.reject(new Error(out + err)); // compile error
+                                        qCreateJavascriptRollup = undefined;
                                     }
                                     else {
                                         qCreateJavascriptRollup.resolve(true);
@@ -545,11 +556,13 @@ function createJavascriptRollup() {
                     },
                     function (error) {
                         qCreateJavascriptRollup.reject(error);
+                        qCreateJavascriptRollup = undefined;
                     }
                 );
             },
             function (error) {
                 qCreateJavascriptRollup.reject(error);
+                qCreateJavascriptRollup = undefined;
             }
         );
     }
@@ -594,6 +607,7 @@ function compileRenderers() {
             },
             function (error) {
                 qCompileRenderers.reject(error);
+                qCompileRenderers = undefined;
             }
         );
     }

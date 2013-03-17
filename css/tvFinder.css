@@ -55,7 +55,7 @@ a:focus {
     outline: 0;
 }
 
-.tvFinderContent {
+.appContent {
     width: 1024px;
     margin-left: auto;
     margin-right: auto;
@@ -65,7 +65,7 @@ a:focus {
  * TVFinder Top of Page Navigation
  *
  */
-.tvFinderTopNav {
+.siteHeaderContent {
     background: url(../image/walmartHeaderBackground.png) no-repeat;
     width: 1024px;
     background-size: 1024px 90px;
@@ -195,7 +195,7 @@ a:focus {
 /*
  * Horizontal Breadcrumb
  */
-.tvFinderBreadcrumbLine {
+.breadcrumbLine {
     width: 1024px;
     height: 30px;
     line-height: 20px;
@@ -203,29 +203,30 @@ a:focus {
     font-size: small;
 }
 
-.tvFinderHomeBreadcrumb {
+.breadcrumbHome {
     background: url(../image/walmartBreadcrumbSprite.png) no-repeat;
     width: 28px;
     height: 28px;
     margin-left: 20px;
 }
 
-.tvFinderHomeLink {
+.breadcrumbHome a {
     width: 28px;
     display: block;
     text-indent: -9999px;
 }
 
-.tvFinderBreadcrumb {
+.breadcrumb {
     background: url(../image/walmartBreadcrumbSprite.png) no-repeat -28px 0;
 }
 
-.tvFinderBreadcrumbLink {
+.breadcrumb a {
     display: block;
-    margin-left: 24px;
-    margin-right: 8px;
+    margin-left: 11px;
+    margin-right: -7px;
     color:rgb(14,121,190);
     font-weight: bold;
+    margin-top: -6px;
 }
 
 /*
@@ -261,7 +262,7 @@ a:focus {
 }
 
 .tvFinderOffers {
-    background: url(../i/tvFinderOffers.png) no-repeat;
+    background: url(../image/tvFinderOffers.png) no-repeat;
     background-position:top;
     width: 1024px;
     height: 248px;
@@ -353,7 +354,7 @@ a:focus {
  * - sort dropdown
  */
 .tvFinderControls {
-    background: url(../i/tvFinderControls.png) no-repeat;
+    background: url(../image/tvFinderControls.png) no-repeat;
     background-position:center;
     width: 980px;
     height: 144px;
@@ -394,11 +395,11 @@ a:focus {
 }
 
 #tvFinderSizeSlider .ui-slider-range {
-    background: url(../i/rangeGradient.png) repeat-x;
+    background: url(../image/rangeGradient.png) repeat-x;
 }
 
 #tvFinderSizeSlider .ui-slider-handle {
-    background: url(../i/transparentSliderHandleWithLabel.png) no-repeat;
+    background: url(../image/transparentSliderHandleWithLabel.png) no-repeat;
     height: 83px;
     width: 61px;
     top: -62px;
@@ -539,13 +540,13 @@ a:focus {
     height: 12px;
     display: inline-block;
     background-position: 0 0;
-    background: url(../i/star.png) repeat-x;
+    background: url(../image/star.png) repeat-x;
 }
 
 .tvFinderProductRatingSummary {
     display: block;
     height: 12px;
-    background: url(../i/star.png) repeat-x 0 -13px;
+    background: url(../image/star.png) repeat-x 0 -13px;
 }
 
 /**** Isotope Filtering ****/

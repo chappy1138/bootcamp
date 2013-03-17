@@ -1,22 +1,30 @@
 define([
     'jQuery',
     'Backbone',
-    'model/Greeting',
+    'model/BreadcrumbLine',
     'view/SiteHeader',
-    'view/Greeting'],
-    function ($, Backbone, GreetingModel, SiteHeaderView, GreetingView) {
-        var greetingModel = new GreetingModel();
-        new SiteHeaderView({
-                id: "#tvFinderTopNavId",
-                className: "tvFinderTopNav",
+    'view/BreadcrumbLine',
+    'view/TvFinderPov'],
+    function ($, Backbone, BreadcrumbLineModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView) {
+        var breadcrumbLineModel = new BreadcrumbLineModel({
+                crumbs: [
+                    { name: 'Departments', href: '/cp/All-Departments/121828' },
+                    { name: 'Electronics', href: '/cp/Electronics/3944' },
+                    { name: 'TV\'s', href: '/cp/televisions-video/1060825' }
+                ]
+            }
+        );
+        var siteHeaderView = new SiteHeaderView({
                 appendTo: ".appHeader"
             }
         );
-        new GreetingView({
-                id: '#greeting',
-                className: "tvFinderGreeting",
-                appendTo: ".appBody",
-                model: greetingModel
+        new BreadcrumbLineView({
+                appendTo: siteHeaderView.el,
+                model: breadcrumbLineModel
+            }
+        );
+        new TvFinderPovView({
+                appendTo: ".appBody"
             }
         );
     }

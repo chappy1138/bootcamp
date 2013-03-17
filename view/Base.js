@@ -9,7 +9,7 @@ define(['jQuery', 'Backbone', 'handlebars', 'target/templates'], function ($, Ba
             if ((!this.$el || this.$el.length === 0) && this.className) {
                 this.$el = $('.' + this.className);
             }
-            if (this.$el.length === 0) {
+            if (!this.$el || this.$el.length === 0) {
                 var tagName = this.tagName || 'div';
                 this.$el = $('<' + tagName + '/>');
                 if (this.id) {
@@ -29,8 +29,8 @@ define(['jQuery', 'Backbone', 'handlebars', 'target/templates'], function ($, Ba
 
         render: function () {
             var template = Handlebars.templates[this.name],
-                model = this.model ? this.model.attributes : {},
-                content = template(model);
+                attributes = this.model ? this.model.attributes : {},
+                content = template(attributes);
             this.$el.html(content);
             return this;
         }
