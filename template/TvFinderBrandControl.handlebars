@@ -1,0 +1,13 @@
+Brand
+<div class="btn-group tvFinderControl">
+    <a class="btn btn-large dropdown-toggle" data-toggle="dropdown" href="#">
+        Any
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" data-role="filter" data-attr="Brand">
+        <li class="tvFinderMenuChoice"><a href="#">Any</a></li>
+        {{#brands}}
+            <li class="tvFinderMenuChoice"><a href="#">{{.}}</a></li>
+        {{/brands}}
+    </ul>
+</div>

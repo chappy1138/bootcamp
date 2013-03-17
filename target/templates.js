@@ -88,6 +88,37 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 
   return "<ul class=\"tvFinderWalmartNav\">\n    <li class=\"walmartLogoCell\"><a class=\"walmartLogoLink\" href=\"http://www.walmart.com/\"\n                                   title=\"Go To Walmart.com\">Walmart</a></li>\n    <li class=\"walmartSearchCell\">\n        <form class=\"walmartSearchForm\" action=\"http://www.walmart.com/search/\">\n            <button class=\"walmartSearchSubmit\" type=\"submit\" title=\"Search\">Search</button>\n            <input class=\"walmartSearchInput\" type=\"text\" name=\"q\" placeholder=\"Search\"/>\n        </form>\n    </li>\n    <li class=\"walmartCreateCell\"><a class=\"walmartCreateLink\" href=\"#\" title=\"Create a new wishlist\">Create</a>\n\n        <div class=\"walmartCreateText\">a new wishlist</div>\n    </li>\n    <li class=\"walmartSignInCell\"><a class=\"walmartSignInLink\" href=\"#\" title=\"Sign In to your account\">Sign\n        In</a>\n\n        <div class=\"walmartSignInText\">to your account</div>\n    </li>\n    <li class=\"walmartCartCell\"><a class=\"walmartCartLink\" href=\"#\" title=\"View the 0 items in your cart\">0\n        Items</a>\n\n        <div class=\"walmartCartText\">in your cart</div>\n    </li>\n</ul>\n";
   });
+templates['TvFinderBrandControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  var buffer = "", stack1, options, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  buffer += "\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">"
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "</a></li>\n        ";
+  return buffer;
+  }
+
+  buffer += "Brand\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Brand\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\">Any</a></li>\n        ";
+  options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
+  if (stack1 = helpers.brands) { stack1 = stack1.call(depth0, options); }
+  else { stack1 = depth0.brands; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (!helpers.brands) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n    </ul>\n</div>\n";
+  return buffer;
+  });
+templates['TvFinderControls'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  
+
+
+  return "<li><a class=\"tvFinderLogoLink\" href=\"#\" title=\"Go to the TV Finder\">TV Finder</a></li>\n";
+  });
 templates['TvFinderPov'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
@@ -113,6 +144,45 @@ helpers = helpers || Handlebars.helpers; data = data || {};
     + "</span></div>\n    <div class=\"tvFinderMaxSize\">"
     + escapeExpression(((stack1 = ((stack1 = depth0.maxPrice),stack1 == null || stack1 === false ? stack1 : stack1.size)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "&rdquo;</div>\n</div>\n";
+  return buffer;
+  });
+templates['TvFinderSizeControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  
+
+
+  return "Size\n<div id=\"tvFinderSizeSlider\" class=\"tvFinderControl\"></div>\n\n";
+  });
+templates['TvFinderSortControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  
+
+
+  return "Sort\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n        Featured\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"sort\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Featured</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Price</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"false\">Rating</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Name</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Size</a></li>\n    </ul>\n</div>\n";
+  });
+templates['TvFinderTypeControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  var buffer = "", stack1, options, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  buffer += "\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">"
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "</a></li>\n        ";
+  return buffer;
+  }
+
+  buffer += "Type\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Type\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\">Any</a></li>\n        ";
+  options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
+  if (stack1 = helpers.types) { stack1 = stack1.call(depth0, options); }
+  else { stack1 = depth0.types; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (!helpers.types) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n    </ul>\n</div>\n";
   return buffer;
   });
 });
