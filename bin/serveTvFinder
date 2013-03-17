@@ -62,10 +62,11 @@ var qCompilePage,
 requirejs.config({
         baseUrl: rootDir,
         paths: {
-            'escapeEntities': 'lib/escapeEntities-server'
+            "escapeEntities": "lib/escapeEntities-server",
+            "environment": "lib/environment"
         },
-        'handlebars': {
-            exports: 'Handlebars'
+        "handlebars": {
+            "exports": "Handlebars"
         }
     }
 );

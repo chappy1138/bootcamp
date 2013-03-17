@@ -10,7 +10,8 @@
         "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
         "jQuery": "lib/jquery-1.7.2",
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
-        "escapeEntities": "lib/escapeEntities-client"
+        "escapeEntities": "lib/escapeEntities-client",
+        "environment": "lib/environment"
     },
     "shim": {
         "Backbone": {
