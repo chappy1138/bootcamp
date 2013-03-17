@@ -1,4 +1,4 @@
-define(['jQuery', 'Backbone', 'handlebars', 'escapeEntities', 'target/templates'], function ($, Backbone, Handlebars, escapeEntities) {
+define(['jQuery', 'Backbone', 'handlebars', 'content', 'target/templates'], function ($, Backbone, Handlebars, content) {
 
     return Backbone.View.extend({
 
@@ -30,14 +30,14 @@ define(['jQuery', 'Backbone', 'handlebars', 'escapeEntities', 'target/templates'
         render: function () {
             var template = Handlebars.templates[this.name],
                 attributes = this.model ? this.model.attributes : {},
-                content = template(attributes);
-            this.html(content);
+                html = template(attributes);
+            this.html(html);
             return this;
         },
 
-        html: function (content) {
-            if (content) {
-                var escapedContent = escapeEntities(content);
+        html: function (html) {
+            if (html) {
+                var escapedContent = content.escape(html);
                 return this.$el.html(escapedContent);
             }
             else {

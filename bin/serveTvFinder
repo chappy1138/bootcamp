@@ -27,7 +27,7 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     pagesLoadedAfter = appsLoadedAfter,
     viewsLoadedAfter = appsLoadedAfter,
     modelsLoadedAfter = appsLoadedAfter,
-    tvFinderContent,
+    tvFinderHtml,
     rollupJCssCommand = [
         'node',
         '/usr/local/lib/node_modules/requirejs/bin/r.js',
@@ -62,7 +62,7 @@ var qCompilePage,
 requirejs.config({
         baseUrl: rootDir,
         paths: {
-            "escapeEntities": "lib/escapeEntities-server",
+            "content": "lib/content-server",
             "environment": "lib/environment"
         },
         "handlebars": {
@@ -228,7 +228,6 @@ function serveJavascriptLibrary(values, req, res) {
 }
 
 
-
 function serveFaviconIco(values, req, res) {
     var qServePng = Q.defer();
     fs.readFile(rootDir + '/image/favicon.ico', function (error, contents) {
@@ -279,15 +278,16 @@ function serveFont(values, req, res) {
 
 function serveTvFinderHtml(values, req, res) {
     var qServeTvFinderHtml = Q.defer();
-    compilePage()
-        .then(function (tvFilterContent) {
+    compilePage().then(
+        function (html) {
             res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(tvFilterContent);
+            res.end(html);
             qServeTvFinderHtml.resolve();
-        })
-        .fail(function (error) {
+        },
+        function (error) {
             qServeTvFinderHtml.reject(error);
-        });
+        }
+    );
     return qServeTvFinderHtml.promise;
 }
 
@@ -298,19 +298,30 @@ function compilePage() {
         qCompilePage = Q.defer();
         Q.all([renderPage(), statGeneratedFile(indexHtmlPathname)]).then(
             function (updated, stat) {
-                if (updated || !tvFinderContent) {
-                    tvFinderContent = '<!doctype html>\n\n';
-                    tvFinderContent += $("html")[0].outerHTML;
-                    tvFinderContent = tvFinderContent.replace(/<!--#/g, '<');
-                    tvFinderContent = tvFinderContent.replace(/#-->/g, '>');
-                    tvFinderContent = tvFinderContent.replace(/&amp;(.*;)/g, '&$1');
-                }
-                if (updated || !stat) {
-                    fs.writeFile(indexHtmlPathname, tvFinderContent, function (error) {
-                    });
-                }
-                qCompilePage.resolve(tvFinderContent);
-                qCompilePage = undefined;
+                requirejs(['content'], function (content) {
+                        if (updated || !tvFinderHtml) {
+                            tvFinderHtml = '<!doctype html>\n\n';
+                            tvFinderHtml += $("html")[0].outerHTML;
+                            tvFinderHtml = content.unescape(tvFinderHtml);
+                        }
+                        if (updated || !stat) {
+                            fs.writeFile(indexHtmlPathname, tvFinderHtml, function (error) {
+                                if (error) {
+                                    qCompilePage.reject(error);
+                                    qCompilePage = undefined;
+                                }
+                                else {
+                                    qCompilePage.resolve(tvFinderHtml);
+                                    qCompilePage = undefined;
+                                }
+                            });
+                        }
+                        else {
+                            qCompilePage.resolve(tvFinderHtml);
+                            qCompilePage = undefined;
+                        }
+                    }
+                );
             },
             function (error) {
                 qCompilePage.reject(error);
@@ -329,8 +340,10 @@ function renderPage() {
         Q.all([updateApps(), updatePages(), updateViews(), updateModels(), compileRenderers()]).then(
             function (updates) {
                 var anyUpdates = false;
-                updates.forEach(function (value) { anyUpdates |= value; });
-                if (anyUpdates || !tvFinderContent) {
+                updates.forEach(function (value) {
+                    anyUpdates |= value;
+                });
+                if (anyUpdates || !tvFinderHtml) {
                     console.log('rendering page');
                     requirejs.undef('page/SingleColumn');
                     requirejs.undef('app/TvFinderApp');
@@ -362,7 +375,7 @@ function updateApps() {
             function (updates) {
                 var anyUpdates = false, index = 0;
                 while (!anyUpdates) {
-                   anyUpdates = updates[index++];
+                    anyUpdates = updates[index++];
                 }
                 if (anyUpdates) {
                     appsLoadedAfter = 0;

@@ -1,7 +1,6 @@
 define(['view/Base', 'handlebars', 'underscore', 'environment'], function (BaseView, Handlebars, _, environment) {
         function makeAbsolute(href, isSecure) {
             if (/^\//.test(href)) {
-                console.log(((isSecure) ? environment.secure_www : environment.www) + href);
                 return ((isSecure) ? environment.secure_www : environment.www) + href;
             }
             else {

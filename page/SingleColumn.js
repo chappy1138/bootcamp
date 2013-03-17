@@ -1,10 +1,10 @@
-define(['jQuery', 'handlebars', 'escapeEntities', 'target/templates'], function ($, Handlebars, escapeEntities) {
-        var content, escapedContent;
-        content = Handlebars.templates['Head']();
-        escapedContent = escapeEntities(content);
+define(['jQuery', 'handlebars', 'content', 'target/templates'], function ($, Handlebars, content) {
+        var html, escapedContent;
+        html = Handlebars.templates['Head']();
+        escapedContent = content.escape(html);
         $('head').html(escapedContent);
-        content = Handlebars.templates['SingleColumnTemplate']();
-        escapedContent = escapeEntities(content);
+        html = Handlebars.templates['SingleColumnTemplate']();
+        escapedContent = content.escape(html);
         $('body').html(escapedContent);
     }
 );
