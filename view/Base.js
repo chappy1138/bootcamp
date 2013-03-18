@@ -24,6 +24,7 @@ define(['jQuery', 'Backbone', 'handlebars', 'content', 'target/templates'], func
                 }
                 this.render();
             }
+            this.$el.data("view", this);
             return this.$el[0];
         },
 

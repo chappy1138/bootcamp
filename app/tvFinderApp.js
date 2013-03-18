@@ -6,6 +6,7 @@ define([
     'model/TvFinderSizeControl',
     'model/TvFinderTypeControl',
     'model/TvFinderBrandControl',
+    'model/TvFinderSortControl',
     'model/ProductOffers',
     'view/SiteHeader',
     'view/BreadcrumbLine',
@@ -17,7 +18,7 @@ define([
     'view/TvFinderSortControl',
     'view/ProductOffers',
     'televisions'],
-    function ($, Backbone, BreadcrumbLineModel, TvFinderPovModel, TvFinderSizeControlModel, TvFinderTypeControlModel, TvFinderBrandControlModel, ProductOffersModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, ProductOffersView, qTelevisions) {
+    function ($, Backbone, BreadcrumbLineModel, TvFinderPovModel, TvFinderSizeControlModel, TvFinderTypeControlModel, TvFinderBrandControlModel, TvFinderSortControlModel, ProductOffersModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, ProductOffersView, qTelevisions) {
         var qTvFinderApp = $.Deferred();
         qTelevisions.then(
             function (televisions) {
@@ -33,6 +34,7 @@ define([
                     tvFinderSizeControlModel = new TvFinderSizeControlModel(televisions),
                     tvFinderTypeControlModel = new TvFinderTypeControlModel(televisions),
                     tvFinderBrandControlModel = new TvFinderBrandControlModel(televisions),
+                    tvFinderSortControlModel = new TvFinderSortControlModel(),
                     productOffersModel = new ProductOffersModel(televisions),
                     views = [];
                 var siteHeaderView = new SiteHeaderView({
@@ -76,7 +78,8 @@ define([
                 );
                 views.push(tvFinderBrandControlView);
                 var tvFinderSortControlView = new TvFinderSortControlView({
-                        appendTo: tvFinderControlsView.el
+                        appendTo: tvFinderControlsView.el,
+                        model: tvFinderSortControlModel
                     }
                 );
                 views.push(tvFinderSortControlView);

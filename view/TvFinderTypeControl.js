@@ -1,15 +1,9 @@
-define(['view/Base'], function (BaseView) {
-        return BaseView.extend({
+define(['view/DropdownControl'], function (DropdownControlView) {
+        var superclass = DropdownControlView;
+        return superclass.extend({
                 name: 'TvFinderTypeControl',
                 tagName: "li",
-                className: "tvFinderTypePrompt",
-                start: function () {
-                    var self = this;
-                    require(['lib/bootstrap'], function () {
-                            self.$el.find('.dropdown-toggle').dropdown();
-                        }
-                    );
-                }
+                className: "tvFinderTypePrompt"
             }
         );
     }
