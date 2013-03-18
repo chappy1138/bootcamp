@@ -1,7 +1,6 @@
 {
     "baseUrl": "..",
-    "include": "requirejs",
-    "exclude": [ "handlebars" ],
+    "include": ["lib/jquery.ui.sliderX", "lib/bootstrap"],
     "name": "app/TvFinderApp",
     "out": "../target/index.js",
     "paths": {
@@ -12,7 +11,7 @@
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
         "content": "lib/content-client",
         "televisions": "lib/televisions-client",
-        "environment": "lib/environment"
+        "environment": "lib/environment",
     },
     "shim": {
         "Backbone": {
@@ -30,6 +29,33 @@
         },
         "handlebars": {
             "exports": "Handlebars"
+        },
+        "lib/jquery.ui.sliderX": {
+            "deps": [
+                "lib/jquery.ui.slider"
+            ]
+        },
+        "lib/jquery.ui.slider": {
+            "deps": [
+                "lib/jquery.ui.widget",
+                "lib/jquery.ui.mouse"
+            ]
+        },
+        "lib/jquery.ui.mouse": {
+            "deps": [
+                "lib/jquery.ui.widget"
+            ]
+        },
+        "lib/jquery.ui.widget": {
+            "deps": [
+                "lib/jquery.ui.core"
+            ]
+        },
+        "lib/bootstrap" : {
+            "deps": [
+                "jQuery"
+            ]
+
         }
     }
 }

@@ -1,19 +1,5 @@
-define(['Backbone'], function (Backbone) {
-        var superclass = Backbone.Model;
-
-        function dollars(price) {
-            return price ? '$' + Math.floor(price) : price;
-        }
-
-        function cents(price) {
-            return price ? price.toFixed(2).slice(-3) : price;
-        }
-
-        function PriceObject(item) {
-            this.dollars = dollars(item.price);
-            this.cents = cents(item.price);
-            this.size = item.size;
-        }
+define(['model/ProductPrice'], function (ProductPriceModel) {
+        var superclass = ProductPriceModel;
 
         return superclass.extend({
                 constructor: function (items) {
@@ -42,5 +28,11 @@ define(['Backbone'], function (Backbone) {
                 }
             }
         );
+
+        function PriceObject(item) {
+            this.dollars = superclass.prototype.dollars(item.price);
+            this.cents = superclass.prototype.cents(item.price);
+            this.size = item.size;
+        }
     }
 );

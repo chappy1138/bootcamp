@@ -6,7 +6,7 @@ define(['Backbone'], function (Backbone) {
                     var min, max;
                     items.forEach(function (item) {
                             min = Math.min(min || item.size, item.size);
-                            max = Math.min(max || item.size, item.size);
+                            max = Math.max(max || item.size, item.size);
                         }
                     );
                     superclass.prototype.constructor.call(this, {

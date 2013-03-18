@@ -57,8 +57,7 @@ var qCompilePage,
     qUpdateModels,
     qCreateCssRollup,
     qCreateJavascriptRollup,
-    qCompileRenderers,
-    qGetTelevisions;
+    qCompileRenderers;
 
 requirejs.config({
         baseUrl: rootDir,
@@ -67,11 +66,29 @@ requirejs.config({
             "televisions": "lib/televisions-server",
             "environment": "lib/environment"
         },
-        "handlebars": {
-            "exports": "Handlebars"
+        "shim": {
+            "lib/jquery.ui.slider": {
+                "deps": [
+                    "lib/jquery.ui.widget",
+                    "lib/jquery.ui.mouse"
+                ]
+            },
+            "lib/jquery.ui.mouse": {
+                "deps": [
+                    "lib/jquery.ui.widget"
+                ]
+            },
+            "lib/jquery.ui.widget": {
+                "deps": [
+                    "lib/jquery.ui.core"
+                ]
+            }
         }
     }
 );
+
+navigator = { userAgent: "jsdom" };
+document = { createElement: function (type) { return $('<' +type + '/>'); }};
 
 requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
     Backbone.$ = $; // necessary, why?
@@ -98,7 +115,7 @@ function servePage() {
         { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
         { pattern: /^(\/usr\/local\/lib\/node_modules\/.*\.js)/, action: serveJavascriptLibrary },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
-        { pattern: /^\/(((js)|(lib)|(view)|(target))\/.*\.js)$/, action: serveJavascript },
+        { pattern: /^\/(((app)|(lib)|(model)|(view)|(target))\/.*\.js)$/, action: serveJavascript },
         { pattern: /^\/(image\/.*\.png)$/, action: servePng },
         { pattern: /^\/favicon.ico$/, action: serveFaviconIco },
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },

@@ -72,13 +72,98 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 
   return "<title>Walmart.com: Save Money. Live Better.</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\"/>\n";
   });
+templates['ProductOffers'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  var stack1, options, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, stack2;
+  buffer += "\n    <article class=\"tvFinderOffer\" data-featured=\""
+    + escapeExpression(((stack1 = data.index),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" data-type=\"";
+  if (stack2 = helpers.type) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.type; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\" data-brand=\"";
+  if (stack2 = helpers.brand) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.brand; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\"\n             data-price=\"";
+  if (stack2 = helpers.price) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.price; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\"\n             data-name=\"";
+  if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\"\n             data-rating=\"";
+  if (stack2 = helpers.rating) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.rating; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\" data-size=\"";
+  if (stack2 = helpers.size) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.size; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\">\n        <header>\n            <h1><a href=\"";
+  if (stack2 = helpers.url) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.url; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\" title=\"";
+  if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "\">\n                <i data-img\n                   data-src=\"";
+  if (stack2 = helpers.image) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.image; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "\"\n                   data-alt=\"";
+  if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "\"></i>\n\n                <div class=\"tvFinderProductName\">";
+  if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "</div>\n            </a></h1>\n        </header>\n        <ul class=\"tvFinderProductDetails\">";
+  if (stack2 = helpers.description) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.description; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "</ul>\n        <p class=\"tvFinderProductPrice\"><span class=\"tvFinderUsDollars\">";
+  if (stack2 = helpers.dollars) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.dollars; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "</span><span\n                class=\"tvFinderUsCents\">";
+  if (stack2 = helpers.cents) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.cents; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "</span></p>\n\n        <p class=\"tvFinderProductRating\">\n                    <span style=\"width: ";
+  if (stack2 = helpers.ratingWidth) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.ratingWidth; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "px\"\n                          title=\"";
+  if (stack2 = helpers.ratingDisplay) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.ratingDisplay; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + " out of 5 Stars\"></span>\n        </p>\n    </article>\n";
+  return buffer;
+  }
+
+  options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
+  if (stack1 = helpers.productOffers) { stack1 = stack1.call(depth0, options); }
+  else { stack1 = depth0.productOffers; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (!helpers.productOffers) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
+  });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            //\"index\": \"js/TvFinderApp\", // uncomment to get individuall\n            \"handlebars\": \"lib/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            }\n        }\n    });\n    var tvFinder = require([\"index\"]);\n</script>\n";
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            \"app/TvFinderApp\": \"index\", // comment to get individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\",\n            \"environment\": \"lib/environment\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderAppPromise) {\n                tvFinderAppPromise.then(\n                        function (tvFinderApp) {\n                            tvFinderApp.start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
   });
 templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];

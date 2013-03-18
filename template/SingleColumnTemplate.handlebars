@@ -7,11 +7,14 @@
 <script>
     require.config({
         "paths": {
-            //"index": "js/TvFinderApp", // uncomment to get individuall
-            "handlebars": "lib/handlebars.runtime",
+            "app/TvFinderApp": "index", // comment to get individually
+            "handlebars": "/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime",
             "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
+            "underscore": "/usr/local/lib/node_modules/underscore/underscore",
             "jQuery": "lib/jquery-1.7.2",
-            "underscore": "/usr/local/lib/node_modules/underscore/underscore"
+            "content": "lib/content-client",
+            "televisions": "lib/televisions-client",
+            "environment": "lib/environment"
         },
         "shim": {
             "Backbone": {
@@ -29,8 +32,39 @@
             },
             "handlebars": {
                 "exports": "Handlebars"
+            },
+            "lib/jquery.ui.sliderX": {
+                "deps": [
+                    "lib/jquery.ui.slider"
+                ]
+            },
+            "lib/jquery.ui.slider": {
+                "deps": [
+                    "lib/jquery.ui.widget",
+                    "lib/jquery.ui.mouse"
+                ]
+            },
+            "lib/jquery.ui.mouse": {
+                "deps": [
+                    "lib/jquery.ui.widget"
+                ]
+            },
+            "lib/jquery.ui.widget": {
+                "deps": [
+                    "lib/jquery.ui.core"
+                ]
             }
         }
     });
-    var tvFinder = require(["index"]);
+    require(['app/TvFinderApp'], function (tvFinderAppPromise) {
+                tvFinderAppPromise.then(
+                        function (tvFinderApp) {
+                            tvFinderApp.start();
+                        },
+                        function (error) {
+                            console.log(error);
+                        }
+                );
+            }
+    );
 </script>

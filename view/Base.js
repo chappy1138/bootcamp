@@ -43,6 +43,8 @@ define(['jQuery', 'Backbone', 'handlebars', 'content', 'target/templates'], func
             else {
                 return this.$el.html();
             }
-        }
+        },
+
+        start: function () {}
     });
 });
