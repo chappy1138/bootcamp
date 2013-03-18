@@ -1,6 +1,11 @@
 {
     "baseUrl": "..",
-    "include": ["lib/jquery.ui.sliderX", "lib/bootstrap"],
+    "include": [
+        "lib/bootstrap",
+        "lib/jquery.deferredImage",
+        "lib/jquery.ui.sliderX",
+        "lib/jquery.isotope"
+    ],
     "name": "app/TvFinderApp",
     "out": "../target/index.js",
     "paths": {
