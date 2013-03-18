@@ -19,12 +19,7 @@ define(['model/ProductPrice', 'underscore'], function (ProductPriceModel, _) {
                         }
                     );
                     superclass.prototype.constructor.call(this, {
-                            productOffers: productOffers,
-                            lowMax: max,
-                            topMin: min,
-                            type: 'Any',
-                            brand: 'Any',
-                            sort: 'Featured'
+                            productOffers: productOffers
                         }
                     );
                 }

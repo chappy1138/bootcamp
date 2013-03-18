@@ -54,32 +54,28 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                         max = this.tvFinderSizeControlModel.get('max'),
                         type = this.tvFinderTypeControlModel.get('selected'),
                         brand = this.tvFinderBrandControlModel.get('selected'),
-                        selector = 'article[data-in-size-range=true]'
-                            + filterSelector('type', type)
-                            + filterSelector('brand', brand);
+                        sizeSelector = '[data-in-size-range=true]',
+                        typeSelector = filterSelector('type', type),
+                        brandSelector = filterSelector('brand', brand),
+                        selector = 'article' + sizeSelector + typeSelector + brandSelector;
+                    console.log(min, max, type, brand);
                     this.$el.find('article').each(function () {
                             this.setAttribute('data-in-size-range', isInSizeRange(this, min, max));
                         }
                     );
+                    self.model.set({
+                            id: self.$el.attr('id'),
+                            count: self.$el.find(selector).length,
+                            min: min,
+                            max: max,
+                            sizeSelector: sizeSelector,
+                            typeSelector: typeSelector,
+                            brandSelector: brandSelector,
+                            selector: selector
+                        }
+                    );
                     requirejs(['lib/jquery.isotope'], function () {
-                            console.log(selector);
-                            self.$el.isotope({ filter: selector }, function ($items) {
-                                    var min, max;
-                                    $items.each(function () {
-                                            var size = getSize(this);
-                                            min = Math.min(min || size, size);
-                                            max = Math.max(max || size, size);
-                                        }
-                                    );
-                                    self.model.set({
-                                            lowMax: max,
-                                            topMin: min,
-                                            type: type,
-                                            brand: brand
-                                        }
-                                    );
-                                }
-                            );
+                            self.$el.isotope({ filter: selector });
                         }
                     );
                 },

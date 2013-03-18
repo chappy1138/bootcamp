@@ -13,10 +13,12 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 click: function (event) {
                     var $menuItem = $(event.target), value = $menuItem.text().trim(),
                         $button = this.$button(), $title = this.$title(), title = $title.text().trim();
-                    $button.dropdown('toggle');
-                    if (value !== title) {
-                        $title.replaceWith(value + ' ');
-                        this.model.set('selected', value);
+                    if (!$menuItem.parent().hasClass('disabled')) {
+                        $button.dropdown('toggle');
+                        if (value !== title) {
+                            $title.replaceWith(value + ' ');
+                            this.model.set('selected', value);
+                        }
                     }
                     return false;
                 },
@@ -25,6 +27,9 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 },
                 $title: function () {
                     return this.$button().contents().eq(0);
+                },
+                $menuItems: function () {
+                    return this.$el.find('.dropdown-menu a');
                 }
             }
         );
