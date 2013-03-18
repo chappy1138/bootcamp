@@ -22,7 +22,8 @@ define([
         var qTvFinderApp = $.Deferred();
         qTelevisions.then(
             function (televisions) {
-                var breadcrumbLineModel = new BreadcrumbLineModel({
+                var televisionsCollection = new Backbone.Collection(televisions),
+                    breadcrumbLineModel = new BreadcrumbLineModel({
                             crumbs: [
                                 { name: 'Departments', href: '/cp/All-Departments/121828' },
                                 { name: 'Electronics', href: '/cp/Electronics/3944' },
@@ -30,12 +31,12 @@ define([
                             ]
                         }
                     ),
+                    productOffersModel = new ProductOffersModel(televisions),
                     tvFinderPovModel = new TvFinderPovModel(televisions),
                     tvFinderSizeControlModel = new TvFinderSizeControlModel(televisions),
                     tvFinderTypeControlModel = new TvFinderTypeControlModel(televisions),
                     tvFinderBrandControlModel = new TvFinderBrandControlModel(televisions),
                     tvFinderSortControlModel = new TvFinderSortControlModel(),
-                    productOffersModel = new ProductOffersModel(televisions),
                     views = [];
                 var siteHeaderView = new SiteHeaderView({
                         appendTo: ".appHeader"
@@ -86,7 +87,11 @@ define([
                 var productOffersView = new ProductOffersView({
                         id: 'tvFinderOfferContainerId',
                         appendTo: tvFinderControlsView.el,
-                        model: productOffersModel
+                        model: productOffersModel,
+                        tvFinderSizeControlModel: tvFinderSizeControlModel,
+                        tvFinderTypeControlModel: tvFinderTypeControlModel,
+                        tvFinderBrandControlModel: tvFinderBrandControlModel,
+                        tvFinderSortControlModel: tvFinderSortControlModel
                     }
                 );
                 views.push(productOffersView);

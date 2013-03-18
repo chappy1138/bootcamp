@@ -4,7 +4,8 @@ define(['Backbone'], function (Backbone) {
         return superclass.extend({
                 constructor: function () {
                     superclass.prototype.constructor.call(this, {
-                            selected: 'Featured'
+                            selected: 'Featured',
+                            ascending: true
                         }
                     );
                 }

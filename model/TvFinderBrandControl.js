@@ -8,7 +8,8 @@ define(['Backbone'], function (Backbone) {
                     brandsArray = Object.keys(brandsHash);
                     brandsArray.sort();
                     superclass.prototype.constructor.call(this, {
-                            brands: brandsArray
+                            brands: brandsArray,
+                            selected: 'Any'
                         }
                     );
                 }

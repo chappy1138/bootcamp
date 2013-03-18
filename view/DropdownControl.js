@@ -1,4 +1,4 @@
-define(['view/Base'], function (BaseView) {
+define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
         return BaseView.extend({
                 events: {
                     'click .dropdown-menu a': 'click'
@@ -11,17 +11,20 @@ define(['view/Base'], function (BaseView) {
                     );
                 },
                 click: function (event) {
-                    var $menuItem = $(event.target), value = $menuItem.text(), $button = this.$button();
-                    $button
-                        .dropdown('toggle') // close
-                        .contents()
-                        .eq(0)
-                        .replaceWith(value + ' ');
-                    this.model.set('selected', value);
+                    var $menuItem = $(event.target), value = $menuItem.text().trim(),
+                        $button = this.$button(), $title = this.$title(), title = $title.text().trim();
+                    $button.dropdown('toggle');
+                    if (value !== title) {
+                        $title.replaceWith(value + ' ');
+                        this.model.set('selected', value);
+                    }
                     return false;
                 },
                 $button: function () {
                     return this.$el.find('.dropdown-toggle');
+                },
+                $title: function () {
+                    return this.$button().contents().eq(0);
                 }
             }
         );

@@ -30,6 +30,22 @@
         "handlebars": {
             "exports": "Handlebars"
         },
+        "lib/jquery.deferredImage" : {
+            "deps": [
+                "jQuery",
+                "lib/jquery.viewed"
+            ]
+        },
+        "lib/jquery.viewed" : {
+            "deps": [
+                "jQuery"
+            ]
+        },
+        "lib/jquery.isotope" : {
+            "deps": [
+                "jQuery"
+            ]
+        },
         "lib/jquery.ui.sliderX": {
             "deps": [
                 "lib/jquery.ui.slider"

@@ -89,6 +89,7 @@ requirejs.config({
 
 navigator = { userAgent: "jsdom" };
 document = { createElement: function (type) { return $('<' +type + '/>'); }};
+window = require('jsdom').jsdom().createWindow();
 
 requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
     Backbone.$ = $; // necessary, why?

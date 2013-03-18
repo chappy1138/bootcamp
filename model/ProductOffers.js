@@ -4,31 +4,40 @@ define(['model/ProductPrice', 'underscore'], function (ProductPriceModel, _) {
         return superclass.extend({
                 constructor: function (productOffers) {
                     productOffers = productOffers.slice(0);
+                    var min, max;
                     productOffers.forEach(function (productOffer, index) {
+                            min = Math.min(min || productOffer.size, productOffer.size);
+                            max = Math.max(max || productOffer.size, productOffer.size);
                             productOffers[index] = _.extend({
-                                    ratingWidth: ratingWidth(productOffer),
-                                    ratingDisplay: ratingDisplay(productOffer),
+                                    ratingWidth: ratingWidth(productOffer.rating),
+                                    ratingDisplay: ratingDisplay(productOffer.rating),
                                     dollars: superclass.prototype.dollars(productOffer.price),
                                     cents: superclass.prototype.cents(productOffer.price)
                                 },
                                 productOffer
                             );
-
                         }
                     );
-                    superclass.prototype.constructor.call(this, { productOffers: productOffers });
+                    superclass.prototype.constructor.call(this, {
+                            productOffers: productOffers,
+                            lowMax: max,
+                            topMin: min,
+                            type: 'Any',
+                            brand: 'Any',
+                            sort: 'Featured'
+                        }
+                    );
                 }
             }
         );
 
-        function ratingWidth(productOffer) {
-            var ratingWidth = Math.round(productOffer.rating * 12.0);
+        function ratingWidth(rating) {
+            var ratingWidth = Math.round(rating * 12.0);
             return ratingWidth;
         }
 
-        function ratingDisplay(productOffer) {
-            var ratingDisplay = Math.round(productOffer.rating) === productOffer.rating
-                ? productOffer.rating : productOffer.rating.toFixed(1);
+        function ratingDisplay(rating) {
+            var ratingDisplay = Math.round(rating) === rating ? rating : rating.toFixed(1);
             return ratingDisplay;
         }
     }
