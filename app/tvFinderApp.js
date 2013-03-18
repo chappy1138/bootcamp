@@ -1,5 +1,6 @@
 define([
     'jQuery',
+    'underscore',
     'Backbone',
     'model/BreadcrumbLine',
     'model/TvFinderPov',
@@ -16,9 +17,10 @@ define([
     'view/TvFinderTypeControl',
     'view/TvFinderBrandControl',
     'view/TvFinderSortControl',
+    'view/TvFinderOfferHeader',
     'view/ProductOffers',
     'televisions'],
-    function ($, Backbone, BreadcrumbLineModel, TvFinderPovModel, TvFinderSizeControlModel, TvFinderTypeControlModel, TvFinderBrandControlModel, TvFinderSortControlModel, ProductOffersModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, ProductOffersView, qTelevisions) {
+    function ($, _, Backbone, BreadcrumbLineModel, TvFinderPovModel, TvFinderSizeControlModel, TvFinderTypeControlModel, TvFinderBrandControlModel, TvFinderSortControlModel, ProductOffersModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView, qTelevisions) {
         var qTvFinderApp = $.Deferred();
         qTelevisions.then(
             function (televisions) {
@@ -37,6 +39,7 @@ define([
                     tvFinderTypeControlModel = new TvFinderTypeControlModel(televisions),
                     tvFinderBrandControlModel = new TvFinderBrandControlModel(televisions),
                     tvFinderSortControlModel = new TvFinderSortControlModel(),
+                    resetFiltersEvent = _.extend({}, Backbone.Events);
                     views = [];
                 var siteHeaderView = new SiteHeaderView({
                         appendTo: ".appHeader"
@@ -60,21 +63,38 @@ define([
                     }
                 );
                 views.push(tvFinderControlsView);
+                var productOffersView = new ProductOffersView({
+                        id: 'tvFinderOfferContainerId',
+                        appendTo: tvFinderControlsView.$el.parent().parent(),
+                        model: productOffersModel,
+                        tvFinderSizeControlModel: tvFinderSizeControlModel,
+                        tvFinderTypeControlModel: tvFinderTypeControlModel,
+                        tvFinderBrandControlModel: tvFinderBrandControlModel,
+                        tvFinderSortControlModel: tvFinderSortControlModel
+                    }
+                );
+                views.push(productOffersView);
                 var tvFinderSizeControlView = new TvFinderSizeControlView({
                         appendTo: tvFinderControlsView.el,
-                        model: tvFinderSizeControlModel
+                        model: tvFinderSizeControlModel,
+                        productOffersModel: productOffersModel,
+                        resetFiltersEvent: resetFiltersEvent
                     }
                 );
                 views.push(tvFinderSizeControlView);
                 var tvFinderTypeControlView = new TvFinderTypeControlView({
                         appendTo: tvFinderControlsView.el,
-                        model: tvFinderTypeControlModel
+                        model: tvFinderTypeControlModel,
+                        productOffersModel: productOffersModel,
+                        resetFiltersEvent: resetFiltersEvent
                     }
                 );
                 views.push(tvFinderTypeControlView);
                 var tvFinderBrandControlView = new TvFinderBrandControlView({
                         appendTo: tvFinderControlsView.el,
-                        model: tvFinderBrandControlModel
+                        model: tvFinderBrandControlModel,
+                        productOffersModel: productOffersModel,
+                        resetFiltersEvent: resetFiltersEvent
                     }
                 );
                 views.push(tvFinderBrandControlView);
@@ -84,17 +104,13 @@ define([
                     }
                 );
                 views.push(tvFinderSortControlView);
-                var productOffersView = new ProductOffersView({
-                        id: 'tvFinderOfferContainerId',
-                        appendTo: tvFinderControlsView.el,
-                        model: productOffersModel,
-                        tvFinderSizeControlModel: tvFinderSizeControlModel,
-                        tvFinderTypeControlModel: tvFinderTypeControlModel,
-                        tvFinderBrandControlModel: tvFinderBrandControlModel,
-                        tvFinderSortControlModel: tvFinderSortControlModel
+                var tvFinderOfferHeaderView = new TvFinderOfferHeaderView({
+                        appendTo: tvFinderControlsView.$el.parent(),
+                        productOffersView: productOffersView,
+                        resetFiltersEvent: resetFiltersEvent
                     }
                 );
-                views.push(productOffersView);
+                views.push(tvFinderOfferHeaderView);
                 qTvFinderApp.resolve({
                         start: function () {
                             views.forEach(function (view) {

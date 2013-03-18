@@ -5,9 +5,9 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 tagName: "li",
                 className: "tvFinderSizePrompt",
                 initialize: function (options) {
-                    _.bindAll(this, 'sizeFilterUpdate', 'updateLowMaxTopMin');
-                    this.productOffersModel = options.productOffersModel;
-                    this.productOffersModel.bind('change', this.updateLowMaxTopMin);
+                    _.bindAll(this, 'sizeFilterUpdate', 'updateLowMaxTopMin', 'reset');
+                    this.options.productOffersModel.bind('change', this.updateLowMaxTopMin);
+                    this.options.resetFiltersEvent.bind('reset', this.reset);
                 },
                 start: function () {
                     var self = this;
@@ -28,7 +28,6 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                                     values: [min, max]
                                 }
                             );
-
                             self.$sizeSlider.find('.ui-slider-handle').each(function (index) {
                                     $(this).append('<span class="tvFinderSizeSliderLabel">'
                                         + sizeSliderLabel(self.$sizeSlider.slider("values")[index])
@@ -36,7 +35,6 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                                     );
                                 }
                             );
-
                             self.$sizeSlider.slider("option", "slide", function (evt, ui) {
                                     $(ui.handle).find('.tvFinderSizeSliderLabel').html(sizeSliderLabel(ui.value));
                                 }
@@ -48,8 +46,8 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     this.model.set({ min: ui.values[0], max: ui.values[1] });
                 },
                 updateLowMaxTopMin: function () {
-                    var id = this.productOffersModel.get("id"),
-                        selector = this.productOffersModel.get("selector"),
+                    var id = this.options.productOffersModel.get("id"),
+                        selector = this.options.productOffersModel.get("selector"),
                         $items = $('#' + id).find(selector), min, max;
                     $items.each(function () {
                             var size = getSize(this);
@@ -59,6 +57,15 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     );
                     this.$sizeSlider.slider("option", "lowMax", max);
                     this.$sizeSlider.slider("option", "topMin", min);
+                },
+                reset: function () {
+                    var range = [ this.model.get('rangeMin'), rangeMax = this.model.get('rangeMax') ];
+                    this.$sizeSlider
+                        .slider("values", range)
+                        .find('.tvFinderSizeSliderLabel').each(function (index) {
+                            $(this).html(sizeSliderLabel(range[index]));
+                        }
+                    );
                 }
             }
         );

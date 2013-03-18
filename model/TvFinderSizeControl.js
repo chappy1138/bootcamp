@@ -11,7 +11,9 @@ define(['Backbone'], function (Backbone) {
                     );
                     superclass.prototype.constructor.call(this, {
                             min: min,
-                            max: max
+                            max: max,
+                            rangeMin: min,
+                            rangeMax: max
                         }
                     );
                 }

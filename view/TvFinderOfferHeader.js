@@ -6,7 +6,7 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 className: "tvFinderOfferHeader",
                 initialize: function (options) {
                     superclass.prototype.initialize.apply(this, arguments);
-                    _.bindAll(this, 'updateCount', 'render');
+                    _.bindAll(this, 'click', 'updateCount', 'render');
                     this.options.productOffersView.model.bind('change', this.updateCount);
                 },
                 render: function () {
@@ -15,10 +15,10 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 },
                 start: function () {
                     superclass.prototype.start.call(this);
-                    $('#tvFinderClearFiltersId').click(function () {
-                            this.options.resetFiltersEvent.trigger('reset', true);
-                        }
-                    );
+                    $('#tvFinderClearFiltersId').click(this.click);
+                },
+                click: function () {
+                    this.options.resetFiltersEvent.trigger('reset', true);
                 },
                 updateCount: function () {
                     var count = this.options.productOffersView.model.get('count'),
