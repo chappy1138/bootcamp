@@ -58,7 +58,6 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                         typeSelector = filterSelector('type', type),
                         brandSelector = filterSelector('brand', brand),
                         selector = 'article' + sizeSelector + typeSelector + brandSelector;
-                    console.log(min, max, type, brand);
                     this.$el.find('article').each(function () {
                             this.setAttribute('data-in-size-range', isInSizeRange(this, min, max));
                         }
@@ -81,10 +80,10 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 },
                 sort: function () {
                     var self = this,
-                        brand = this.tvFinderSortControlModel.get('selected'),
-                        ascending = this.tvFinderSortControlModel.get('ascending') === 'true';
+                        sort = this.tvFinderSortControlModel.get('selected'),
+                        ascending = this.tvFinderSortControlModel.get('ascending');
                     requirejs(['lib/jquery.isotope'], function () {
-                            self.$el.isotope({ sortBy: brand, sortAscending: ascending });
+                            self.$el.isotope({ sortBy: sort, sortAscending: ascending });
                         }
                     );
                 }

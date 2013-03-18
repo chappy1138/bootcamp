@@ -5,9 +5,9 @@ define(['view/DropdownControl'], function (DropdownControlView) {
                 tagName: "li",
                 className: "tvFinderSortPrompt",
                 click: function (event) {
-                    superclass.prototype.click.call(this, event);
-                    var $menuItem = $(event.target), ascending = $menuItem.attr('data-asc') === 'true';
+                    var $menuItem = $(event.target), ascending = $menuItem.attr('data-asc') == 'true';
                     this.model.set({ ascending: ascending }, { silent: true });
+                    superclass.prototype.click.call(this, event);
                     return false;
                 }
             }

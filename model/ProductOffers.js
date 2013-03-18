@@ -19,7 +19,8 @@ define(['model/ProductPrice', 'underscore'], function (ProductPriceModel, _) {
                         }
                     );
                     superclass.prototype.constructor.call(this, {
-                            productOffers: productOffers
+                            productOffers: productOffers,
+                            count: productOffers.length
                         }
                     );
                 }

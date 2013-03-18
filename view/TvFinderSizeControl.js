@@ -51,7 +51,6 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     var id = this.productOffersModel.get("id"),
                         selector = this.productOffersModel.get("selector"),
                         $items = $('#' + id).find(selector), min, max;
-                    console.log($items.length);
                     $items.each(function () {
                             var size = getSize(this);
                             min = Math.min(min || size, size);

@@ -204,6 +204,14 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 
   return "<li><a class=\"tvFinderLogoLink\" href=\"#\" title=\"Go to the TV Finder\">TV Finder</a></li>\n";
   });
+templates['TvFinderOfferHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  
+
+
+  return "<span id=\"tvFinderMatchOfferCountId\" class=\"tvFinderMatchOfferCount\"></span>\n<span>for televisions fitting that criteria</span>\n<button id=\"tvFinderClearFiltersId\" class=\"btn tvFinderClearFilters\">Clear Filters</button>\n";
+  });
 templates['TvFinderPov'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
