@@ -6,21 +6,19 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 tagName: "section",
                 className: "tvFinderOfferContainer",
                 initialize: function (options) {
-                    superclass.prototype.initialize.apply(this, arguments);
                     _.bindAll(this, 'filter', 'sort');
-                    this.tvFinderSizeControlModel = options.tvFinderSizeControlModel;
-                    this.tvFinderTypeControlModel = options.tvFinderTypeControlModel;
-                    this.tvFinderBrandControlModel = options.tvFinderBrandControlModel;
-                    this.tvFinderSortControlModel = options.tvFinderSortControlModel;
-                    this.tvFinderSizeControlModel.bind('change', this.filter);
-                    this.tvFinderTypeControlModel.bind('change', this.filter);
-                    this.tvFinderBrandControlModel.bind('change', this.filter);
-                    this.tvFinderSortControlModel.bind('change', this.sort);
+                    this.tvFinderAppModel = options.tvFinderAppModel;
+                    this.tvFinderAppModel.bind('change:minSizeFilter', this.filter);
+                    this.tvFinderAppModel.bind('change:maxSizeFilter', this.filter);
+                    this.tvFinderAppModel.bind('change:typeFilter', this.filter);
+                    this.tvFinderAppModel.bind('change:brandFilter', this.filter);
+                    this.tvFinderAppModel.bind('change:sortBy', this.sort);
+                    this.collection = this.tvFinderAppModel.get('tvOfferCollection');
+                    superclass.prototype.initialize.apply(this, arguments);
                 },
                 start: function () {
                     var self = this;
                     requirejs(['lib/jquery.deferredImage', 'lib/jquery.isotope'], function () {
-                            superclass.prototype.start.call(self);
                             self.$el
                                 .deferredImage()
                                 .isotope({
@@ -50,27 +48,16 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 },
                 filter: function () {
                     var self = this,
-                        min = this.tvFinderSizeControlModel.get('min'),
-                        max = this.tvFinderSizeControlModel.get('max'),
-                        type = this.tvFinderTypeControlModel.get('selected'),
-                        brand = this.tvFinderBrandControlModel.get('selected'),
+                        minSizeFilter = this.tvFinderAppModel.get('minSizeFilter'),
+                        maxSizeFilter = this.tvFinderAppModel.get('maxSizeFilter'),
+                        typeFilter = this.tvFinderAppModel.get('typeFilter'),
+                        brandFilter = this.tvFinderAppModel.get('brandFilter'),
                         sizeSelector = '[data-in-size-range=true]',
-                        typeSelector = filterSelector('type', type),
-                        brandSelector = filterSelector('brand', brand),
+                        typeSelector = filterSelector('type', typeFilter),
+                        brandSelector = filterSelector('brand', brandFilter),
                         selector = 'article' + sizeSelector + typeSelector + brandSelector;
                     this.$el.find('article').each(function () {
-                            this.setAttribute('data-in-size-range', isInSizeRange(this, min, max));
-                        }
-                    );
-                    self.model.set({
-                            id: self.$el.attr('id'),
-                            count: self.$el.find(selector).length,
-                            min: min,
-                            max: max,
-                            sizeSelector: sizeSelector,
-                            typeSelector: typeSelector,
-                            brandSelector: brandSelector,
-                            selector: selector
+                            this.setAttribute('data-in-size-range', isInSizeRange(this, minSizeFilter, maxSizeFilter));
                         }
                     );
                     requirejs(['lib/jquery.isotope'], function () {
@@ -79,20 +66,22 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     );
                 },
                 sort: function () {
-                    var self = this,
-                        sort = this.tvFinderSortControlModel.get('selected'),
-                        ascending = this.tvFinderSortControlModel.get('ascending');
+                    var self = this;
                     requirejs(['lib/jquery.isotope'], function () {
-                            self.$el.isotope({ sortBy: sort, sortAscending: ascending });
+                            var sortData = self.tvFinderAppModel.get('sortBy'),
+                                sortValues = sortData.split('-'),
+                                sortBy = sortValues[0], sortAscending = sortValues[1] === 'asc'
+                            self.$el.isotope({ sortBy: sortBy, sortAscending: sortAscending });
                         }
                     );
                 }
             }
         );
 
-        function isInSizeRange(el, min, max) {
-            var value = getSize(el);
-            return min <= value && value <= max;
+        function isInSizeRange(el, minSizeFilter, maxSizeFilter) {
+            var size = getSize(el);
+            return (minSizeFilter === '*' || minSizeFilter <= size)
+                && (maxSizeFilter === '*' || size <= maxSizeFilter);
         }
 
         function getSize(el) {
@@ -100,7 +89,7 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
         }
 
         function filterSelector(attr, value) {
-            return value === 'Any' ? '' : '[data-' + attr + '="' + value + '"]';
+            return value === '*' ? '' : '[data-' + attr + '="' + value + '"]';
         }
     }
 );

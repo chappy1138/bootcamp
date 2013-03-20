@@ -1,13 +1,13 @@
 Type
 <div class="btn-group tvFinderControl">
-    <a class="btn btn-large dropdown-toggle" data-toggle="dropdown" href="#">
+    <a class="btn btn-large dropdown-toggle" data-toggle="dropdown" data-value="*" href="#">
         Any
         <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" data-role="filter" data-attr="Type">
-        <li class="tvFinderMenuChoice"><a href="#">Any</a></li>
-        {{#types}}
-            <li class="tvFinderMenuChoice"><a href="#">{{.}}</a></li>
-        {{/types}}
+        <li class="tvFinderMenuChoice"><a href="#" data-value="*">Any</a></li>
+        {{#items}}
+            <li class="tvFinderMenuChoice"><a href="#" data-value="{{.}}">{{.}}</a></li>
+        {{/items}}
     </ul>
 </div>

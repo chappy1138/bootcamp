@@ -5,9 +5,10 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 tagName: "header",
                 className: "tvFinderOfferHeader",
                 initialize: function (options) {
+                    _.bindAll(this, 'click', 'updateCount');
+                    this.tvFinderAppModel = options.tvFinderAppModel;
+                    this.tvFinderAppModel.bind('change', this.updateCount);
                     superclass.prototype.initialize.apply(this, arguments);
-                    _.bindAll(this, 'click', 'updateCount', 'render');
-                    this.options.productOffersView.model.bind('change', this.updateCount);
                 },
                 render: function () {
                     superclass.prototype.render.call(this);
@@ -18,11 +19,22 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     $('#tvFinderClearFiltersId').click(this.click);
                 },
                 click: function () {
-                    this.options.resetFiltersEvent.trigger('reset', true);
+                    this.tvFinderAppModel.trigger('reset', true);
                 },
                 updateCount: function () {
-                    var count = this.options.productOffersView.model.get('count'),
-                        text = count === 1 ? "1 match" : count + " matches";
+                    var tvOffers = this.tvFinderAppModel.get('tvOfferCollection').models,
+                        minSizeFilter = this.tvFinderAppModel.get('minSizeFilter'),
+                        maxSizeFilter = this.tvFinderAppModel.get('maxSizeFilter'),
+                        typeFilter = this.tvFinderAppModel.get('typeFilter'),
+                        brandFilter = this.tvFinderAppModel.get('brandFilter'),
+                        count = _.filter(tvOffers,function (tvOffer) {
+                                var size = tvOffer.get('size'), type = tvOffer.get('type'), brand = tvOffer.get('brand');
+                                return (minSizeFilter === '*' || minSizeFilter <= size)
+                                    && (maxSizeFilter === '*' || size <= maxSizeFilter)
+                                    && (typeFilter === '*' || typeFilter === type)
+                                    && (brandFilter === '*' || brandFilter === brand);
+                            }
+                        ).length, text = count === 1 ? "1 match" : count + " matches";
                     $('#tvFinderMatchOfferCountId').text(text);
                 }
             }

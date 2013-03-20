@@ -75,7 +75,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 templates['ProductOffers'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  var stack1, options, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+  var stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
 
 function program1(depth0,data) {
   
@@ -150,11 +150,8 @@ function program1(depth0,data) {
   return buffer;
   }
 
-  options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
-  if (stack1 = helpers.productOffers) { stack1 = stack1.call(depth0, options); }
-  else { stack1 = depth0.productOffers; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  if (!helpers.productOffers) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if(stack1 || stack1 === 0) { return stack1; }
+  stack2 = ((stack1 = (typeof depth0 === functionType ? depth0.apply(depth0) : depth0)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}));
+  if(stack2 || stack2 === 0) { return stack2; }
   else { return ''; }
   });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {
@@ -163,7 +160,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            \"app/TvFinderApp\": \"index\", // comment to get individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\",\n            \"environment\": \"lib/environment\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderAppPromise) {\n                tvFinderAppPromise.then(\n                        function (tvFinderApp) {\n                            tvFinderApp.start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            //\"app/TvFinderApp\": \"index\", // comment to get components individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\",\n            \"environment\": \"lib/environment\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderAppPromise) {\n                tvFinderAppPromise.then(\n                        function (tvFinderApp) {\n                            tvFinderApp();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
   });
 templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
@@ -181,17 +178,19 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = "";
-  buffer += "\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">"
+  buffer += "\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\""
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "\">"
     + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
     + "</a></li>\n        ";
   return buffer;
   }
 
-  buffer += "Brand\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Brand\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\">Any</a></li>\n        ";
+  buffer += "Brand\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" data-value=\"*\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Brand\">\n        <li class=\"tvFinderMenuChoice\"><a data-value=\"*\" href=\"#\">Any</a></li>\n        ";
   options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
-  if (stack1 = helpers.brands) { stack1 = stack1.call(depth0, options); }
-  else { stack1 = depth0.brands; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  if (!helpers.brands) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 = helpers.items) { stack1 = stack1.call(depth0, options); }
+  else { stack1 = depth0.items; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (!helpers.items) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n    </ul>\n</div>\n";
   return buffer;
@@ -253,7 +252,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "Sort\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n        Featured\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"sort\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Featured</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Price</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"false\">Rating</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Name</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-asc=\"true\">Size</a></li>\n    </ul>\n</div>\n";
+  return "Sort\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" data-value=\"Featured-asc\" href=\"#\">\n        Featured\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"sort\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"Featured-asc\">Featured</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"Price-asc\">Price</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"Rating-des\">Rating</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"Name-asc\">Name</a></li>\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"Size-asc\">Size</a></li>\n    </ul>\n</div>\n";
   });
 templates['TvFinderTypeControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
@@ -263,17 +262,19 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = "";
-  buffer += "\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">"
+  buffer += "\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\""
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "\">"
     + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
     + "</a></li>\n        ";
   return buffer;
   }
 
-  buffer += "Type\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Type\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\">Any</a></li>\n        ";
+  buffer += "Type\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" data-value=\"*\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Type\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"*\">Any</a></li>\n        ";
   options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
-  if (stack1 = helpers.types) { stack1 = stack1.call(depth0, options); }
-  else { stack1 = depth0.types; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  if (!helpers.types) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 = helpers.items) { stack1 = stack1.call(depth0, options); }
+  else { stack1 = depth0.items; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (!helpers.items) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n    </ul>\n</div>\n";
   return buffer;

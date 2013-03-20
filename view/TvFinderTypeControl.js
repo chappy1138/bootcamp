@@ -1,40 +1,29 @@
-define(['jQuery', 'underscore', 'view/DropdownControl'], function ($, _, DropdownControlView) {
-        var superclass = DropdownControlView;
+define(['Backbone', 'view/FilterDropdownControl'], function (Backbone, FilterDropdownControl) {
+        var superclass = FilterDropdownControl;
         return superclass.extend({
                 name: 'TvFinderTypeControl',
-                tagName: "li",
-                className: "tvFinderTypePrompt",
+                tagName: 'li',
+                className: 'tvFinderTypePrompt',
+                attributeName: 'typeFilter',
                 initialize: function (options) {
-                    _.bindAll(this, 'updateMenuItems', 'reset');
-                    this.options.productOffersModel.bind('change', this.updateMenuItems);
-                    this.options.resetFiltersEvent.bind('reset', this.reset);
-                },
-                updateMenuItems: function () {
-                    var id = this.options.productOffersModel.get("id"),
-                        sizeSelector = this.options.productOffersModel.get("sizeSelector"),
-                        brandSelector = this.options.productOffersModel.get("brandSelector"),
-                        $items = $('#' + id).find(sizeSelector + brandSelector);
-                    superclass.prototype.$menuItems.call(this).each(function () {
-                            var $this = $(this), value = $this.text().trim();
-                            if (value !== 'Any') {
-                                if ($items.filter('[data-type="' + value + '"]').length === 0) {
-                                    $this.parent().addClass('disabled');
-                                }
-                                else {
-                                    $this.parent().removeClass('disabled');
-                                }
-                            }
+                    this.tvFinderAppModel = options.tvFinderAppModel;
+                    this.tvFinderAppModel.on('change:brandFilter', this.updateMenuItems, this);
+                    var types = {};
+                    this.tvFinderAppModel.get('tvOfferCollection').models.forEach(function (tvOffer) {
+                            types[tvOffer.get('type')] = true;
                         }
                     );
+                    this.model = new Backbone.Model({ items: Object.keys(types).sort() });
+                    superclass.prototype.initialize.apply(this, arguments);
                 },
-                reset: function () {
-                    var $button = superclass.prototype.$button.call(this),
-                        $title = superclass.prototype.$title.call(this),
-                        title = $title.text().trim();
-                    if ('Any' !== title) {
-                        $title.replaceWith('Any' + ' ');
-                        this.model.set('selected', 'Any');
-                    }
+                filterIterator: function (tvOffer) {
+                    var size = tvOffer.get('size'),
+                        type = tvOffer.get('type'),
+                        brand = tvOffer.get('brand');
+                    return this.minSizeFilter <= size
+                        && size <= this.maxSizeFilter
+                        && this.menuItemValue === type
+                        && (this.brandFilter === '*' || this.brandFilter === brand);
                 }
             }
         );

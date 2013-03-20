@@ -1,7 +1,14 @@
 define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
-        return BaseView.extend({
+        var superclass = BaseView;
+        return superclass.extend({
                 events: {
                     'click .dropdown-menu a': 'click'
+                },
+                initialize: function (options) {
+                    superclass.prototype.initialize.apply(this, arguments);
+                    _.bindAll(this, 'updateTitle');
+                    this.tvFinderAppModel = options.tvFinderAppModel;
+                    this.tvFinderAppModel.on('change:' + this.attributeName, this.updateTitle);
                 },
                 start: function () {
                     var self = this;
@@ -11,16 +18,20 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     );
                 },
                 click: function (event) {
-                    var $menuItem = $(event.target), value = $menuItem.text().trim(),
-                        $button = this.$button(), $title = this.$title(), title = $title.text().trim();
+                    var $menuItem = $(event.target);
                     if (!$menuItem.parent().hasClass('disabled')) {
-                        $button.dropdown('toggle');
-                        if (value !== title) {
-                            $title.replaceWith(value + ' ');
-                            this.model.set('selected', value);
-                        }
+                        this.$button().dropdown('toggle');
+                        this.tvFinderAppModel.set(this.attributeName, $menuItem.attr('data-value'));
                     }
                     return false;
+                },
+                updateTitle: function () {
+                    var value = this.tvFinderAppModel.get(this.attributeName);
+                    var title = this.$menuItems().filter(function () {
+                            return $(this).attr('data-value') === value;
+                        }
+                    ).eq(0).text();
+                    this.$title().replaceWith(title + ' ');
                 },
                 $button: function () {
                     return this.$el.find('.dropdown-toggle');

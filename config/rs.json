@@ -16,7 +16,7 @@
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
         "content": "lib/content-client",
         "televisions": "lib/televisions-client",
-        "environment": "lib/environment",
+        "environment": "lib/environment"
     },
     "shim": {
         "Backbone": {
