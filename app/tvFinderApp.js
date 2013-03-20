@@ -2,7 +2,6 @@ define([
     'jQuery',
     'Backbone',
     'televisions',
-    'model/TvFinderApp',
     'view/SiteHeader',
     'view/BreadcrumbLine',
     'view/TvFinderPov',
@@ -13,12 +12,19 @@ define([
     'view/TvFinderSortControl',
     'view/TvFinderOfferHeader',
     'view/ProductOffers'],
-    function ($, Backbone, qTelevisions, TvFinderAppModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView) {
+    function ($, Backbone, qTelevisions, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView) {
         var qTvFinderApp = $.Deferred();
         qTelevisions.then(
             function (televisions) {
-                var tvOfferCollection = new Backbone.Collection(televisions),
-                    tvFinderAppModel = new TvFinderAppModel({ tvOfferCollection: tvOfferCollection }),
+                var tvFinderAppModel = new Backbone.Model({
+                            minSizeFilter: '*',
+                            maxSizeFilter: '*',
+                            typeFilter: '*',
+                            brandFilter: '*',
+                            sortBy: '*',
+                            tvOfferCollection: new Backbone.Collection(televisions)
+                        }
+                    ),
                     siteHeaderView = new SiteHeaderView({
                             appendTo: ".appHeader"
                         }

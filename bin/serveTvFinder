@@ -691,7 +691,12 @@ function statFilesInDirectoryMatching(pathname, pattern) {
 
     fs.readdir(pathname, function (error, files) {
         if (error) {
-            qStatFilesInDirectoryMatching.reject(error);
+            if (error.code === 'ENOENT') {
+                qStatFilesInDirectoryMatching.resolve([]);
+            }
+            else {
+                qStatFilesInDirectoryMatching.reject(error);
+            }
         }
         else {
             function fsStat(pathname) {
@@ -750,7 +755,12 @@ function updateClasses(pathname, after) {
             qUpdateClasses.resolve(after);
         },
         function (error) {
-            qUpdateClasses.reject(error);
+            if (error.code === 'ENOENT') {
+                qUpdateClasses.resolve(after);
+            }
+            else {
+                qUpdateClasses.reject(error);
+            }
         }
     );
     return qUpdateClasses.promise;
