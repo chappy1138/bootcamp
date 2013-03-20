@@ -1,14 +1,8 @@
 define([
     'jQuery',
-    'underscore',
     'Backbone',
-    'model/BreadcrumbLine',
-    'model/TvFinderPov',
-    'model/TvFinderSizeControl',
-    'model/TvFinderTypeControl',
-    'model/TvFinderBrandControl',
-    'model/TvFinderSortControl',
-    'model/ProductOffers',
+    'televisions',
+    'model/TvFinderApp',
     'view/SiteHeader',
     'view/BreadcrumbLine',
     'view/TvFinderPov',
@@ -18,105 +12,78 @@ define([
     'view/TvFinderBrandControl',
     'view/TvFinderSortControl',
     'view/TvFinderOfferHeader',
-    'view/ProductOffers',
-    'televisions'],
-    function ($, _, Backbone, BreadcrumbLineModel, TvFinderPovModel, TvFinderSizeControlModel, TvFinderTypeControlModel, TvFinderBrandControlModel, TvFinderSortControlModel, ProductOffersModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView, qTelevisions) {
+    'view/ProductOffers'],
+    function ($, Backbone, qTelevisions, TvFinderAppModel, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView) {
         var qTvFinderApp = $.Deferred();
         qTelevisions.then(
             function (televisions) {
-                var televisionsCollection = new Backbone.Collection(televisions),
-                    breadcrumbLineModel = new BreadcrumbLineModel({
+                var tvOfferCollection = new Backbone.Collection(televisions),
+                    tvFinderAppModel = new TvFinderAppModel({ tvOfferCollection: tvOfferCollection }),
+                    siteHeaderView = new SiteHeaderView({
+                            appendTo: ".appHeader"
+                        }
+                    ),
+                    breadcrumbLineView = new BreadcrumbLineView({
+                            appendTo: siteHeaderView.el,
                             crumbs: [
+                                { name: 'walmart.com', href: '/', className: 'breadcrumbHome' },
                                 { name: 'Departments', href: '/cp/All-Departments/121828' },
                                 { name: 'Electronics', href: '/cp/Electronics/3944' },
                                 { name: 'TV\'s', href: '/cp/televisions-video/1060825' }
                             ]
                         }
                     ),
-                    productOffersModel = new ProductOffersModel(televisions),
-                    tvFinderPovModel = new TvFinderPovModel(televisions),
-                    tvFinderSizeControlModel = new TvFinderSizeControlModel(televisions),
-                    tvFinderTypeControlModel = new TvFinderTypeControlModel(televisions),
-                    tvFinderBrandControlModel = new TvFinderBrandControlModel(televisions),
-                    tvFinderSortControlModel = new TvFinderSortControlModel(),
-                    resetFiltersEvent = _.extend({}, Backbone.Events);
-                    views = [];
-                var siteHeaderView = new SiteHeaderView({
-                        appendTo: ".appHeader"
-                    }
-                );
-                views.push(siteHeaderView);
-                var breadcrumbLineView = new BreadcrumbLineView({
-                        appendTo: siteHeaderView.el,
-                        model: breadcrumbLineModel
-                    }
-                );
-                views.push(breadcrumbLineView);
-                var tvFinderPovView = new TvFinderPovView({
-                        appendTo: ".appBody",
-                        model: tvFinderPovModel
-                    }
-                );
-                views.push(tvFinderPovView);
-                var tvFinderControlsView = new TvFinderControlsView({
-                        appendTo: tvFinderPovView.el
-                    }
-                );
-                views.push(tvFinderControlsView);
-                var productOffersView = new ProductOffersView({
-                        id: 'tvFinderOfferContainerId',
-                        appendTo: tvFinderControlsView.$el.parent().parent(),
-                        model: productOffersModel,
-                        tvFinderSizeControlModel: tvFinderSizeControlModel,
-                        tvFinderTypeControlModel: tvFinderTypeControlModel,
-                        tvFinderBrandControlModel: tvFinderBrandControlModel,
-                        tvFinderSortControlModel: tvFinderSortControlModel
-                    }
-                );
-                views.push(productOffersView);
-                var tvFinderSizeControlView = new TvFinderSizeControlView({
-                        appendTo: tvFinderControlsView.el,
-                        model: tvFinderSizeControlModel,
-                        productOffersModel: productOffersModel,
-                        resetFiltersEvent: resetFiltersEvent
-                    }
-                );
-                views.push(tvFinderSizeControlView);
-                var tvFinderTypeControlView = new TvFinderTypeControlView({
-                        appendTo: tvFinderControlsView.el,
-                        model: tvFinderTypeControlModel,
-                        productOffersModel: productOffersModel,
-                        resetFiltersEvent: resetFiltersEvent
-                    }
-                );
-                views.push(tvFinderTypeControlView);
-                var tvFinderBrandControlView = new TvFinderBrandControlView({
-                        appendTo: tvFinderControlsView.el,
-                        model: tvFinderBrandControlModel,
-                        productOffersModel: productOffersModel,
-                        resetFiltersEvent: resetFiltersEvent
-                    }
-                );
-                views.push(tvFinderBrandControlView);
-                var tvFinderSortControlView = new TvFinderSortControlView({
-                        appendTo: tvFinderControlsView.el,
-                        model: tvFinderSortControlModel
-                    }
-                );
-                views.push(tvFinderSortControlView);
-                var tvFinderOfferHeaderView = new TvFinderOfferHeaderView({
-                        appendTo: tvFinderControlsView.$el.parent(),
-                        productOffersView: productOffersView,
-                        resetFiltersEvent: resetFiltersEvent
-                    }
-                );
-                views.push(tvFinderOfferHeaderView);
-                qTvFinderApp.resolve({
-                        start: function () {
-                            views.forEach(function (view) {
-                                view.start();
-                            });
+                    tvFinderPovView = new TvFinderPovView({
+                            appendTo: ".appBody",
+                            tvFinderAppModel: tvFinderAppModel
                         }
+                    ),
+                    tvFinderControlsView = new TvFinderControlsView({
+                            appendTo: tvFinderPovView.el
+                        }
+                    ),
+                    productOffersView = new ProductOffersView({
+                            id: 'tvFinderOfferContainerId',
+                            appendTo: tvFinderControlsView.$el.parent().parent(),
+                            tvFinderAppModel: tvFinderAppModel
+                        }
+                    ),
+                    tvFinderSizeControlView = new TvFinderSizeControlView({
+                            appendTo: tvFinderControlsView.el,
+                            tvFinderAppModel: tvFinderAppModel
+                        }
+                    ),
+                    tvFinderTypeControlView = new TvFinderTypeControlView({
+                            appendTo: tvFinderControlsView.el,
+                            tvFinderAppModel: tvFinderAppModel
+                        }
+                    ),
+                    tvFinderBrandControlView = new TvFinderBrandControlView({
+                            appendTo: tvFinderControlsView.el,
+                            tvFinderAppModel: tvFinderAppModel
+                        }
+                    ),
+                    tvFinderSortControlView = new TvFinderSortControlView({
+                            appendTo: tvFinderControlsView.el,
+                            tvFinderAppModel: tvFinderAppModel
+                        }
+                    ),
+                    tvFinderOfferHeaderView = new TvFinderOfferHeaderView({
+                            appendTo: tvFinderControlsView.$el.parent(),
+                            tvFinderAppModel: tvFinderAppModel
+                        }
+                    );
+                qTvFinderApp.resolve(function () {
+                        siteHeaderView.start();
+                        breadcrumbLineView.start();
+                        tvFinderPovView.start();
+                        tvFinderControlsView.start();
+                        productOffersView.start();
+                        tvFinderSizeControlView.start();
+                        tvFinderTypeControlView.start();
+                        tvFinderBrandControlView.start();
+                        tvFinderSortControlView.start();
+                        tvFinderOfferHeaderView.start();
                     }
                 );
             },

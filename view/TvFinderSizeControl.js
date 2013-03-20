@@ -7,6 +7,8 @@ define(['jQuery', 'underscore', 'Backbone', 'view/Base'], function ($, _, Backbo
                 initialize: function (options) {
                     _.bindAll(this, 'sizeFilterUpdate', 'updateLowMaxTopMin', 'reset');
                     this.tvFinderAppModel = options.tvFinderAppModel;
+                    this.tvFinderAppModel.on('change:minSizeFilter', this.updateLowMaxTopMin);
+                    this.tvFinderAppModel.on('change:maxSizeFilter', this.updateLowMaxTopMin);
                     this.tvFinderAppModel.on('change:typeFilter', this.updateLowMaxTopMin);
                     this.tvFinderAppModel.on('change:brandFilter', this.updateLowMaxTopMin);
                     this.tvFinderAppModel.on('reset', this.reset);
