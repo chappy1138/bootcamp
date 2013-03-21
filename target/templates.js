@@ -113,24 +113,20 @@ function program1(depth0,data) {
     + "\" title=\"";
   if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\">\n                <i data-img\n                   data-src=\"";
+  buffer += escapeExpression(stack2)
+    + "\">\n                <i data-img\n                   data-src=\"";
   if (stack2 = helpers.image) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.image; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
     + "\"\n                   data-alt=\"";
   if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\"></i>\n\n                <div class=\"tvFinderProductName\">";
+  buffer += escapeExpression(stack2)
+    + "\"></i>\n\n                <div class=\"tvFinderProductName\">";
   if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "</div>\n            </a></h1>\n        </header>\n        <ul class=\"tvFinderProductDetails\">";
-  if (stack2 = helpers.description) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.description; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "</ul>\n        <p class=\"tvFinderProductPrice\"><span class=\"tvFinderUsDollars\">";
+  buffer += escapeExpression(stack2)
+    + "</div>\n            </a></h1>\n        </header>\n        <p class=\"tvFinderProductPrice\"><span class=\"tvFinderUsDollars\">";
   if (stack2 = helpers.dollars) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.dollars; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
@@ -160,7 +156,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            \"app/TvFinderApp\": \"index\", // comment to get components individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\",\n            \"environment\": \"lib/environment\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderAppPromise) {\n                tvFinderAppPromise.then(\n                        function (tvFinderApp) {\n                            tvFinderApp();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            \"app/TvFinderApp\": \"index\", // comment to get components individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\",\n            \"environment\": \"lib/environment\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderAppPromise) {\n                tvFinderAppPromise.then(\n                        function (tvFinderApp) {\n                            tvFinderApp().start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
   });
 templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];

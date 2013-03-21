@@ -18,7 +18,9 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     templatesRollupPathname = targetPathname + '/templates.js',
     cssRollupPathname = targetPathname + '/index.css',
     javascriptRollupPathname = targetPathname + '/index.js',
+    javascriptRollupServersidePathname = targetPathname + '/index-server.js',
     indexHtmlPathname = targetPathname + '/index.html',
+    televisionsJavascriptPathname = targetPathname + '/televisions.js',
     appPathname = rootDir + '/app',
     pagePathname = rootDir + '/page',
     viewPathname = rootDir + '/view',
@@ -39,7 +41,13 @@ var rootDir = path.dirname(path.normalize(__dirname)),
         'node',
         '/usr/local/lib/node_modules/requirejs/bin/r.js',
         '-o',
-        rootDir + '/config/rs.json'
+        rootDir + '/config/rs-client.json'
+    ].join(' '),
+    rollupJavascriptServersideCommand = [
+        'node',
+        '/usr/local/lib/node_modules/requirejs/bin/r.js',
+        '-o',
+        rootDir + '/config/rs-server.json'
     ].join(' '),
     compileRenderersCommand = [
         'handlebars',
@@ -57,7 +65,9 @@ var qCompilePage,
     qUpdateModels,
     qCreateCssRollup,
     qCreateJavascriptRollup,
-    qCompileRenderers;
+    qCreateJavascriptRollupServerside,
+    qCompileRenderers,
+    qCreateTelevisions;
 
 requirejs.config({
         baseUrl: rootDir,
@@ -88,7 +98,9 @@ requirejs.config({
 );
 
 navigator = { userAgent: "jsdom" };
-document = { createElement: function (type) { return $('<' +type + '/>'); }};
+document = { createElement: function (type) {
+    return $('<' + type + '/>');
+}};
 window = require('jsdom').jsdom().createWindow();
 
 requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
@@ -318,14 +330,13 @@ function compilePage() {
     if (!qCompilePage) {
         qCompilePage = Q.defer();
         Q.all([renderPage(), statGeneratedFile(indexHtmlPathname)]).then(
-            function (updated, stat) {
+            function (values) {
+                var contents = values[0], stat = values[1];
                 requirejs(['content'], function (content) {
-                        if (updated || !tvFinderHtml) {
-                            tvFinderHtml = '<!doctype html>\n\n';
-                            tvFinderHtml += $("html")[0].outerHTML;
-                            tvFinderHtml = content.unescape(tvFinderHtml);
+                        if (contents || !tvFinderHtml) {
+                            tvFinderHtml = '<!doctype html>\n\n' + content.unescape(contents);
                         }
-                        if (updated || !stat) {
+                        if (contents || !stat) {
                             fs.writeFile(indexHtmlPathname, tvFinderHtml, function (error) {
                                 if (error) {
                                     qCompilePage.reject(error);
@@ -358,30 +369,41 @@ function compilePage() {
 function renderPage() {
     if (!qRenderPage) {
         qRenderPage = Q.defer();
-        Q.all([updateApps(), updatePages(), updateViews(), updateModels(), compileRenderers()]).then(
-            function (updates) {
-                var anyUpdates = false;
-                updates.forEach(function (value) {
-                    anyUpdates |= value;
-                });
-                if (anyUpdates || !tvFinderHtml) {
+        createJavascriptRollupServerside().then(
+            function (updated) {
+                if (updated || !tvFinderHtml) {
                     console.log('rendering page');
-                    requirejs.undef('page/SingleColumn');
-                    requirejs(['page/SingleColumn'], function () {
-                            requirejs.undef('app/TvFinderApp');
-                            requirejs(['app/TvFinderApp'], function (tvFinderPromise) {
-                                    tvFinderPromise.then(
-                                        function () {
-                                            qRenderPage.resolve(true);
-                                            qRenderPage = undefined;
-                                        },
-                                        function (error) {
-                                            qRenderPage.reject(error);
-                                            qRenderPage = undefined;
-                                        }
-                                    );
-                                }
-                            );
+                    var jsdom = require("jsdom");
+                    jsdom.env(
+                        '<html><head></head><body></body></html>',
+                        [
+                            "/usr/local/lib/node_modules/requirejs/require.js",
+                            javascriptRollupServersidePathname
+                        ],
+                        function (errors, window) {
+                            if (errors) {
+                                qRenderPage.reject(errors);
+                                qRenderPage = undefined;
+                            }
+                            else {
+                                window.console = console;
+                                window.require(["page/SingleColumn", "app/tvFinderApp"],
+                                    function (SingleColumn, tvFinderAppPromise) {
+                                        tvFinderAppPromise.then(
+                                            function (tvFinderApp) {
+                                                tvFinderApp();
+                                                window.$('.jsdom').remove();
+                                                qRenderPage.resolve(window.document.outerHTML);
+                                                qRenderPage = undefined;
+                                            },
+                                            function (error) {
+                                                qRenderPage.reject(error);
+                                                qRenderPage = undefined;
+                                            }
+                                        )
+                                    }
+                                );
+                            }
                         }
                     );
                 }
@@ -620,6 +642,74 @@ function createJavascriptRollup() {
     return qCreateJavascriptRollup.promise;
 }
 
+// compile javascript rollup
+
+function createJavascriptRollupServerside() {
+    if (!qCreateJavascriptRollupServerside) {
+        qCreateJavascriptRollupServerside = Q.defer();
+        Q.all([compileRenderers(), createTelevisions()]).then(
+            function () {
+                var rollupStatPromise = statGeneratedFile(javascriptRollupServersidePathname),
+                    appStatPromises = statFilesInDirectoryMatching(appPathname, /\.js$/),
+                    pageStatPromises = statFilesInDirectoryMatching(pagePathname, /\.js$/),
+                    viewStatPromises = statFilesInDirectoryMatching(viewPathname, /\.js$/),
+                    modelStatPromises = statFilesInDirectoryMatching(modelPathname, /\.js$/),
+                    compilationStatPromise = Q.nfcall(fs.stat, templatesRollupPathname), moduleName;
+                Q.all([rollupStatPromise,
+                        appStatPromises,
+                        pageStatPromises,
+                        viewStatPromises,
+                        modelStatPromises,
+                        compilationStatPromise]).then(
+                    function (stats) {
+                        var rollupStat = stats[0],
+                            appStats = stats[1],
+                            pageStats = stats[2],
+                            viewStats = stats[3],
+                            modelStats = stats[4],
+                            compilationMtime = stats[5].mtime.getTime(),
+                            rollupMtime = rollupStat ? rollupStat.mtime.getTime() : 0,
+                            isOlder = rollupMtime < compilationMtime,
+                            stats = appStats.concat(pageStats, viewStats, modelStats),
+                            index = 0;
+                        while (!isOlder && index < stats.length) {
+                            isOlder = rollupMtime < stats[index].mtime.getTime();
+                            index++
+                        }
+                        if (isOlder) {
+                            console.log('creating javascript serverside rollup');
+                            exec(rollupJavascriptServersideCommand, function (error, out, err) {
+                                    if (error) {
+                                        qCreateJavascriptRollupServerside.reject(new Error(out + err)); // compile error
+                                        qCreateJavascriptRollupServerside = undefined;
+                                    }
+                                    else {
+                                        qCreateJavascriptRollupServerside.resolve(true);
+                                        qCreateJavascriptRollupServerside = undefined;
+                                    }
+                                }
+                            );
+                        }
+                        else {
+                            qCreateJavascriptRollupServerside.resolve(false);
+                            qCreateJavascriptRollupServerside = undefined;
+                        }
+                    },
+                    function (error) {
+                        qCreateJavascriptRollupServerside.reject(error);
+                        qCreateJavascriptRollupServerside = undefined;
+                    }
+                );
+            },
+            function (error) {
+                qCreateJavascriptRollupServerside.reject(error);
+                qCreateJavascriptRollupServerside = undefined;
+            }
+        );
+    }
+    return qCreateJavascriptRollupServerside.promise;
+}
+
 // compile renderers only when necessary
 
 function compileRenderers() {
@@ -663,6 +753,39 @@ function compileRenderers() {
         );
     }
     return qCompileRenderers.promise;
+}
+
+// create the televisions script
+function createTelevisions() {
+    if (!qCreateTelevisions) {
+        qCreateTelevisions = Q.defer();
+        requirejs(['lib/televisions-server'], function (qTelevisions) {
+                qTelevisions.then(
+                    function (televisions) {
+                        // write target/televisions.js
+                        var contents = 'define(["jQuery"], function ($) {'
+                            + 'var qTelevisions = $.Deferred();'
+                            + 'qTelevisions.resolve(' + JSON.stringify(televisions) + ');'
+                            + 'return qTelevisions.promise();'
+                            + '});';
+                        fs.writeFile(televisionsJavascriptPathname, contents, function (error) {
+                                if (error) {
+                                    qCreateTelevisions.reject(error);
+                                }
+                                else {
+                                    qCreateTelevisions.resolve();
+                                }
+                            }
+                        );
+                    },
+                    function (error) {
+                        qCreateTelevisions.reject(error);
+                    }
+                );
+            }
+        );
+    }
+    return qCreateTelevisions.promise;
 }
 
 // utilities

@@ -59,7 +59,7 @@
     require(['app/TvFinderApp'], function (tvFinderAppPromise) {
                 tvFinderAppPromise.then(
                         function (tvFinderApp) {
-                            tvFinderApp();
+                            tvFinderApp().start();
                         },
                         function (error) {
                             console.log(error);
