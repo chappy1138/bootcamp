@@ -111,6 +111,7 @@ function servePage() {
         { pattern: /^\/(image\/.*\.png)$/, action: servePng },
         { pattern: /^\/favicon.ico$/, action: serveFaviconIco },
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
+        { pattern: /^\/product\/([0-9]*)$/, action: serveProductJson },
         { pattern: /^\/$/, action: serveTvFinderHtml }
     ];
     http.createServer(function (req, res) {
@@ -286,6 +287,23 @@ function serveFont(values, req, res) {
     );
     return qServeFont.promise;
 }
+
+function serveProductJson(values, req, res) {
+    var qServeProductJson = Q.defer();
+    fs.readFile(productJsonPathname + '/item-' + values[1] + '.json', function (error, contents) {
+            if (error) {
+                qServeProductJson.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(contents);
+                qServeProductJson.resolve();
+            }
+        }
+    );
+    return qServeProductJson.promise;
+}
+
 
 function serveTvFinderHtml(values, req, res) {
     var qServeTvFinderHtml = Q.defer();

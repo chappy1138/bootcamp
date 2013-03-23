@@ -1,4 +1,4 @@
-define(['view/Base'], function (BaseView) {
+define(['view/Base', 'app/ProductApp'], function (BaseView, ProductAppPromise) {
         var superclass = BaseView;
         return superclass.extend({
                 name: 'ProductPanel',
@@ -11,6 +11,12 @@ define(['view/Base'], function (BaseView) {
                     superclass.prototype.initialize.apply(this, arguments);
                 },
                 showProductPanel: function() {
+                    var item_id = this.tvFinderAppModel.get('item_id');
+                    ProductAppPromise.then(
+                        function (ProductApp) {
+                            ProductApp(item_id).start();
+                        }
+                    );
                 }
             }
         );
