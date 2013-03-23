@@ -30,6 +30,7 @@ define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'target/tem
                 initialize: function () {
                     _.bindAll(this, 'context');
                     if (!this.isRendered) {
+                        this.isRendered = true;
                         this.render();
                     }
                 },
@@ -38,7 +39,6 @@ define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'target/tem
                         context = this.context(),
                         html = template(context);
                     this.html(html);
-                    this.isRendered = true;
                     return this;
                 },
                 html: function (html) {

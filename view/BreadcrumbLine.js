@@ -1,4 +1,4 @@
-define(['underscore', 'Backbone', 'view/Base', 'environment'],
+define(['underscore', 'Backbone', 'view/Base', 'lib/environment'],
     function (_, Backbone, BaseView, environment) {
         var superclass = BaseView;
         return superclass.extend({

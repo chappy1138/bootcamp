@@ -1,9 +1,10 @@
 {{#.}}
-    <article class="tvFinderOffer" data-featured="{{@index}}" data-type="{{type}}" data-brand="{{brand}}"
+    <article class="tvFinderOffer" data-featured="{{@index}}" data-type="{{type}}"
+             data-brand="{{brand}}"
              data-price="{{price}}"
              data-name="{{name}}"
              data-rating="{{rating}}" data-size="{{size}}">
-        <header>
+        <header data-item_id="{{item_id}}">
             <h1><a href="{{url}}" title="{{name}}">
                 <i data-img
                    data-src="{{image}}"
@@ -12,6 +13,7 @@
                 <div class="tvFinderProductName">{{name}}</div>
             </a></h1>
         </header>
+        <ul class="tvFinderProductDetails">{{{description}}}</ul>
         <p class="tvFinderProductPrice"><span class="tvFinderUsDollars">{{dollars}}</span><span
                 class="tvFinderUsCents">{{cents}}</span></p>
 

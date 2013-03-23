@@ -7,7 +7,7 @@
         "lib/jquery.isotope"
     ],
     "name": "app/TvFinderApp",
-    "out": "../target/index.js",
+    "out": "../target/tvFinderApp-client.js",
     "paths": {
         "requirejs": "/usr/local/lib/node_modules/requirejs/require",
         "handlebars": "/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime",
@@ -15,8 +15,7 @@
         "jQuery": "lib/jquery-1.7.2",
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
         "content": "lib/content-client",
-        "televisions": "lib/televisions-client",
-        "environment": "lib/environment"
+        "televisions": "lib/televisions-client"
     },
     "shim": {
         "Backbone": {

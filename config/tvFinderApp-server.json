@@ -2,16 +2,14 @@
     "baseUrl": "..",
     "name": "app/tvFinderApp",
     "include": "page/SingleColumn",
-    "out": "../target/index-server.js",
+    "out": "../target/tvFinderApp-server.js",
     "paths": {
-        //"requirejs": "/usr/local/lib/node_modules/requirejs/require",
         "handlebars": "/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime",
         "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
         "jQuery": "lib/jquery-1.7.2",
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
         "content": "lib/content-server",
-        "televisions": "target/televisions",
-        "environment": "lib/environment"
+        "televisions": "target/televisions"
     },
     "shim": {
         "Backbone": {

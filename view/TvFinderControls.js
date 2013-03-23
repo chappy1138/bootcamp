@@ -1,5 +1,6 @@
 define(['view/Base'], function (BaseView) {
-        return BaseView.extend({
+        var superclass = BaseView;
+        return superclass.extend({
                 name: 'TvFinderControls',
                 tagName: "ul",
                 className: "tvFinderControls"

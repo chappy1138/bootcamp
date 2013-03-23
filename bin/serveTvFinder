@@ -17,10 +17,13 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     targetPathname = rootDir + '/target',
     templatesRollupPathname = targetPathname + '/templates.js',
     cssRollupPathname = targetPathname + '/index.css',
-    javascriptRollupPathname = targetPathname + '/index.js',
-    javascriptRollupServersidePathname = targetPathname + '/index-server.js',
-    indexHtmlPathname = targetPathname + '/index.html',
+    tvFinderAppJavascriptRollupPathname = targetPathname + '/tvFinderApp-client.js',
+    tvFinderAppJavascriptRollupServersidePathname = targetPathname + '/tvFinderApp-server.js',
+    tvFinderAppIndexHtmlPathname = targetPathname + '/index.html',
     televisionsJavascriptPathname = targetPathname + '/televisions.js',
+    jsonPathname = rootDir + '/json',
+    televisionsJsonPathname = jsonPathname + '/televisions.json',
+    productJsonPathname = jsonPathname + '/product',
     appPathname = rootDir + '/app',
     pagePathname = rootDir + '/page',
     viewPathname = rootDir + '/view',
@@ -41,13 +44,13 @@ var rootDir = path.dirname(path.normalize(__dirname)),
         'node',
         '/usr/local/lib/node_modules/requirejs/bin/r.js',
         '-o',
-        rootDir + '/config/rs-client.json'
+        rootDir + '/config/tvFinderApp-client.json'
     ].join(' '),
     rollupJavascriptServersideCommand = [
         'node',
         '/usr/local/lib/node_modules/requirejs/bin/r.js',
         '-o',
-        rootDir + '/config/rs-server.json'
+        rootDir + '/config/tvFinderApp-server.json'
     ].join(' '),
     compileRenderersCommand = [
         'handlebars',
@@ -56,6 +59,20 @@ var rootDir = path.dirname(path.normalize(__dirname)),
         '--output',
         templatesRollupPathname
     ].join(' ');
+
+requirejs.config({
+        baseUrl: rootDir,
+        paths: {
+            "content": "lib/content-server",
+            "televisions": "lib/televisions-server"
+        }
+    }
+);
+
+requirejs(['lib/environment'], function (environment) {
+        environment.televisionsJsonPathname = televisionsJsonPathname;
+    }
+);
 
 var qCompilePage,
     qRenderPage,
@@ -68,44 +85,6 @@ var qCompilePage,
     qCreateJavascriptRollupServerside,
     qCompileRenderers,
     qCreateTelevisions;
-
-requirejs.config({
-        baseUrl: rootDir,
-        paths: {
-            "content": "lib/content-server",
-            "televisions": "lib/televisions-server",
-            "environment": "lib/environment"
-        },
-        "shim": {
-            "lib/jquery.ui.slider": {
-                "deps": [
-                    "lib/jquery.ui.widget",
-                    "lib/jquery.ui.mouse"
-                ]
-            },
-            "lib/jquery.ui.mouse": {
-                "deps": [
-                    "lib/jquery.ui.widget"
-                ]
-            },
-            "lib/jquery.ui.widget": {
-                "deps": [
-                    "lib/jquery.ui.core"
-                ]
-            }
-        }
-    }
-);
-
-navigator = { userAgent: "jsdom" };
-document = { createElement: function (type) {
-    return $('<' + type + '/>');
-}};
-window = require('jsdom').jsdom().createWindow();
-
-requirejs(['Backbone', 'jQuery'], function (Backbone, $) {
-    Backbone.$ = $; // necessary, why?
-});
 
 // execution
 
@@ -124,7 +103,7 @@ Q.all([compilePage(), createJavascriptRollup()]).then(
 function servePage() {
     var viewResolverMap = [
         { pattern: /^(\/target)?\/index\.css$/, action: serveCssRollup },
-        { pattern: /^(\/target)?\/index\.js/, action: serveJavascriptRollup },
+        { pattern: /^(\/target)?\/tvFinderApp-client\.js/, action: serveJavascriptRollup },
         { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
         { pattern: /^(\/usr\/local\/lib\/node_modules\/.*\.js)/, action: serveJavascriptLibrary },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
@@ -208,7 +187,7 @@ function serveCss(values, req, res) {
 function serveJavascriptRollup(values, req, res) {
     var qServeJavascriptRollup = Q.defer();
     createJavascriptRollup().then(function () {
-            fs.readFile(javascriptRollupPathname, 'ascii', function (error, contents) {
+            fs.readFile(tvFinderAppJavascriptRollupPathname, 'ascii', function (error, contents) {
                     if (error) {
                         qServeJavascriptRollup.reject(error);
                     }
@@ -329,7 +308,7 @@ function serveTvFinderHtml(values, req, res) {
 function compilePage() {
     if (!qCompilePage) {
         qCompilePage = Q.defer();
-        Q.all([renderPage(), statGeneratedFile(indexHtmlPathname)]).then(
+        Q.all([renderPage(), statGeneratedFile(tvFinderAppIndexHtmlPathname)]).then(
             function (values) {
                 var contents = values[0], stat = values[1];
                 requirejs(['content'], function (content) {
@@ -337,7 +316,7 @@ function compilePage() {
                             tvFinderHtml = '<!doctype html>\n\n' + content.unescape(contents);
                         }
                         if (contents || !stat) {
-                            fs.writeFile(indexHtmlPathname, tvFinderHtml, function (error) {
+                            fs.writeFile(tvFinderAppIndexHtmlPathname, tvFinderHtml, function (error) {
                                 if (error) {
                                     qCompilePage.reject(error);
                                     qCompilePage = undefined;
@@ -378,7 +357,7 @@ function renderPage() {
                         '<html><head></head><body></body></html>',
                         [
                             "/usr/local/lib/node_modules/requirejs/require.js",
-                            javascriptRollupServersidePathname
+                            tvFinderAppJavascriptRollupServersidePathname
                         ],
                         function (errors, window) {
                             if (errors) {
@@ -581,7 +560,7 @@ function createJavascriptRollup() {
         qCreateJavascriptRollup = Q.defer();
         compileRenderers().then(
             function () {
-                var rollupStatPromise = statGeneratedFile(javascriptRollupPathname),
+                var rollupStatPromise = statGeneratedFile(tvFinderAppJavascriptRollupPathname),
                     appStatPromises = statFilesInDirectoryMatching(appPathname, /\.js$/),
                     pageStatPromises = statFilesInDirectoryMatching(pagePathname, /\.js$/),
                     viewStatPromises = statFilesInDirectoryMatching(viewPathname, /\.js$/),
@@ -649,7 +628,7 @@ function createJavascriptRollupServerside() {
         qCreateJavascriptRollupServerside = Q.defer();
         Q.all([compileRenderers(), createTelevisions()]).then(
             function () {
-                var rollupStatPromise = statGeneratedFile(javascriptRollupServersidePathname),
+                var rollupStatPromise = statGeneratedFile(tvFinderAppJavascriptRollupServersidePathname),
                     appStatPromises = statFilesInDirectoryMatching(appPathname, /\.js$/),
                     pageStatPromises = statFilesInDirectoryMatching(pagePathname, /\.js$/),
                     viewStatPromises = statFilesInDirectoryMatching(viewPathname, /\.js$/),

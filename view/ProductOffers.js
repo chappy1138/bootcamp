@@ -6,7 +6,7 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 tagName: "section",
                 className: "tvFinderOfferContainer",
                 initialize: function (options) {
-                    _.bindAll(this, 'filter', 'sort');
+                    _.bindAll(this, 'filter', 'sort', 'click');
                     this.tvFinderAppModel = options.tvFinderAppModel;
                     this.tvFinderAppModel.bind('change:minSizeFilter', this.filter);
                     this.tvFinderAppModel.bind('change:maxSizeFilter', this.filter);
@@ -18,6 +18,7 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 },
                 start: function () {
                     var self = this;
+                    this.$el.click(this.click);
                     requirejs(['lib/jquery.deferredImage', 'lib/jquery.isotope'], function () {
                             self.$el
                                 .deferredImage()
@@ -45,6 +46,18 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                             );
                         }
                     );
+                },
+                click: function (event) {
+                    var $product = $(event.target), item_id;
+                    while ($product[0] != this.$el[0]) {
+                        item_id = $product.attr('data-item_id');
+                        if (item_id) {
+                            this.tvFinderAppModel.set('item_id', item_id);
+                            break;
+                        }
+                        $product = $product.parent();
+                    }
+                    return false;
                 },
                 filter: function () {
                     var self = this,

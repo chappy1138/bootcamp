@@ -11,8 +11,9 @@ define([
     'view/TvFinderBrandControl',
     'view/TvFinderSortControl',
     'view/TvFinderOfferHeader',
-    'view/ProductOffers'],
-    function ($, Backbone, qTelevisions, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView) {
+    'view/ProductOffers',
+    'view/ProductPanel'],
+    function ($, Backbone, qTelevisions, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView, ProductPanelView) {
         var qTvFinderApp = $.Deferred();
         qTelevisions.then(
             function (televisions) {
@@ -49,12 +50,6 @@ define([
                                     appendTo: tvFinderPovView.el
                                 }
                             ),
-                            productOffersView = new ProductOffersView({
-                                    id: 'tvFinderOfferContainerId',
-                                    appendTo: tvFinderControlsView.$el.parent().parent(),
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
                             tvFinderSizeControlView = new TvFinderSizeControlView({
                                     appendTo: tvFinderControlsView.el,
                                     tvFinderAppModel: tvFinderAppModel
@@ -79,6 +74,17 @@ define([
                                     appendTo: tvFinderControlsView.$el.parent(),
                                     tvFinderAppModel: tvFinderAppModel
                                 }
+                            ),
+                            productOffersView = new ProductOffersView({
+                                    id: 'tvFinderOfferContainerId',
+                                    appendTo: tvFinderControlsView.$el.parent().parent(),
+                                    tvFinderAppModel: tvFinderAppModel
+                                }
+                            ),
+                            productPanelView = new ProductPanelView({
+                                    appendTo: $('body'),
+                                    tvFinderAppModel: tvFinderAppModel
+                                }
                             );
                         return {
                             start: function () {
@@ -86,12 +92,13 @@ define([
                                 breadcrumbLineView.start();
                                 tvFinderPovView.start();
                                 tvFinderControlsView.start();
-                                productOffersView.start();
                                 tvFinderSizeControlView.start();
                                 tvFinderTypeControlView.start();
                                 tvFinderBrandControlView.start();
                                 tvFinderSortControlView.start();
                                 tvFinderOfferHeaderView.start();
+                                productOffersView.start();
+                                productPanelView.start();
                             }
                         };
                     }
