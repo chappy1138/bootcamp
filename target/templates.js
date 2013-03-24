@@ -182,6 +182,10 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   else { stack2 = depth0.ratingDisplay; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
     + " out of 5 Stars\"></span>\n</p>\n";
+  if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + " | Write a Review | Ask a Question";
   return buffer;
   });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {

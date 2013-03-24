@@ -11,9 +11,9 @@ define([
         return function (options) {
             var qGetSpecificData = $.Deferred(),
                 productPromise = products.getOrFetch(options.base_item_id),
-                reviewPromise = reviews.getOrFetch(options.base_item_id);
-            $.when(productPromise, reviewPromise, qTelevisions).then(
-                function (product, review, televisions) {
+                reviewsPromise = reviews.getOrFetch(options.base_item_id);
+            $.when(productPromise, reviewsPromise, qTelevisions).then(
+                function (products, reviews, televisions) {
                     // display the product
                     options = _.extend({
                             appendTo: $('appBody')[0]
@@ -22,7 +22,7 @@ define([
                     );
                     var ratingWidthValue = 0, ratingDisplayValue = undefined;
                     _.any(televisions, function (tv) {
-                            if (tv.item_id === product.attributes.base_item_id) {
+                            if (tv.item_id === products.attributes.base_item_id) {
                                 ratingWidthValue = ratingWidth(tv.rating);
                                 ratingDisplayValue = ratingDisplay(tv.rating);
                                 return true;
@@ -31,11 +31,15 @@ define([
                         }
                     );
                     productAppModel.set({
-                            product: product,
-                            baseItem: product.attributes[0],
-                            review: review,
+                            product: products,
+                            baseItem: products.attributes.items[0],
+                            reviews: reviews,
                             ratingWidth: ratingWidthValue,
-                            ratingDisplay: ratingDisplayValue
+                            ratingDisplay: ratingDisplayValue,
+                            reviewsCount:
+                                reviews.attributes.entries.length === 1
+                                ? '1 review'
+                                : reviews.attributes.entries.length + ' reviews'
                         }
                     );
                     var productTopView = new ProductTopView({
