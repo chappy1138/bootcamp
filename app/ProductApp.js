@@ -8,7 +8,6 @@ define([
     'view/ProductTop',
     'view/ProductMedia'],
     function ($, _, Backbone, products, reviews, qTelevisions, ProductTopView, ProductMediaView) {
-        var productAppModel = new Backbone.Model();
         return function (options) {
             var qGetSpecificData = $.Deferred(),
                 productPromise = products.getOrFetch(options.base_item_id),
@@ -21,7 +20,7 @@ define([
                         },
                         options
                     );
-                    var rating;
+                    var self = this, rating;
                     _.any(televisions, function (tv) {
                             if (tv.item_id === products.attributes.base_item_id) {
                                 rating = tv.rating;
@@ -30,19 +29,18 @@ define([
                             return false;
                         }
                     );
-                    productAppModel.set({
+                    var productAppModel = new Backbone.Model({
+                            isOpen: true,
                             product: products,
                             baseItem: products.attributes.items[0],
                             reviews: reviews,
-
                             rating: rating,
-                            reviewsCount: reviews.attributes.entries.length === 1
-                                ? '1 review'
-                                : reviews.attributes.entries.length + ' reviews'
+                            oneReview: reviews.attributes.entries.length === 1
                         }
                     );
                     var productTopView = new ProductTopView({
                                 appendTo: options.appendTo,
+                                close: options.close,
                                 model: productAppModel
                             }
                         ),
@@ -51,9 +49,12 @@ define([
                                 model: productAppModel
                             }
                         );
+                    productAppModel.on('change:isOpen', function () {
+                            options.appendTo
+                        }
+                    );
                     qGetSpecificData.resolve({
                             start: function () {
-
                                 var totalMargins = $(window).width() - 1024,
                                     leftMargin = totalMargins / 2,
                                     rightMargin = leftMargin + 1024,

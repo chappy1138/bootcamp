@@ -3,20 +3,26 @@
 }
 
 .productPanelFloating {
-    position:absolute;
+    z-index: 3;
+    position: absolute;
     background-color: white;
     display: none;
     padding: 40px;
     outline-style: solid;
     outline-width: 2px;
     outline-color: rgb(192,192,192);
-    z-index: 2;
     line-height: normal;
     width: 768px;
 }
 
-.productPanelFloating .started {
-    display: block;
+.productPanelBackground {
+    z-index: 2;
+    position: absolute;
+    background-color: black;
+    opacity: 0.7;
+    display: none;
+    left: 0;
+    top: 0;
 }
 
 .productTopLeft {
@@ -48,6 +54,18 @@
 
 .productCloseBox {
     float: right;
+    background-image: url(../image/close-panel.png);
+}
+
+.productCloseBox,
+.productCloseBox a {
+    height: 26px;
+    width: 26px;
+}
+
+.productCloseBox a {
+    display: block;
+    text-indent: -9999px;
 }
 
 .productMedia {

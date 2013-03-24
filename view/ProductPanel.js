@@ -1,27 +1,52 @@
-define(['view/Base', 'app/ProductApp'], function (BaseView, ProductApp) {
+define(['jQuery', 'underscore', 'view/Base', 'app/ProductApp'], function ($, _, BaseView, ProductApp) {
         var superclass = BaseView;
         return superclass.extend({
                 name: 'ProductPanel',
                 tagName: "div",
                 className: "productPanel",
                 initialize: function (options) {
-                    _.bindAll(this, 'showProductPanel');
+                    _.bindAll(this, 'showProductPanel', 'closePanel', 'resize');
                     this.tvFinderAppModel = options.tvFinderAppModel;
                     this.tvFinderAppModel.on('change:item_id', this.showProductPanel);
                     superclass.prototype.initialize.apply(this, arguments);
                 },
-                showProductPanel: function() {
+                start: function () {
+                    this.$('.productPanelBackground').click(function () { return false; });
+                    this.resize();
+                    $(window).resize(this.resize);
+                },
+                showProductPanel: function () {
+                    this.$('.productPanelBackground').css({ display: 'block' });
                     var self = this, item_id = this.tvFinderAppModel.get('item_id');
                     ProductApp({
                             base_item_id: item_id,
-                            appendTo: $('.productPanelFloating')
+                            appendTo: self.$('.productPanelFloating'),
+                            close: self.closePanel
                         }
                     ).then(
                         function (productApp) {
+                            self.$('.productPanelFloating').css({ display: 'block' });
                             productApp.start();
                         },
                         function (error) {
                             console.log(error);
+                        }
+                    );
+                },
+                closePanel: function () {
+                    this.$('.productPanelFloating').html('').css({ display: 'none' });
+                    this.$('.productPanelBackground').css({ display: 'none' });
+                    return false;
+                },
+                resize: function () {
+                    var $document = $(document),
+                        $background = this.$('.productPanelBackground'),
+                        offset = $background.parent().offset();
+                    $background.css({
+                            width: $document.width(),
+                            height: $document.height(),
+                            top: -offset.top + 'px',
+                            left: -offset.left + 'px'
                         }
                     );
                 }

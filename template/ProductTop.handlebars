@@ -2,11 +2,11 @@
     <div class="productTopTitle">{{baseItem.genericContent.itemName}}</div>
     <div>
         {{formattedRating rating}}
-        <p><a href="#" title="{{reviewsCount}}">{{reviewsCount}}</a> | <a href="#" title="Write a Review">Write a
+        <p><a href="#" title="go to reviews">{{#if oneReview}}1 review{{else}}{{reviews.length}} reviews{{/if}}</a> | <a href="#" title="Write a Review">Write a
             Review</a>
             | <a href="#" title="Ask a Question">Ask a Question</a></p>
 
     </div>
     <p>{{formattedPrice baseItem.sellers.0.currentItemPrice}}</p>
 </div>
-<a class="productCloseBox" href="#" title="close">close</a>
+<div class="productCloseBox"><a href="#" title="close">close</a></div>

@@ -1,12 +1,15 @@
-define(['jQuery', 'view/Base'], function ($, BaseView) {
+define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
         var superclass = BaseView;
         return superclass.extend({
                 name: 'ProductTop',
                 tagName: "div",
                 className: "productTop",
-                initialize: function () {
-                    this.model.on('change', this.render);
+                initialize: function (options) {
+                    this.close = options.close;
                     superclass.prototype.initialize.apply(this, arguments);
+                },
+                start: function () {
+                    this.$('.productCloseBox').click(this.close);
                 }
             }
         );

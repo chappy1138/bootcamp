@@ -188,31 +188,39 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<div class=\"productPanelFloating\"></div>";
+  return "<div class=\"productPanelFloating\"></div>\n<div class=\"productPanelBackground\"></div>\n";
   });
 templates['ProductTop'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  var buffer = "", stack1, stack2, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var buffer = "", stack1, stack2, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
+function program1(depth0,data) {
+  
+  
+  return "1 review";
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += escapeExpression(((stack1 = ((stack1 = depth0.reviews),stack1 == null || stack1 === false ? stack1 : stack1.length)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + " reviews";
+  return buffer;
+  }
 
   buffer += "<div class=\"productTopLeft\">\n    <div class=\"productTopTitle\">"
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.genericContent)),stack1 == null || stack1 === false ? stack1 : stack1.itemName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</div>\n    <div>\n        ";
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.formattedRating),stack1 ? stack1.call(depth0, depth0.rating, options) : helperMissing.call(depth0, "formattedRating", depth0.rating, options)))
-    + "\n        <p><a href=\"#\" title=\"";
-  if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + "\">";
-  if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + "</a> | <a href=\"#\" title=\"Write a Review\">Write a\n            Review</a>\n            | <a href=\"#\" title=\"Ask a Question\">Ask a Question</a></p>\n\n    </div>\n    <p>";
+    + "\n        <p><a href=\"#\" title=\"go to reviews\">";
+  stack2 = helpers['if'].call(depth0, depth0.oneReview, {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data});
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "</a> | <a href=\"#\" title=\"Write a Review\">Write a\n            Review</a>\n            | <a href=\"#\" title=\"Ask a Question\">Ask a Question</a></p>\n\n    </div>\n    <p>";
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.formattedPrice),stack1 ? stack1.call(depth0, ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.sellers)),stack1 == null || stack1 === false ? stack1 : stack1[0])),stack1 == null || stack1 === false ? stack1 : stack1.currentItemPrice), options) : helperMissing.call(depth0, "formattedPrice", ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.sellers)),stack1 == null || stack1 === false ? stack1 : stack1[0])),stack1 == null || stack1 === false ? stack1 : stack1.currentItemPrice), options)))
-    + "</p>\n</div>\n<a class=\"productCloseBox\" href=\"#\" title=\"close\">close</a>";
+    + "</p>\n</div>\n<div class=\"productCloseBox\"><a href=\"#\" title=\"close\">close</a></div>";
   return buffer;
   });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {
