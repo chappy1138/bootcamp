@@ -4,7 +4,8 @@
         "lib/bootstrap",
         "lib/jquery.deferredImage",
         "lib/jquery.ui.sliderX",
-        "lib/jquery.isotope"
+        "lib/jquery.isotope",
+        "lib/jquery.jcarousel"
     ],
     "name": "app/TvFinderApp",
     "out": "../target/tvFinderApp-client.js",

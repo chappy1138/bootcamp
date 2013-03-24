@@ -1,5 +1,6 @@
 @import url("bootstrap.min.css");
 @import url("jquery-ui-1.10.1.custom.min.css");
+@import url("jquery.jcarousel.tango.css");
 
 /*****************
  * TVFinder Fonts
@@ -590,4 +591,24 @@ a:focus {
     -ms-transition-property:     -ms-transform, opacity;
     -o-transition-property:      -o-transform, opacity;
     transition-property:         transform, opacity;
+}
+
+
+.productPanel {
+    position: relative;
+}
+
+.productPanelFloating {
+    position:absolute;
+    background-color: white;
+    display: none;
+}
+
+.productPanelFloating .started {
+    display: block;
+}
+
+.productMedia li {
+    width: 500px;
+    height: 500px;
 }

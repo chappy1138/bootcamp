@@ -12,12 +12,7 @@
             </a></h1>
         </header>
         <ul class="tvFinderProductDetails">{{{description}}}</ul>
-        <p class="tvFinderProductPrice"><span class="tvFinderUsDollars">{{dollars}}</span><span
-                class="tvFinderUsCents">{{cents}}</span></p>
-
-        <p class="tvFinderProductRating">
-                    <span style="width: {{ratingWidth}}px"
-                          title="{{ratingDisplay}} out of 5 Stars"></span>
-        </p>
+        <p class="tvFinderProductPrice">{{formattedPrice price}}</p>
+        {{formattedRating rating}}
     </article>
 {{/.}}

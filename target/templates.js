@@ -72,14 +72,48 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 
   return "<title>Walmart.com: Save Money. Live Better.</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\"/>\n";
   });
-templates['ProductOffers'] = template(function (Handlebars,depth0,helpers,partials,data) {
+templates['ProductMedia'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  var stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
 
 function program1(depth0,data) {
   
-  var buffer = "", stack1, stack2;
+  var buffer = "", stack1;
+  buffer += "\n        <li><img width=\"500\" height=\"500\" src=\"";
+  if (stack1 = helpers.lgImageSrc) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.lgImageSrc; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\" alt=\"\"/></li>\n    ";
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\n        <a href=\"#\">"
+    + escapeExpression(((stack1 = data.index),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</a>\n    ";
+  return buffer;
+  }
+
+  buffer += "<ul>\n    ";
+  stack2 = ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.alternateImageData)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}));
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "\n</ul>\n<div class=\"productMediaGotoPage\">\n    ";
+  stack2 = ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.alternateImageData)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data}));
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "\n</div>";
+  return buffer;
+  });
+templates['ProductOffers'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  var stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this, blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, stack2, options;
   buffer += "\n    <article class=\"tvFinderOffer\" data-featured=\""
     + escapeExpression(((stack1 = data.index),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\" data-type=\"";
@@ -134,23 +168,13 @@ function program1(depth0,data) {
   if (stack2 = helpers.description) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.description; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "</ul>\n        <p class=\"tvFinderProductPrice\"><span class=\"tvFinderUsDollars\">";
-  if (stack2 = helpers.dollars) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.dollars; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + "</span><span\n                class=\"tvFinderUsCents\">";
-  if (stack2 = helpers.cents) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.cents; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + "</span></p>\n\n        <p class=\"tvFinderProductRating\">\n                    <span style=\"width: ";
-  if (stack2 = helpers.ratingWidth) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.ratingWidth; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + "px\"\n                          title=\"";
-  if (stack2 = helpers.ratingDisplay) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.ratingDisplay; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + " out of 5 Stars\"></span>\n        </p>\n    </article>\n";
+  buffer += "</ul>\n        <p class=\"tvFinderProductPrice\">";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.formattedPrice),stack1 ? stack1.call(depth0, depth0.price, options) : helperMissing.call(depth0, "formattedPrice", depth0.price, options)))
+    + "</p>\n        ";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.formattedRating),stack1 ? stack1.call(depth0, depth0.rating, options) : helperMissing.call(depth0, "formattedRating", depth0.rating, options)))
+    + "\n    </article>\n";
   return buffer;
   }
 
@@ -164,28 +188,31 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<!-- product panel -->";
+  return "<div class=\"productPanelFloating\"></div>";
   });
 templates['ProductTop'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression;
+  var buffer = "", stack1, stack2, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
 
 
-  buffer += escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.genericContent)),stack1 == null || stack1 === false ? stack1 : stack1.itemName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\n<p class=\"tvFinderProductRating\">\n                    <span style=\"width: ";
-  if (stack2 = helpers.ratingWidth) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.ratingWidth; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + "px\"\n                          title=\"";
-  if (stack2 = helpers.ratingDisplay) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
-  else { stack2 = depth0.ratingDisplay; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
-  buffer += escapeExpression(stack2)
-    + " out of 5 Stars\"></span>\n</p>\n";
+  buffer += "<div>\n"
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.genericContent)),stack1 == null || stack1 === false ? stack1 : stack1.itemName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\n";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.formattedRating),stack1 ? stack1.call(depth0, depth0.rating, options) : helperMissing.call(depth0, "formattedRating", depth0.rating, options)))
+    + "\n</p>\n<a href=\"#\" title=\"";
   if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + " | Write a Review | Ask a Question";
+    + "\">";
+  if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "</a> | <a href=\"#\" title=\"Write a Review\">Write a Review</a> | <a href=\"#\" title=\"Ask a Question\">Ask a Question</a></p>\n";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.formattedPrice),stack1 ? stack1.call(depth0, ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.sellers)),stack1 == null || stack1 === false ? stack1 : stack1[0])),stack1 == null || stack1 === false ? stack1 : stack1.currentItemPrice), options) : helperMissing.call(depth0, "formattedPrice", ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.sellers)),stack1 == null || stack1 === false ? stack1 : stack1[0])),stack1 == null || stack1 === false ? stack1 : stack1.currentItemPrice), options)))
+    + "\n</div>\n<a href=\"#\" title=\"close\">close</a>";
   return buffer;
   });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {

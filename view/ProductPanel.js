@@ -14,7 +14,7 @@ define(['view/Base', 'app/ProductApp'], function (BaseView, ProductApp) {
                     var self = this, item_id = this.tvFinderAppModel.get('item_id');
                     ProductApp({
                             base_item_id: item_id,
-                            appendTo: self.el
+                            appendTo: $('.productPanelFloating')
                         }
                     ).then(
                         function (productApp) {

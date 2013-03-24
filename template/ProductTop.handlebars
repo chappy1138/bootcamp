@@ -1,6 +1,8 @@
+<div>
 {{baseItem.genericContent.itemName}}
-<p class="tvFinderProductRating">
-                    <span style="width: {{ratingWidth}}px"
-                          title="{{ratingDisplay}} out of 5 Stars"></span>
+{{formattedRating rating}}
 </p>
-{{reviewsCount}} | Write a Review | Ask a Question
+<a href="#" title="{{reviewsCount}}">{{reviewsCount}}</a> | <a href="#" title="Write a Review">Write a Review</a> | <a href="#" title="Ask a Question">Ask a Question</a></p>
+{{formattedPrice baseItem.sellers.0.currentItemPrice}}
+</div>
+<a href="#" title="close">close</a>

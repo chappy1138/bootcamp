@@ -5,8 +5,9 @@ define([
     'lib/products',
     'lib/reviews',
     'televisions',
-    'view/ProductTop'],
-    function ($, _, Backbone, products, reviews, qTelevisions, ProductTopView) {
+    'view/ProductTop',
+    'view/ProductMedia'],
+    function ($, _, Backbone, products, reviews, qTelevisions, ProductTopView, ProductMediaView) {
         var productAppModel = new Backbone.Model();
         return function (options) {
             var qGetSpecificData = $.Deferred(),
@@ -20,11 +21,10 @@ define([
                         },
                         options
                     );
-                    var ratingWidthValue = 0, ratingDisplayValue = undefined;
+                    var rating;
                     _.any(televisions, function (tv) {
                             if (tv.item_id === products.attributes.base_item_id) {
-                                ratingWidthValue = ratingWidth(tv.rating);
-                                ratingDisplayValue = ratingDisplay(tv.rating);
+                                rating = tv.rating;
                                 return true;
                             }
                             return false;
@@ -34,10 +34,9 @@ define([
                             product: products,
                             baseItem: products.attributes.items[0],
                             reviews: reviews,
-                            ratingWidth: ratingWidthValue,
-                            ratingDisplay: ratingDisplayValue,
-                            reviewsCount:
-                                reviews.attributes.entries.length === 1
+
+                            rating: rating,
+                            reviewsCount: reviews.attributes.entries.length === 1
                                 ? '1 review'
                                 : reviews.attributes.entries.length + ' reviews'
                         }
@@ -46,10 +45,39 @@ define([
                                 appendTo: options.appendTo,
                                 model: productAppModel
                             }
+                        ),
+                        productMediaView = new ProductMediaView({
+                                appendTo: options.appendTo,
+                                model: productAppModel
+                            }
                         );
                     qGetSpecificData.resolve({
                             start: function () {
+
+                                var totalMargins = $(window).width() - 1024,
+                                    leftMargin = totalMargins / 2,
+                                    rightMargin = leftMargin + 1024,
+                                    panelWidth = 768,
+                                    left = rightMargin - panelWidth,
+                                    offset = options.appendTo.parent().offset(),
+                                    windowScrollTop = $(window).scrollTop(),
+                                    top = windowScrollTop + 20 - offset.top;
+
+                                options.appendTo.css({
+                                        'position': 'absolute',
+                                        'left': left + 'px',
+                                        'top': top + 'px',
+                                        'display': 'block',
+                                        'z-index': 2
+                                    }
+                                );
                                 productTopView.start();
+                                productMediaView.start();
+                            },
+                            stop: function () {
+                                options.appendTo.css({
+                                    'display': 'none'
+                                });
                             }
                         }
                     );
@@ -60,17 +88,6 @@ define([
             );
             return qGetSpecificData.promise();
         };
-
-        function ratingWidth(ratingValue) {
-            var ratingWidth = ratingValue ? Math.round(ratingValue * 12.0) : 0;
-            return ratingWidth;
-        }
-
-        function ratingDisplay(ratingValue) {
-            var ratingDisplay = ratingValue
-                ? (Math.round(ratingValue) === ratingValue ? ratingValue : ratingValue.toFixed(1)) : 0;
-            return ratingDisplay;
-        }
     }
 );
 
