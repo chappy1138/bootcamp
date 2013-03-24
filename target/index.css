@@ -163,6 +163,132 @@
     cursor: default;
     background-position: 0 -96px;
 }
+.productPanel {
+    position: relative;
+}
+.productPanelFloating {
+    position:absolute;
+    background-color: white;
+    display: none;
+    padding: 40px;
+    outline-style: solid;
+    outline-width: 2px;
+    outline-color: rgb(192,192,192);
+    z-index: 2;
+    line-height: normal;
+    width: 768px;
+}
+.productPanelFloating .started {
+    display: block;
+}
+.productTopLeft {
+    float: left;
+}
+.productTopLeft p {
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+}
+.productTopLeft .tvFinderProductRating {
+}
+.productTopLeft .tvFinderProductRating span {
+}
+.productTopTitle {
+    display: block;
+    font-size: 28px;
+    white-space: nowrap;
+    width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.productCloseBox {
+    float: right;
+}
+.productMedia {
+    clear: both;
+}
+.productMedia .carousel .goLeft,
+.productMedia .carousel .goRight {
+    display: inline-block;
+    float: left;
+    height: 52px;
+    width: 31px;
+    background-repeat: no-repeat;
+    background-position:center;
+    margin: 224px 40px;
+}
+.productMedia .carousel .goLeft {
+    background-image: url(../image/arrow-left-gray.png);
+}
+.productMedia .carousel .goLeft.active  {
+    background-image: url(../image/arrow-left.png);
+}
+.productMedia .carousel .goRight {
+    background-image: url(../image/arrow-right-gray.png);
+}
+.productMedia .carousel .goRight.active {
+    background-image: url(../image/arrow-right.png);
+}
+.productMedia .carousel .clipping {
+    position: relative;
+    height: 500px;
+    width: 500px;
+    overflow: hidden;
+    float: left;
+}
+.productMedia .carousel ul {
+    position: absolute;
+    height: 500px;
+}
+.productMedia .carousel li {
+    float: left;
+    height: 500px;
+    width: 500px;
+}
+.productMedia .centered-block-outer {
+    clear: both;
+}
+.productMedia .pages {
+    display: block;
+    margin-top: 32px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.productMedia .pages li {
+    background-image: url(../image/carousel-position.png);
+    background-repeat: no-repeat;
+    background-position:center;
+    display: block;
+    float: left;
+    height: 13px;
+    width: 13px;
+    margin: 0 5px;
+}
+.productMedia .pages li.active {
+    background-image: url(../image/current-position.png);
+}
+.productMedia .pages li,
+.productMedia .pages a {
+    height: 13px;
+    width: 13px;
+}
+.productMedia .pages a {
+    display: block;
+    text-indent: -9999px;
+}
+.centered-block-outer {
+    overflow: hidden;
+    position: relative;
+}
+.centered-block-middle {
+    float: left;
+    position:relative;
+    left:50%;
+}
+.centered-block-inner {
+    position:relative;
+    left:-50%;
+}
 @font-face {
     font-family: "MyriadPro-Regular";
     src: url('../font/MyriadPro-Regular.otf');
@@ -603,19 +729,4 @@ a:focus {
     -ms-transition-property:     -ms-transform, opacity;
     -o-transition-property:      -o-transform, opacity;
     transition-property:         transform, opacity;
-}
-.productPanel {
-    position: relative;
-}
-.productPanelFloating {
-    position:absolute;
-    background-color: white;
-    display: none;
-}
-.productPanelFloating .started {
-    display: block;
-}
-.productMedia li {
-    width: 500px;
-    height: 500px;
 }

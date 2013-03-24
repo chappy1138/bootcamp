@@ -1,10 +1,22 @@
-<ul>
-    {{#baseItem.alternateImageData}}
-        <li><img width="500" height="500" src="{{lgImageSrc}}" alt=""/></li>
-    {{/baseItem.alternateImageData}}
-</ul>
-<div class="productMediaGotoPage">
-    {{#baseItem.alternateImageData}}
-        <a href="#">{{@index}}</a>
-    {{/baseItem.alternateImageData}}
+<div class="carousel">
+    <div class="goLeft"></div>
+    <div class="clipping">
+        <ul>
+            {{#baseItem.alternateImageData}}
+                <li><img src="{{lgImageSrc}}" alt=""/></li>
+            {{/baseItem.alternateImageData}}
+        </ul>
+    </div>
+    <div class="goRight"></div>
+</div>
+<div class="centered-block-outer">
+    <div class="centered-block-middle">
+        <div class="centered-block-inner">
+            <ul class="pages">
+                {{#baseItem.alternateImageData}}
+                    <li><a href="#">{{@index}}</a></li>
+                {{/baseItem.alternateImageData}}
+            </ul>
+        </div>
+    </div>
 </div>

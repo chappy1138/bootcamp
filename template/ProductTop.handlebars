@@ -1,8 +1,12 @@
-<div>
-{{baseItem.genericContent.itemName}}
-{{formattedRating rating}}
-</p>
-<a href="#" title="{{reviewsCount}}">{{reviewsCount}}</a> | <a href="#" title="Write a Review">Write a Review</a> | <a href="#" title="Ask a Question">Ask a Question</a></p>
-{{formattedPrice baseItem.sellers.0.currentItemPrice}}
+<div class="productTopLeft">
+    <div class="productTopTitle">{{baseItem.genericContent.itemName}}</div>
+    <div>
+        {{formattedRating rating}}
+        <p><a href="#" title="{{reviewsCount}}">{{reviewsCount}}</a> | <a href="#" title="Write a Review">Write a
+            Review</a>
+            | <a href="#" title="Ask a Question">Ask a Question</a></p>
+
+    </div>
+    <p>{{formattedPrice baseItem.sellers.0.currentItemPrice}}</p>
 </div>
-<a href="#" title="close">close</a>
+<a class="productCloseBox" href="#" title="close">close</a>

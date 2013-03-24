@@ -61,14 +61,11 @@ define([
                                     left = rightMargin - panelWidth,
                                     offset = options.appendTo.parent().offset(),
                                     windowScrollTop = $(window).scrollTop(),
-                                    top = windowScrollTop + 20 - offset.top;
-
+                                    top = windowScrollTop + 40 - offset.top;
                                 options.appendTo.css({
-                                        'position': 'absolute',
                                         'left': left + 'px',
                                         'top': top + 'px',
-                                        'display': 'block',
-                                        'z-index': 2
+                                        'display': 'block'
                                     }
                                 );
                                 productTopView.start();

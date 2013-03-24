@@ -80,30 +80,30 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n        <li><img width=\"500\" height=\"500\" src=\"";
+  buffer += "\n                <li><img src=\"";
   if (stack1 = helpers.lgImageSrc) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.lgImageSrc; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\" alt=\"\"/></li>\n    ";
+    + "\" alt=\"\"/></li>\n            ";
   return buffer;
   }
 
 function program3(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n        <a href=\"#\">"
+  buffer += "\n                    <li><a href=\"#\">"
     + escapeExpression(((stack1 = data.index),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</a>\n    ";
+    + "</a></li>\n                ";
   return buffer;
   }
 
-  buffer += "<ul>\n    ";
+  buffer += "<div class=\"carousel\">\n    <div class=\"goLeft\"></div>\n    <div class=\"clipping\">\n        <ul>\n            ";
   stack2 = ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.alternateImageData)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}));
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n</ul>\n<div class=\"productMediaGotoPage\">\n    ";
+  buffer += "\n        </ul>\n    </div>\n    <div class=\"goRight\"></div>\n</div>\n<div class=\"centered-block-outer\">\n    <div class=\"centered-block-middle\">\n        <div class=\"centered-block-inner\">\n            <ul class=\"pages\">\n                ";
   stack2 = ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.alternateImageData)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data}));
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n</div>";
+  buffer += "\n            </ul>\n        </div>\n    </div>\n</div>";
   return buffer;
   });
 templates['ProductOffers'] = template(function (Handlebars,depth0,helpers,partials,data) {
@@ -196,12 +196,12 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
 
 
-  buffer += "<div>\n"
+  buffer += "<div class=\"productTopLeft\">\n    <div class=\"productTopTitle\">"
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.genericContent)),stack1 == null || stack1 === false ? stack1 : stack1.itemName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\n";
+    + "</div>\n    <div>\n        ";
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.formattedRating),stack1 ? stack1.call(depth0, depth0.rating, options) : helperMissing.call(depth0, "formattedRating", depth0.rating, options)))
-    + "\n</p>\n<a href=\"#\" title=\"";
+    + "\n        <p><a href=\"#\" title=\"";
   if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
@@ -209,10 +209,10 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   if (stack2 = helpers.reviewsCount) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.reviewsCount; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "</a> | <a href=\"#\" title=\"Write a Review\">Write a Review</a> | <a href=\"#\" title=\"Ask a Question\">Ask a Question</a></p>\n";
+    + "</a> | <a href=\"#\" title=\"Write a Review\">Write a\n            Review</a>\n            | <a href=\"#\" title=\"Ask a Question\">Ask a Question</a></p>\n\n    </div>\n    <p>";
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.formattedPrice),stack1 ? stack1.call(depth0, ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.sellers)),stack1 == null || stack1 === false ? stack1 : stack1[0])),stack1 == null || stack1 === false ? stack1 : stack1.currentItemPrice), options) : helperMissing.call(depth0, "formattedPrice", ((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.sellers)),stack1 == null || stack1 === false ? stack1 : stack1[0])),stack1 == null || stack1 === false ? stack1 : stack1.currentItemPrice), options)))
-    + "\n</div>\n<a href=\"#\" title=\"close\">close</a>";
+    + "</p>\n</div>\n<a class=\"productCloseBox\" href=\"#\" title=\"close\">close</a>";
   return buffer;
   });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {

@@ -5,47 +5,60 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 tagName: 'div',
                 className: 'productMedia',
                 initialize: function () {
-                    _.bindAll(this, 'initializeCarousel', 'itemLoadCallback');
+                    _.bindAll(this, 'clickArrow', 'clickPage');
                     superclass.prototype.initialize.apply(this, arguments);
                 },
+                currentPage: 0,
                 start: function () {
-                    var self = this;
-                    requirejs(['lib/jquery.jcarousel'], function () {
-                            var alternateImageData = self.model.get('baseItem').alternateImageData;
-                            self.$el.jcarousel({
-                                    scroll: 1,
-                                    initCallback: self.initializeCarousel,
-                                    visible: 1
-//                                    size: alternateImageData.length,
-//                                    itemFallbackDimension: 500,
-//                                    itemLoadCallback: self.itemLoadCallback
-                                    // This tells jCarousel NOT to autobuild prev/next buttons
-//                                buttonNextHTML: null,
-//                                buttonPrevHTML: null
-                                }
-                            );
-                        }
-                    );
-                },
-                initializeCarousel: function (carousel) {
-                    $('.productMediaGotoPage a').bind('click', function () {
-                            carousel.scroll($.jcarousel.intval($(this).text()));
-                            return false;
-                        }
-                    );
-                },
-                itemLoadCallback: function (carousel, state) {
-                    console.log('enter itemLoadCallback', carousel.first, carousel.last);
                     var alternateImageData = this.model.get('baseItem').alternateImageData;
-                    for (var index = carousel.first; index <= carousel.last; index++) {
-                        if (!carousel.has(index)) {
-                            carousel.add(index, '<img width="500" height="500" src="'
-                            + alternateImageData[index].lgImageSrc
-                            + '" alt=""/>');
-                        }
+                    if (alternateImageData.length > 1) {
+                        this.$goRight = this.$('.goRight').toggleClass('active').click(this.clickArrow);
+                        this.$goLeft = this.$('.goLeft').click(this.clickArrow);
                     }
+                    this.$pages = this.$('.pages li').click(this.clickPage);
+                    this.$pages.eq(0).addClass('active');
+                },
+                clickArrow: function (event) {
+                    var $arrow = $(event.target),
+                        isGoRight = this.$goRight[0] === event.target,
+                        isActive = $arrow.hasClass('active'),
+                        alternateImageData = this.model.get('baseItem').alternateImageData;
+                    if (isActive) {
+                        this.$pages.eq(this.currentPage).toggleClass('active');
+                        this.currentPage += isGoRight ? 1 : -1;
+                        this.$pages.eq(this.currentPage).toggleClass('active');
+                        repositionList.call(this);
+                    }
+                },
+                clickPage: function (event) {
+                    var $page = $(event.target),
+                        isActive = $page.hasClass('active');
+                    if (!isActive) {
+                        this.$pages.eq(this.currentPage).toggleClass('active');
+                        this.currentPage = parseInt($page.text());
+                        this.$pages.eq(this.currentPage).toggleClass('active');
+                        repositionList.call(this);
+                    }
+                    return false;
                 }
             }
         );
+
+        function repositionList() {
+            var alternateImageData = this.model.get('baseItem').alternateImageData;
+            this.$('.carousel ul').css({'left': (this.currentPage * -500) + 'px' });
+            if (0 < this.currentPage) {
+                this.$goLeft.addClass('active');
+            }
+            else {
+                this.$goLeft.removeClass('active');
+            }
+            if (this.currentPage < alternateImageData.length - 1) {
+                this.$goRight.addClass('active');
+            }
+            else {
+                this.$goRight.removeClass('active');
+            }
+        }
     }
 );
