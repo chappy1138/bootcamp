@@ -2,8 +2,9 @@ define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'target/tem
     function ($, _, Backbone, Handlebars, content) {
         var superclass = Backbone.View;
         return superclass.extend({
-                isRendered: true,
+                isRenderedInitially: true,
                 el: function () {
+                    _.bindAll(this, 'context', 'render');
                     if (this.id) {
                         this.$el = $('#' + this.id);
                     }
@@ -11,7 +12,7 @@ define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'target/tem
                         this.$el = $('.' + this.className);
                     }
                     if (!this.$el || this.$el.length === 0) {
-                        this.isRendered = false;
+                        this.isRenderedInitially = false;
                         var tagName = this.tagName || 'div';
                         this.$el = $('<' + tagName + '/>');
                         if (this.id) {
@@ -28,9 +29,7 @@ define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'target/tem
                     return this.$el[0];
                 },
                 initialize: function () {
-                    _.bindAll(this, 'context');
-                    if (!this.isRendered) {
-                        this.isRendered = true;
+                    if (!this.isRenderedInitially) {
                         this.render();
                     }
                 },

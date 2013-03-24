@@ -2,16 +2,15 @@ define(['jQuery', 'Backbone', 'model/Product'], function ($, Backbone, ProductMo
         var superclass = Backbone.Collection;
         return superclass.extend({
                 model: ProductModel,
-                getOrFetch: function (item_id) {
-                    var self = this, qGetOrFetch = $.Deferred(), product = this.get(item_id);
+                getOrFetch: function (base_item_id) {
+                    var self = this, qGetOrFetch = $.Deferred(), product = this.get(base_item_id);
                     if (product) {
                         qGetOrFetch.resolve(product);
                     }
                     else {
-                        product = new ProductModel({ item_id: item_id });
+                        product = new ProductModel({ base_item_id: base_item_id });
                         product.fetch().then(
                             function (data, textStatus, jqXHR) {
-                                self.add(product);
                                 qGetOrFetch.resolve(product);
                             },
                             function (jqXHR, textStatus, errorThrown) {

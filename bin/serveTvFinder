@@ -23,6 +23,7 @@ var rootDir = path.dirname(path.normalize(__dirname)),
     televisionsJavascriptPathname = targetPathname + '/televisions.js',
     jsonPathname = rootDir + '/json',
     televisionsJsonPathname = jsonPathname + '/televisions.json',
+    reviewJsonPathname = jsonPathname + '/reviews.json',
     productJsonPathname = jsonPathname + '/product',
     appPathname = rootDir + '/app',
     pagePathname = rootDir + '/page',
@@ -112,6 +113,7 @@ function servePage() {
         { pattern: /^\/favicon.ico$/, action: serveFaviconIco },
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
         { pattern: /^\/product\/([0-9]*)$/, action: serveProductJson },
+        { pattern: /^\/review\/([0-9]*)$/, action: serveReviewJson },
         { pattern: /^\/$/, action: serveTvFinderHtml }
     ];
     http.createServer(function (req, res) {
@@ -304,6 +306,21 @@ function serveProductJson(values, req, res) {
     return qServeProductJson.promise;
 }
 
+function serveReviewJson(values, req, res) {
+    var qServeReviewJson = Q.defer();
+    fs.readFile(reviewJsonPathname, function (error, contents) {
+            if (error) {
+                qServeReviewJson.reject(error);
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(contents);
+                qServeReviewJson.resolve();
+            }
+        }
+    );
+    return qServeReviewJson.promise;
+}
 
 function serveTvFinderHtml(values, req, res) {
     var qServeTvFinderHtml = Q.defer();
@@ -385,10 +402,9 @@ function renderPage() {
                             else {
                                 window.console = console;
                                 window.require(["page/SingleColumn", "app/tvFinderApp"],
-                                    function (SingleColumn, tvFinderAppPromise) {
-                                        tvFinderAppPromise.then(
-                                            function (tvFinderApp) {
-                                                tvFinderApp();
+                                    function (SingleColumn, tvFinderApp) {
+                                        tvFinderApp().then(
+                                            function (tvFinder) {
                                                 window.$('.jsdom').remove();
                                                 qRenderPage.resolve(window.document.outerHTML);
                                                 qRenderPage = undefined;

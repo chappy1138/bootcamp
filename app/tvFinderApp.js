@@ -14,79 +14,79 @@ define([
     'view/ProductOffers',
     'view/ProductPanel'],
     function ($, Backbone, qTelevisions, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView, ProductPanelView) {
-        var qTvFinderApp = $.Deferred();
-        qTelevisions.then(
-            function (televisions) {
-                qTvFinderApp.resolve(function () {
-                        var tvFinderAppModel = new Backbone.Model({
-                                minSizeFilter: '*',
-                                maxSizeFilter: '*',
-                                typeFilter: '*',
-                                brandFilter: '*',
-                                sortBy: '*',
-                                tvOfferCollection: new Backbone.Collection(televisions)
+        return function () {
+            var qTvFinderApp = $.Deferred();
+            qTelevisions.then(
+                function (televisions) {
+                    tvFinderAppModel = new Backbone.Model({
+                            minSizeFilter: '*',
+                            maxSizeFilter: '*',
+                            typeFilter: '*',
+                            brandFilter: '*',
+                            sortBy: '*',
+                            tvOfferCollection: new Backbone.Collection(televisions)
+                        }
+                    );
+                    var siteHeaderView = new SiteHeaderView({
+                                appendTo: ".appHeader"
+                            }
+                        ),
+                        breadcrumbLineView = new BreadcrumbLineView({
+                                appendTo: siteHeaderView.el,
+                                crumbs: [
+                                    { name: 'walmart.com', href: '/', className: 'breadcrumbHome' },
+                                    { name: 'Departments', href: '/cp/All-Departments/121828' },
+                                    { name: 'Electronics', href: '/cp/Electronics/3944' },
+                                    { name: 'TV\'s', href: '/cp/televisions-video/1060825' }
+                                ]
+                            }
+                        ),
+                        tvFinderPovView = new TvFinderPovView({
+                                appendTo: ".appBody",
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        tvFinderControlsView = new TvFinderControlsView({
+                                appendTo: tvFinderPovView.el
+                            }
+                        ),
+                        tvFinderSizeControlView = new TvFinderSizeControlView({
+                                appendTo: tvFinderControlsView.el,
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        tvFinderTypeControlView = new TvFinderTypeControlView({
+                                appendTo: tvFinderControlsView.el,
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        tvFinderBrandControlView = new TvFinderBrandControlView({
+                                appendTo: tvFinderControlsView.el,
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        tvFinderSortControlView = new TvFinderSortControlView({
+                                appendTo: tvFinderControlsView.el,
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        tvFinderOfferHeaderView = new TvFinderOfferHeaderView({
+                                appendTo: tvFinderControlsView.$el.parent(),
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        productOffersView = new ProductOffersView({
+                                id: 'tvFinderOfferContainerId',
+                                appendTo: tvFinderControlsView.$el.parent().parent(),
+                                tvFinderAppModel: tvFinderAppModel
+                            }
+                        ),
+                        productPanelView = new ProductPanelView({
+                                appendTo: $('body'),
+                                tvFinderAppModel: tvFinderAppModel
                             }
                         );
-                        var siteHeaderView = new SiteHeaderView({
-                                    appendTo: ".appHeader"
-                                }
-                            ),
-                            breadcrumbLineView = new BreadcrumbLineView({
-                                    appendTo: siteHeaderView.el,
-                                    crumbs: [
-                                        { name: 'walmart.com', href: '/', className: 'breadcrumbHome' },
-                                        { name: 'Departments', href: '/cp/All-Departments/121828' },
-                                        { name: 'Electronics', href: '/cp/Electronics/3944' },
-                                        { name: 'TV\'s', href: '/cp/televisions-video/1060825' }
-                                    ]
-                                }
-                            ),
-                            tvFinderPovView = new TvFinderPovView({
-                                    appendTo: ".appBody",
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            tvFinderControlsView = new TvFinderControlsView({
-                                    appendTo: tvFinderPovView.el
-                                }
-                            ),
-                            tvFinderSizeControlView = new TvFinderSizeControlView({
-                                    appendTo: tvFinderControlsView.el,
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            tvFinderTypeControlView = new TvFinderTypeControlView({
-                                    appendTo: tvFinderControlsView.el,
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            tvFinderBrandControlView = new TvFinderBrandControlView({
-                                    appendTo: tvFinderControlsView.el,
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            tvFinderSortControlView = new TvFinderSortControlView({
-                                    appendTo: tvFinderControlsView.el,
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            tvFinderOfferHeaderView = new TvFinderOfferHeaderView({
-                                    appendTo: tvFinderControlsView.$el.parent(),
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            productOffersView = new ProductOffersView({
-                                    id: 'tvFinderOfferContainerId',
-                                    appendTo: tvFinderControlsView.$el.parent().parent(),
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            ),
-                            productPanelView = new ProductPanelView({
-                                    appendTo: $('body'),
-                                    tvFinderAppModel: tvFinderAppModel
-                                }
-                            );
-                        return {
+                    qTvFinderApp.resolve({
                             start: function () {
                                 siteHeaderView.start();
                                 breadcrumbLineView.start();
@@ -100,14 +100,14 @@ define([
                                 productOffersView.start();
                                 productPanelView.start();
                             }
-                        };
-                    }
-                );
-            },
-            function (error) {
-                qTvFinderApp.reject(error);
-            }
-        );
-        return qTvFinderApp.promise();
+                        }
+                    );
+                },
+                function (error) {
+                    qTvFinderApp.reject(error);
+                }
+            );
+            return qTvFinderApp.promise();
+        }
     }
 );

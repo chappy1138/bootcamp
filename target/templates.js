@@ -90,11 +90,11 @@ function program1(depth0,data) {
   if (stack2 = helpers.brand) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.brand; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "\"\n             data-price=\"";
+    + "\" data-price=\"";
   if (stack2 = helpers.price) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.price; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "\"\n             data-name=\"";
+    + "\" data-name=\"";
   if (stack2 = helpers.name) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.name; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
@@ -106,11 +106,11 @@ function program1(depth0,data) {
   if (stack2 = helpers.size) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.size; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "\">\n        <header data-item_id=\"";
+    + "\" data-item_id=\"";
   if (stack2 = helpers.item_id) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.item_id; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "\">\n            <h1><a href=\"";
+    + "\">\n        <header>\n            <h1><a href=\"";
   if (stack2 = helpers.url) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.url; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
@@ -166,13 +166,31 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 
   return "<!-- product panel -->";
   });
+templates['ProductTop'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.baseItem),stack1 == null || stack1 === false ? stack1 : stack1.genericContent)),stack1 == null || stack1 === false ? stack1 : stack1.itemName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\n<p class=\"tvFinderProductRating\">\n                    <span style=\"width: ";
+  if (stack2 = helpers.ratingWidth) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.ratingWidth; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + "px\"\n                          title=\"";
+  if (stack2 = helpers.ratingDisplay) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
+  else { stack2 = depth0.ratingDisplay; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
+  buffer += escapeExpression(stack2)
+    + " out of 5 Stars\"></span>\n</p>\n";
+  return buffer;
+  });
 templates['SingleColumnTemplate'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            //\"app/TvFinderApp\": \"tvFinderApp-client\", // comment to get components individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderAppPromise) {\n                tvFinderAppPromise.then(\n                        function (tvFinderApp) {\n                            tvFinderApp().start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"/usr/local/lib/node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            //\"app/TvFinderApp\": \"tvFinderApp-client\", // comment to get components individually\n            \"handlebars\": \"/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"/usr/local/lib/node_modules/backbone/backbone\",\n            \"underscore\": \"/usr/local/lib/node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.7.2\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderApp) {\n                tvFinderApp().then(\n                        function(tvFinder) {\n                            tvFinder.start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
   });
 templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];

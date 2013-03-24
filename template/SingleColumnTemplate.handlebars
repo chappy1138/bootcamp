@@ -55,10 +55,10 @@
             }
         }
     });
-    require(['app/TvFinderApp'], function (tvFinderAppPromise) {
-                tvFinderAppPromise.then(
-                        function (tvFinderApp) {
-                            tvFinderApp().start();
+    require(['app/TvFinderApp'], function (tvFinderApp) {
+                tvFinderApp().then(
+                        function(tvFinder) {
+                            tvFinder.start();
                         },
                         function (error) {
                             console.log(error);
