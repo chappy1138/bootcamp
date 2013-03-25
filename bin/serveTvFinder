@@ -106,7 +106,7 @@ function servePage() {
         { pattern: /^(\/target)?\/index\.css$/, action: serveCssRollup },
         { pattern: /^(\/target)?\/tvFinderApp-client\.js/, action: serveJavascriptRollup },
         { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
-        { pattern: /^(\/usr\/local\/lib\/node_modules\/.*\.js)/, action: serveJavascriptLibrary },
+        { pattern: /^(\/node_modules\/.*\.js)/, action: serveJavascriptLibrary },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
         { pattern: /^\/(((app)|(lib)|(model)|(view)|(target))\/.*\.js)$/, action: serveJavascript },
         { pattern: /^\/(image\/.*\.png)$/, action: servePng },
@@ -114,6 +114,8 @@ function servePage() {
         { pattern: /^\/(font\/.*\.otf)$/, action: serveFont },
         { pattern: /^\/product\/([0-9]*)$/, action: serveProductJson },
         { pattern: /^\/review\/([0-9]*)$/, action: serveReviewJson },
+        { pattern: /^\/json\/product\/item-([0-9]*)\.json$/, action: serveProductJson },
+        { pattern: /^\/json\/reviews.json$/, action: serveReviewJson },
         { pattern: /^\/$/, action: serveTvFinderHtml }
     ];
     http.createServer(function (req, res) {
@@ -227,7 +229,7 @@ function serveJavascript(values, req, res) {
 
 function serveJavascriptLibrary(values, req, res) {
     var qServeJavascript = Q.defer();
-    fs.readFile(values[1], 'ascii', function (error, contents) {
+    fs.readFile(rootDir + values[1], 'ascii', function (error, contents) {
             if (error) {
                 qServeJavascript.reject(error);
             }
@@ -244,7 +246,7 @@ function serveJavascriptLibrary(values, req, res) {
 
 function serveFaviconIco(values, req, res) {
     var qServePng = Q.defer();
-    fs.readFile(rootDir + '/image/favicon.ico', function (error, contents) {
+    fs.readFile(rootDir + '/favicon.ico', function (error, contents) {
             if (error) {
                 qServePng.reject(error);
             }

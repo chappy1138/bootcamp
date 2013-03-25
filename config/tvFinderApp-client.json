@@ -10,11 +10,11 @@
     "name": "app/TvFinderApp",
     "out": "../target/tvFinderApp-client.js",
     "paths": {
-        "requirejs": "/usr/local/lib/node_modules/requirejs/require",
-        "handlebars": "/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime",
-        "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
+        "requirejs": "node_modules/requirejs/require",
+        "handlebars": "node_modules/handlebars/dist/handlebars.runtime",
+        "Backbone": "node_modules/backbone/backbone",
         "jQuery": "lib/jquery-1.8.3",
-        "underscore": "/usr/local/lib/node_modules/underscore/underscore",
+        "underscore": "node_modules/underscore/underscore",
         "content": "lib/content-client",
         "televisions": "lib/televisions-client"
     },
