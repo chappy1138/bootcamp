@@ -1,4 +1,4 @@
-define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'lib/formattedPrice', 'lib/formattedRating', 'target/templates'],
+define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'lib/formattedPrice', 'lib/formattedRating', 'lib/formattedText', 'target/templates'],
     function ($, _, Backbone, Handlebars, content) {
         var superclass = Backbone.View;
         return superclass.extend({

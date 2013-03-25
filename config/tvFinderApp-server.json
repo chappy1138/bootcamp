@@ -6,7 +6,7 @@
     "paths": {
         "handlebars": "/usr/local/lib/node_modules/handlebars/dist/handlebars.runtime",
         "Backbone": "/usr/local/lib/node_modules/backbone/backbone",
-        "jQuery": "lib/jquery-1.7.2",
+        "jQuery": "lib/jquery-1.8.3",
         "underscore": "/usr/local/lib/node_modules/underscore/underscore",
         "content": "lib/content-server",
         "televisions": "target/televisions"

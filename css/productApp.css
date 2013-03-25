@@ -155,17 +155,29 @@
     text-indent: -9999px;
 }
 
-/* To center a block-level element of unknown width */
-.centered-block-outer {
-    overflow: hidden;
-    position: relative;/* ie7 needs position:relative here*/
+.productAbout {
+    display: block;
+    font-size: 28px;
+    margin-top: 40px;
 }
-.centered-block-middle {
-    float: left;
-    position:relative;
-    left:50%;
+
+.productAboutLeft {
+    width: 50%;
+    font-size: 14px;
+    color: rgb(144,144,144);
 }
-.centered-block-inner {
-    position:relative;
-    left:-50%;
+
+.productAboutRight {
+
+}
+
+.productAbout hr {
+    position: relative;
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid rgb(192,192,192);
+    display: block;
+    left: -42px;
+    height: 1px;
+    width: 848px;
 }

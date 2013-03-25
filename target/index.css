@@ -142,18 +142,27 @@
     display: block;
     text-indent: -9999px;
 }
-.centered-block-outer {
-    overflow: hidden;
+.productAbout {
+    display: block;
+    font-size: 28px;
+    margin-top: 40px;
+}
+.productAboutLeft {
+    width: 50%;
+    font-size: 14px;
+    color: rgb(144,144,144);
+}
+.productAboutRight {
+}
+.productAbout hr {
     position: relative;
-}
-.centered-block-middle {
-    float: left;
-    position:relative;
-    left:50%;
-}
-.centered-block-inner {
-    position:relative;
-    left:-50%;
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid rgb(192,192,192);
+    display: block;
+    left: -42px;
+    height: 1px;
+    width: 848px;
 }
 @font-face {
     font-family: "MyriadPro-Regular";
@@ -595,4 +604,17 @@ a:focus {
     -ms-transition-property:     -ms-transform, opacity;
     -o-transition-property:      -o-transform, opacity;
     transition-property:         transform, opacity;
+}
+.centered-block-outer {
+    overflow: hidden;
+    position: relative;
+}
+.centered-block-middle {
+    float: left;
+    position:relative;
+    left:50%;
+}
+.centered-block-inner {
+    position:relative;
+    left:-50%;
 }

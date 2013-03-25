@@ -593,3 +593,20 @@ a:focus {
     -o-transition-property:      -o-transform, opacity;
     transition-property:         transform, opacity;
 }
+
+/* To center a block-level element of unknown width */
+.centered-block-outer {
+    overflow: hidden;
+    position: relative;/* ie7 needs position:relative here*/
+}
+
+.centered-block-middle {
+    float: left;
+    position:relative;
+    left:50%;
+}
+
+.centered-block-inner {
+    position:relative;
+    left:-50%;
+}

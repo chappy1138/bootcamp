@@ -6,8 +6,9 @@ define([
     'lib/reviews',
     'televisions',
     'view/ProductTop',
-    'view/ProductMedia'],
-    function ($, _, Backbone, products, reviews, qTelevisions, ProductTopView, ProductMediaView) {
+    'view/ProductMedia',
+    'view/ProductAbout'],
+    function ($, _, Backbone, products, reviews, qTelevisions, ProductTopView, ProductMediaView, ProductAboutView) {
         return function (options) {
             var qGetSpecificData = $.Deferred(),
                 productPromise = products.getOrFetch(options.base_item_id),
@@ -48,6 +49,11 @@ define([
                                 appendTo: options.appendTo,
                                 model: productAppModel
                             }
+                        ),
+                        productAboutView = new ProductAboutView({
+                                appendTo: options.appendTo,
+                                model: productAppModel
+                            }
                         );
                     productAppModel.on('change:isOpen', function () {
                             options.appendTo
@@ -71,6 +77,7 @@ define([
                                 );
                                 productTopView.start();
                                 productMediaView.start();
+                                productAboutView.start();
                             },
                             stop: function () {
                                 options.appendTo.css({
