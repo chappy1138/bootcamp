@@ -11,7 +11,7 @@ define(['jQuery', 'underscore', 'view/Base', 'app/ProductApp'], function ($, _, 
                     superclass.prototype.initialize.apply(this, arguments);
                 },
                 start: function () {
-                    this.$('.productPanelBackground').click(function () { return false; });
+                    this.$('.productPanelBackground').click(this.closePanel);
                     this.resize();
                     $(window).resize(this.resize);
                 },
@@ -36,6 +36,7 @@ define(['jQuery', 'underscore', 'view/Base', 'app/ProductApp'], function ($, _, 
                 closePanel: function () {
                     this.$('.productPanelFloating').html('').css({ display: 'none' });
                     this.$('.productPanelBackground').css({ display: 'none' });
+                    this.tvFinderAppModel.set({ 'item_id': 0 }, { silent: true });
                     return false;
                 },
                 resize: function () {

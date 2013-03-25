@@ -27,6 +27,9 @@
         },
         "handlebars": {
             "exports": "Handlebars"
+        },
+        "lib/cutstring": {
+            "exports": "CutString"
         }
     }
 }
