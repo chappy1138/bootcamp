@@ -8,7 +8,7 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                     superclass.prototype.initialize.apply(this, arguments);
                     _.bindAll(this, 'updateTitle');
                     this.tvFinderAppModel = options.tvFinderAppModel;
-                    this.tvFinderAppModel.on('change:' + this.attributeName, this.updateTitle);
+                    this.listenTo(options.tvFinderAppModel, 'change:' + this.attributeName, this.updateTitle);
                 },
                 start: function () {
                     var self = this;

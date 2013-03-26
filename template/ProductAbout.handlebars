@@ -1,4 +1,20 @@
 About
+<div>
 <div class="productAboutLeft">{{#formattedText 300}}{{{baseItem.genericContent.shortDescription}}}{{else}}<a href="#" title="Continue Reading">Continue Reading</a>{{/formattedText}}</div>
-<div class="productAboutRight"></div>
+<div class="productAboutRight">
+    <div class="btn-group productQuantityControl">
+        <a class="btn btn-large dropdown-toggle" data-toggle="dropdown" href="#">
+            Qty
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="tvFinderMenuChoice"><a href="#">1</a></li>
+            <li class="tvFinderMenuChoice"><a href="#">2</a></li>
+            <li class="tvFinderMenuChoice"><a href="#">3</a></li>
+            <li class="tvFinderMenuChoice"><a href="#">4</a></li>
+            <li class="tvFinderMenuChoice"><a href="#">5</a></li>
+        </ul>
+    </div>
+    <button id="productAddToCartId" class="btn productAddToCart">Add To Cart</button></div>
+</div>
 <hr>

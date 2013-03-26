@@ -151,8 +151,11 @@
     width: 50%;
     font-size: 14px;
     color: rgb(144,144,144);
+    float: left;
 }
 .productAboutRight {
+    width: 50%;
+    float: right;
 }
 .productAbout hr {
     position: relative;

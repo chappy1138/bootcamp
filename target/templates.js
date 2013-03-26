@@ -91,11 +91,11 @@ function program3(depth0,data) {
   return "<a href=\"#\" title=\"Continue Reading\">Continue Reading</a>";
   }
 
-  buffer += "About\n<div class=\"productAboutLeft\">";
+  buffer += "About\n<div>\n<div class=\"productAboutLeft\">";
   options = {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data};
   stack2 = ((stack1 = helpers.formattedText),stack1 ? stack1.call(depth0, 300, options) : helperMissing.call(depth0, "formattedText", 300, options));
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "</div>\n<div class=\"productAboutRight\"></div>\n<hr>";
+  buffer += "</div>\n<div class=\"productAboutRight\">\n    <div class=\"btn-group productQuantityControl\">\n        <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n            Qty\n            <span class=\"caret\"></span>\n        </a>\n        <ul class=\"dropdown-menu\">\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">1</a></li>\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">2</a></li>\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">3</a></li>\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">4</a></li>\n            <li class=\"tvFinderMenuChoice\"><a href=\"#\">5</a></li>\n        </ul>\n    </div>\n    <button id=\"productAddToCartId\" class=\"btn productAddToCart\">Add To Cart</button></div>\n</div>\n<hr>";
   return buffer;
   });
 templates['ProductMedia'] = template(function (Handlebars,depth0,helpers,partials,data) {
