@@ -104,9 +104,9 @@ Q.all([compilePage(), createJavascriptRollup()]).then(
 function servePage() {
     var viewResolverMap = [
         { pattern: /^(\/target)?\/index\.css$/, action: serveCssRollup },
-        { pattern: /^(\/target)?\/tvFinderApp-client\.js/, action: serveJavascriptRollup },
-        { pattern: /^(\/target)?\/index\.html/, action: serveTvFinderHtml },
-        { pattern: /^(\/node_modules\/.*\.js)/, action: serveJavascriptLibrary },
+        { pattern: /^(\/target)?\/tvFinderApp-client\.js$/, action: serveJavascriptRollup },
+        { pattern: /^(\/target)?\/(index\.html)?$/, action: serveTvFinderHtml },
+        { pattern: /^(\/node_modules\/.*\.js)$/, action: serveJavascriptLibrary },
         { pattern: /^\/(css\/.*\.css)$/, action: serveCss },
         { pattern: /^\/(((app)|(lib)|(model)|(view)|(target))\/.*\.js)$/, action: serveJavascript },
         { pattern: /^\/(image\/.*\.png)$/, action: servePng },
@@ -393,7 +393,7 @@ function renderPage() {
                     jsdom.env(
                         '<html><head></head><body></body></html>',
                         [
-                            "/usr/local/lib/node_modules/requirejs/require.js",
+                            rootDir + "/node_modules/requirejs/require.js",
                             tvFinderAppJavascriptRollupServersidePathname
                         ],
                         function (errors, window) {

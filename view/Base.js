@@ -45,15 +45,18 @@ define(['jQuery', 'underscore', 'Backbone', 'handlebars', 'content', 'lib/format
                     return this.$el.html(escapedContent);
                 },
                 context: function () {
-                    if (this.collection) {
+                    if (this.attributes) {
+                        return this.attributes;
+                    }
+                    else if (this.model) {
+                        return this.model.attributes
+                    }
+                    else if (this.collection) {
                         var context = [];
                         _.each(this.collection.models, function (model) {
                             context.push(model.attributes);
                         });
                         return context;
-                    }
-                    else if (this.model) {
-                        return this.model.attributes
                     }
                     else {
                         return {};

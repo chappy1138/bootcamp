@@ -1,4 +1,4 @@
-define(['Backbone', 'view/FilterDropdownControl'], function (Backbone, FilterDropdownControl) {
+define(['Backbone', 'underscore', 'view/FilterDropdownControl'], function (Backbone, _, FilterDropdownControl) {
         var superclass = FilterDropdownControl;
         return superclass.extend({
                 name: 'TvFinderBrandControl',
@@ -6,24 +6,20 @@ define(['Backbone', 'view/FilterDropdownControl'], function (Backbone, FilterDro
                 className: 'tvFinderBrandPrompt',
                 attributeName: 'brandFilter',
                 initialize: function (options) {
-                    this.tvFinderAppModel = options.tvFinderAppModel;
-                    this.tvFinderAppModel.on('change:typeFilter', this.updateMenuItems, this);
+                    this.listenTo(options.tvFinderAppModel, 'change:typeFilter', this.updateMenuItems);
                     var brands = {};
-                    this.tvFinderAppModel.get('tvOfferCollection').models.forEach(function (tvOffer) {
-                            brands[tvOffer.get('brand')] = true;
+                    _.each(options.televisions, function (tv) {
+                            brands[tv.brand] = true;
                         }
                     );
-                    this.model = new Backbone.Model({ items: Object.keys(brands).sort() });
+                    this.attributes = Object.keys(brands).sort();
                     superclass.prototype.initialize.apply(this, arguments);
                 },
-                filterIterator: function (tvOffer) {
-                    var size = tvOffer.get('size'),
-                        type = tvOffer.get('type'),
-                        brand = tvOffer.get('brand');
-                    return this.minSizeFilter <= size
-                        && size <= this.maxSizeFilter
-                        && (this.typeFilter === '*' || this.typeFilter === type)
-                        && this.menuItemValue === brand;
+                filterIterator: function (tv) {
+                    return this.minSizeFilter <= tv.size
+                        && tv.size <= this.maxSizeFilter
+                        && (this.typeFilter === '*' || this.typeFilter === tv.type)
+                        && this.menuItemValue === tv.brand;
                 }
             }
         );

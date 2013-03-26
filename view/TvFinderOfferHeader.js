@@ -4,31 +4,30 @@ define(['jQuery', 'underscore', 'view/Base'], function ($, _, BaseView) {
                 name: 'TvFinderOfferHeader',
                 tagName: "header",
                 className: "tvFinderOfferHeader",
+                events: {
+                    'click #tvFinderClearFiltersId': 'click'
+                },
                 initialize: function (options) {
-                    _.bindAll(this, 'click', 'updateCount');
                     this.tvFinderAppModel = options.tvFinderAppModel;
-                    this.tvFinderAppModel.bind('change', this.updateCount);
+                    this.televisions = options.televisions;
+                    this.listenTo(this.tvFinderAppModel, 'change', this.updateCount);
                     superclass.prototype.initialize.apply(this, arguments);
                 },
                 render: function () {
                     superclass.prototype.render.call(this);
                     this.updateCount();
                 },
-                start: function () {
-                    superclass.prototype.start.call(this);
-                    $('#tvFinderClearFiltersId').click(this.click);
-                },
                 click: function () {
                     this.tvFinderAppModel.trigger('reset', true);
                 },
                 updateCount: function () {
-                    var tvOffers = this.tvFinderAppModel.get('tvOfferCollection').models,
+                    var televisions = this.televisions,
                         minSizeFilter = this.tvFinderAppModel.get('minSizeFilter'),
                         maxSizeFilter = this.tvFinderAppModel.get('maxSizeFilter'),
                         typeFilter = this.tvFinderAppModel.get('typeFilter'),
                         brandFilter = this.tvFinderAppModel.get('brandFilter'),
-                        count = _.filter(tvOffers,function (tvOffer) {
-                                var size = tvOffer.get('size'), type = tvOffer.get('type'), brand = tvOffer.get('brand');
+                        count = _.filter(televisions, function (tv) {
+                                var size = tv.size, type = tv.type, brand = tv.brand;
                                 return (minSizeFilter === '*' || minSizeFilter <= size)
                                     && (maxSizeFilter === '*' || size <= maxSizeFilter)
                                     && (typeFilter === '*' || typeFilter === type)

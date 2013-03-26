@@ -6,8 +6,8 @@ Type
     </a>
     <ul class="dropdown-menu" data-role="filter" data-attr="Type">
         <li class="tvFinderMenuChoice"><a href="#" data-value="*">Any</a></li>
-        {{#items}}
+        {{#.}}
             <li class="tvFinderMenuChoice"><a href="#" data-value="{{.}}">{{.}}</a></li>
-        {{/items}}
+        {{/.}}
     </ul>
 </div>

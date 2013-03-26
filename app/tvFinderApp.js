@@ -23,8 +23,7 @@ define([
                             maxSizeFilter: '*',
                             typeFilter: '*',
                             brandFilter: '*',
-                            sortBy: '*',
-                            tvOfferCollection: new Backbone.Collection(televisions)
+                            sortBy: '*'
                         }
                     );
                     var siteHeaderView = new SiteHeaderView({
@@ -43,7 +42,8 @@ define([
                         ),
                         tvFinderPovView = new TvFinderPovView({
                                 appendTo: ".appBody",
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                televisions: televisions
                             }
                         ),
                         tvFinderControlsView = new TvFinderControlsView({
@@ -52,17 +52,20 @@ define([
                         ),
                         tvFinderSizeControlView = new TvFinderSizeControlView({
                                 appendTo: tvFinderControlsView.el,
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                televisions: televisions
                             }
                         ),
                         tvFinderTypeControlView = new TvFinderTypeControlView({
                                 appendTo: tvFinderControlsView.el,
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                televisions: televisions
                             }
                         ),
                         tvFinderBrandControlView = new TvFinderBrandControlView({
                                 appendTo: tvFinderControlsView.el,
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                televisions: televisions
                             }
                         ),
                         tvFinderSortControlView = new TvFinderSortControlView({
@@ -72,13 +75,15 @@ define([
                         ),
                         tvFinderOfferHeaderView = new TvFinderOfferHeaderView({
                                 appendTo: tvFinderControlsView.$el.parent(),
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                televisions: televisions
                             }
                         ),
                         productOffersView = new ProductOffersView({
                                 id: 'tvFinderOfferContainerId',
                                 appendTo: tvFinderControlsView.$el.parent().parent(),
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                televisions: televisions
                             }
                         ),
                         productPanelView = new ProductPanelView({

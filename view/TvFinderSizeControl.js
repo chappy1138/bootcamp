@@ -5,16 +5,17 @@ define(['jQuery', 'underscore', 'Backbone', 'view/Base'], function ($, _, Backbo
                 tagName: "li",
                 className: "tvFinderSizePrompt",
                 initialize: function (options) {
-                    _.bindAll(this, 'sizeFilterUpdate', 'updateLowMaxTopMin', 'reset');
+                    _.bindAll(this, 'sizeFilterUpdate');
                     this.tvFinderAppModel = options.tvFinderAppModel;
-                    this.tvFinderAppModel.on('change:minSizeFilter', this.updateLowMaxTopMin);
-                    this.tvFinderAppModel.on('change:maxSizeFilter', this.updateLowMaxTopMin);
-                    this.tvFinderAppModel.on('change:typeFilter', this.updateLowMaxTopMin);
-                    this.tvFinderAppModel.on('change:brandFilter', this.updateLowMaxTopMin);
-                    this.tvFinderAppModel.on('reset', this.reset);
+                    this.televisions = options.televisions;
+                    this.listenTo(options.tvFinderAppModel, 'change:minSizeFilter', this.updateLowMaxTopMin);
+                    this.listenTo(options.tvFinderAppModel, 'change:maxSizeFilter', this.updateLowMaxTopMin);
+                    this.listenTo(options.tvFinderAppModel, 'change:typeFilter', this.updateLowMaxTopMin);
+                    this.listenTo(options.tvFinderAppModel, 'change:brandFilter', this.updateLowMaxTopMin);
+                    this.listenTo(options.tvFinderAppModel, 'reset', this.reset);
                     var minSize, maxSize;
-                    this.tvFinderAppModel.get('tvOfferCollection').models.forEach(function (tvOffer) {
-                            var size = tvOffer.get('size');
+                    _.each(options.televisions, function (tv) {
+                            var size = tv.size;
                             minSize = Math.min(minSize || size, size);
                             maxSize = Math.max(maxSize || size, size);
                         }
@@ -68,8 +69,8 @@ define(['jQuery', 'underscore', 'Backbone', 'view/Base'], function ($, _, Backbo
                         typeFilter = this.tvFinderAppModel.get('typeFilter'),
                         brandFilter = this.tvFinderAppModel.get('brandFilter'),
                         lowMax, topMin;
-                    this.tvFinderAppModel.get('tvOfferCollection').models.forEach(function (tvOffer) {
-                            var size = tvOffer.get('size'), type = tvOffer.get('type'), brand = tvOffer.get('brand');
+                    _.each(this.televisions, function (tv) {
+                            var size = tv.size, type = tv.type, brand = tv.brand;
                             if ((typeFilter === '*' || typeFilter === type)
                                 && (brandFilter === '*' || brandFilter === brand)) {
                                 if (minSizeFilter === '*' || minSizeFilter <= size) {

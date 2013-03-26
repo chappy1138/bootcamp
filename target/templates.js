@@ -251,7 +251,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   
 
 
-  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"../node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"paths\": {\n            \"app/TvFinderApp\": \"tvFinderApp-client\", // comment to get components individually\n            \"handlebars\": \"../node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"../node_modules/backbone/backbone\",\n            \"underscore\": \"../node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.8.3\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            },\n            \"lib/cutstring\": {\n                \"exports\": \"CutString\"\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderApp) {\n                tvFinderApp().then(\n                        function(tvFinder) {\n                            tvFinder.start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
+  return "<article class=\"appContent\">\n    <header class=\"appHeader\"></header>\n    <section class=\"appBody\"></section>\n    <footer class=\"appFooter\"></footer>\n</article>\n<script src=\"../node_modules/requirejs/require.js\"></script>\n<script>\n    require.config({\n        \"baseUrl\": \"..\",\n        \"paths\": {\n            //\"app/TvFinderApp\": \"target/tvFinderApp-client\", // comment to get components individually\n            \"handlebars\": \"node_modules/handlebars/dist/handlebars.runtime\",\n            \"Backbone\": \"node_modules/backbone/backbone\",\n            \"underscore\": \"node_modules/underscore/underscore\",\n            \"jQuery\": \"lib/jquery-1.8.3\",\n            \"content\": \"lib/content-client\",\n            \"televisions\": \"lib/televisions-client\"\n        },\n        \"shim\": {\n            \"Backbone\": {\n                \"deps\": [\n                    \"underscore\",\n                    \"jQuery\"\n                ],\n                \"exports\": \"Backbone\"\n            },\n            \"jQuery\": {\n                \"exports\": \"$\"\n            },\n            \"underscore\": {\n                \"exports\": \"_\"\n            },\n            \"handlebars\": {\n                \"exports\": \"Handlebars\"\n            },\n            \"lib/jquery.ui.sliderX\": {\n                \"deps\": [\n                    \"lib/jquery.ui.slider\"\n                ]\n            },\n            \"lib/jquery.ui.slider\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\",\n                    \"lib/jquery.ui.mouse\"\n                ]\n            },\n            \"lib/jquery.ui.mouse\": {\n                \"deps\": [\n                    \"lib/jquery.ui.widget\"\n                ]\n            },\n            \"lib/jquery.ui.widget\": {\n                \"deps\": [\n                    \"lib/jquery.ui.core\"\n                ]\n            },\n            \"lib/cutstring\": {\n                \"exports\": \"CutString\"\n            }\n        }\n    });\n    require(['app/TvFinderApp'], function (tvFinderApp) {\n                tvFinderApp().then(\n                        function(tvFinder) {\n                            tvFinder.start();\n                        },\n                        function (error) {\n                            console.log(error);\n                        }\n                );\n            }\n    );\n</script>\n";
   });
 templates['SiteHeader'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
@@ -264,7 +264,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 templates['TvFinderBrandControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  var buffer = "", stack1, options, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
 
 function program1(depth0,data) {
   
@@ -278,11 +278,8 @@ function program1(depth0,data) {
   }
 
   buffer += "Brand\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" data-value=\"*\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Brand\">\n        <li class=\"tvFinderMenuChoice\"><a data-value=\"*\" href=\"#\">Any</a></li>\n        ";
-  options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
-  if (stack1 = helpers.items) { stack1 = stack1.call(depth0, options); }
-  else { stack1 = depth0.items; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  if (!helpers.items) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
+  stack2 = ((stack1 = (typeof depth0 === functionType ? depth0.apply(depth0) : depth0)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}));
+  if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n    </ul>\n</div>\n";
   return buffer;
   });
@@ -345,7 +342,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
 templates['TvFinderTypeControl'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
-  var buffer = "", stack1, options, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
+  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this, blockHelperMissing=helpers.blockHelperMissing;
 
 function program1(depth0,data) {
   
@@ -359,11 +356,8 @@ function program1(depth0,data) {
   }
 
   buffer += "Type\n<div class=\"btn-group tvFinderControl\">\n    <a class=\"btn btn-large dropdown-toggle\" data-toggle=\"dropdown\" data-value=\"*\" href=\"#\">\n        Any\n        <span class=\"caret\"></span>\n    </a>\n    <ul class=\"dropdown-menu\" data-role=\"filter\" data-attr=\"Type\">\n        <li class=\"tvFinderMenuChoice\"><a href=\"#\" data-value=\"*\">Any</a></li>\n        ";
-  options = {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data};
-  if (stack1 = helpers.items) { stack1 = stack1.call(depth0, options); }
-  else { stack1 = depth0.items; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  if (!helpers.items) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
+  stack2 = ((stack1 = (typeof depth0 === functionType ? depth0.apply(depth0) : depth0)),blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}));
+  if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n    </ul>\n</div>\n";
   return buffer;
   });

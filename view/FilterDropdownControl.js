@@ -5,10 +5,12 @@ define(['jQuery', 'underscore', 'view/DropdownControl'], function ($, _, Dropdow
                     'click .dropdown-menu a': 'click'
                 },
                 initialize: function (options) {
+                    this.tvFinderAppModel = options.tvFinderAppModel;
+                    this.televisions = options.televisions;
+                    this.listenTo(this.tvFinderAppModel, 'change:minSizeFilter', this.updateMenuItems);
+                    this.listenTo(this.tvFinderAppModel, 'change:maxSizeFilter', this.updateMenuItems);
+                    this.listenTo(this.tvFinderAppModel, 'reset', this.reset);
                     superclass.prototype.initialize.apply(this, arguments);
-                    this.tvFinderAppModel.on('change:minSizeFilter', this.updateMenuItems, this);
-                    this.tvFinderAppModel.on('change:maxSizeFilter', this.updateMenuItems, this);
-                    this.tvFinderAppModel.on('reset', this.reset, this);
                 },
                 updateMenuItems: function () {
                     var context = {
@@ -17,12 +19,13 @@ define(['jQuery', 'underscore', 'view/DropdownControl'], function ($, _, Dropdow
                             typeFilter: this.tvFinderAppModel.get('typeFilter'),
                             brandFilter: this.tvFinderAppModel.get('brandFilter')
                         },
-                        tvOffers = this.tvFinderAppModel.get('tvOfferCollection').models,
                         self = this;
-                    superclass.prototype.$menuItems.call(this).each(function () {
+                    this.$menuItems()
+                        .each(function () {
                             var $this = $(this);
                             context.menuItemValue = $this.attr('data-value');
-                            if (context.menuItemValue === '*' || _.any(tvOffers, self.filterIterator, context)) {
+                            if (context.menuItemValue === '*' ||
+                                _.any(self.televisions, self.filterIterator, context)) {
                                 $this.parent().removeClass('disabled');
                             }
                             else {

@@ -5,28 +5,27 @@ define(['Backbone', 'view/Base'], function (Backbone, BaseView) {
                 tagName: "header",
                 className: "tvFinderPov",
                 initialize: function (options) {
-                    var tvOffers = options.tvFinderAppModel.get('tvOfferCollection').models.slice(0);
-                    tvOffers.sort(function (a, b) {
-                            return a.get('price') - b.get('price')
+                    var televisions = options.televisions.slice(0);
+                    televisions.sort(function (a, b) {
+                            return a.price - b.price
                         }
                     );
                     var minIndex = 0,
                         medianIndex,
-                        maxIndex = tvOffers.length - 1,
-                        minPriceItem = tvOffers[minIndex],
+                        maxIndex = televisions.length - 1,
+                        minPriceItem = televisions[minIndex],
                         medianPriceItem,
-                        maxPriceItem = tvOffers[maxIndex];
-                    while (!minPriceItem.get('price') && minIndex < maxIndex) {
-                        minPriceItem = tvOffers[++minIndex];
+                        maxPriceItem = televisions[maxIndex];
+                    while (!minPriceItem.price && minIndex < maxIndex) {
+                        minPriceItem = televisions[++minIndex];
                     }
                     medianIndex = minIndex + Math.floor((maxIndex - minIndex) / 2);
-                    medianPriceItem = tvOffers[medianIndex];
-                    this.model = new Backbone.Model({
-                            minPrice: minPriceItem.attributes,
-                            medianPrice: medianPriceItem.attributes,
-                            maxPrice: maxPriceItem.attributes
-                        }
-                    );
+                    medianPriceItem = televisions[medianIndex];
+                    this.attributes = {
+                        minPrice: minPriceItem,
+                        medianPrice: medianPriceItem,
+                        maxPrice: maxPriceItem
+                    };
                     superclass.prototype.initialize.apply(this, arguments);
                 }
             }
