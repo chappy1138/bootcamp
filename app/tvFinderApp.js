@@ -2,6 +2,7 @@ define([
     'jQuery',
     'Backbone',
     'televisions',
+    'cart',
     'view/SiteHeader',
     'view/BreadcrumbLine',
     'view/TvFinderPov',
@@ -13,11 +14,11 @@ define([
     'view/TvFinderOfferHeader',
     'view/ProductOffers',
     'view/ProductPanel'],
-    function ($, Backbone, qTelevisions, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView, ProductPanelView) {
+    function ($, Backbone, qTelevisions, qCart, SiteHeaderView, BreadcrumbLineView, TvFinderPovView, TvFinderControlsView, TvFinderSizeControlView, TvFinderTypeControlView, TvFinderBrandControlView, TvFinderSortControlView, TvFinderOfferHeaderView, ProductOffersView, ProductPanelView) {
         return function () {
             var qTvFinderApp = $.Deferred();
-            qTelevisions.then(
-                function (televisions) {
+            $.when(qTelevisions, qCart).then(
+                function (televisions, cart) {
                     tvFinderAppModel = new Backbone.Model({
                             minSizeFilter: '*',
                             maxSizeFilter: '*',
@@ -27,7 +28,8 @@ define([
                         }
                     );
                     var siteHeaderView = new SiteHeaderView({
-                                appendTo: ".appHeader"
+                                appendTo: ".appHeader",
+                                cart: cart
                             }
                         ),
                         breadcrumbLineView = new BreadcrumbLineView({
@@ -88,7 +90,8 @@ define([
                         ),
                         productPanelView = new ProductPanelView({
                                 appendTo: $('body'),
-                                tvFinderAppModel: tvFinderAppModel
+                                tvFinderAppModel: tvFinderAppModel,
+                                cart: cart
                             }
                         );
                     qTvFinderApp.resolve({

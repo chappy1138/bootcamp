@@ -169,7 +169,7 @@
 }
 
 .productAboutRight {
-    width: 50%;
+    width: 40%;
     float: right;
 }
 
@@ -183,3 +183,18 @@
     height: 1px;
     width: 848px;
 }
+
+.productAddToCart {
+    color: white;
+    border-color: #EDA6A7;
+    text-shadow: 1px 1px white, -1px -1px #B48528;
+    letter-spacing: 2px;
+    background: -moz-linear-gradient(#FADBA1, #E9A21d); /* FF 3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FADBA1), color-stop(100%, #E9A21d)); /* Safari 4+, Chrome 2+ */
+    background: -webkit-linear-gradient(#FADBA1, #E9A21D); /* Safari 5.1+, Chrome 10+ */
+    background: -o-linear-gradient(#FADBA1, #E9A21d); /* Opera 11.10 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FADBA1', endColorstr='#E9A21d'); /* IE6 & IE7 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FADBA1', endColorstr='#E9A21d')"; /* IE8+ */
+    background: linear-gradient(#FADBA1, #E9A21d); /* the standard */
+}
+

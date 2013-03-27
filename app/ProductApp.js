@@ -52,7 +52,8 @@ define([
                         ),
                         productAboutView = new ProductAboutView({
                                 appendTo: options.appendTo,
-                                model: productAppModel
+                                model: productAppModel,
+                                cart: options.cart
                             }
                         );
                     productAppModel.on('change:isOpen', function () {

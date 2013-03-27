@@ -167,7 +167,7 @@ a:focus {
 
 .walmartCreateLink
 , .walmartSignInLink
-, .walmartCartLink {
+, .walmartCartCell a {
     position: absolute;
     display: block;
     color:rgb(83,90,95);
@@ -177,8 +177,16 @@ a:focus {
     font-weight: bold;
 }
 
-.walmartCartLink {
+.walmartCartCell a {
     text-indent: 34px;
+}
+
+.walmartCartCell .plural {
+    display: inline;
+}
+
+.walmartCartCell .singular {
+    display: none;
 }
 
 .walmartCreateText

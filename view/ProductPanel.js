@@ -7,7 +7,8 @@ define(['jQuery', 'underscore', 'view/Base', 'app/ProductApp'], function ($, _, 
                 initialize: function (options) {
                     _.bindAll(this, 'showProductPanel', 'closePanel', 'resize');
                     this.tvFinderAppModel = options.tvFinderAppModel;
-                    this.tvFinderAppModel.on('change:item_id', this.showProductPanel);
+                    this.cart = options.cart;
+                    this.listenTo(this.tvFinderAppModel, 'change:item_id', this.showProductPanel);
                     superclass.prototype.initialize.apply(this, arguments);
                 },
                 start: function () {
@@ -20,6 +21,7 @@ define(['jQuery', 'underscore', 'view/Base', 'app/ProductApp'], function ($, _, 
                     var self = this, item_id = this.tvFinderAppModel.get('item_id');
                     ProductApp({
                             base_item_id: item_id,
+                            cart: this.cart,
                             appendTo: self.$('.productPanelFloating'),
                             close: self.closePanel
                         }

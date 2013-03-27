@@ -154,7 +154,7 @@
     float: left;
 }
 .productAboutRight {
-    width: 50%;
+    width: 40%;
     float: right;
 }
 .productAbout hr {
@@ -166,6 +166,19 @@
     left: -42px;
     height: 1px;
     width: 848px;
+}
+.productAddToCart {
+    color: white;
+    border-color: #EDA6A7;
+    text-shadow: 1px 1px white, -1px -1px #B48528;
+    letter-spacing: 2px;
+    background: -moz-linear-gradient(#FADBA1, #E9A21d); 
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FADBA1), color-stop(100%, #E9A21d)); 
+    background: -webkit-linear-gradient(#FADBA1, #E9A21D); 
+    background: -o-linear-gradient(#FADBA1, #E9A21d); 
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FADBA1', endColorstr='#E9A21d'); 
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FADBA1', endColorstr='#E9A21d')"; 
+    background: linear-gradient(#FADBA1, #E9A21d); 
 }
 @font-face {
     font-family: "MyriadPro-Regular";
@@ -284,7 +297,7 @@ a:focus {
 }
 .walmartCreateLink
 , .walmartSignInLink
-, .walmartCartLink {
+, .walmartCartCell a {
     position: absolute;
     display: block;
     color:rgb(83,90,95);
@@ -293,8 +306,14 @@ a:focus {
     font-size: 16px;
     font-weight: bold;
 }
-.walmartCartLink {
+.walmartCartCell a {
     text-indent: 34px;
+}
+.walmartCartCell .plural {
+    display: inline;
+}
+.walmartCartCell .singular {
+    display: none;
 }
 .walmartCreateText
 , .walmartSignInText
